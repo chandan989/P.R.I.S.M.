@@ -4,7 +4,7 @@
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
 
-*The Glass Box Interpreter — An X-ray for AI reasoning, built for the community health worker.*
+*The Glass Box Interpreter — see how Gemma 4 thinks, whether it's right, and how sure it is.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Gemma 4](https://img.shields.io/badge/Powered%20by-Gemma%204%20E4B-4285F4?logo=google&logoColor=white)](https://ai.google.dev/gemma)
@@ -15,11 +15,11 @@
 
 ---
 
-**P.R.I.S.M.** is an offline-first, transparent AI triage assistant designed for **one user** — the community health worker in a rural clinic — and **one workflow** — turning a patient's symptoms into a trustworthy, explainable triage recommendation. Instead of functioning as a black-box chatbot, it acts as an **X-ray for the Gemma 4 reasoning engine**, showing clinicians *why* the AI reached its conclusion and *how confident* it is.
+**P.R.I.S.M.** is a transparency layer for Gemma 4 that transforms any AI conversation from a black-box interaction into an **auditable, verifiable, trust-calibrated experience**. Ask it anything — medicine, law, science, history — and the Glass Box shows you the model's reasoning, verifies its claims, and tells you how confident it actually is.
 
-Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **Unsloth**
+Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **Unsloth** · **Cactus**
 
-[Core Features](#-core-features) · [Architecture](#-architecture--tech-stack) · [The Workflow](#-the-workflow) · [Deployment](#-edge-deployment) · [Getting Started](#-getting-started-local-deployment)
+[The Problem](#-the-problem) · [Three Pillars](#-the-three-pillars) · [Architecture](#-architecture--tech-stack) · [Demo](#-demo-scenarios) · [Getting Started](#-getting-started)
 
 </div>
 
@@ -28,18 +28,16 @@ Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma
 ## 📖 Table of Contents
 
 - [The Problem](#-the-problem)
-- [The User & The Workflow](#-the-user--the-workflow)
-- [Core Features](#-core-features)
-  - [Latent Deliberation Engine](#-latent-deliberation-engine)
-  - [Source Grounding Visualizer](#-source-grounding-visualizer-traffic-light-system)
-  - [Certainty Indicators](#-certainty-indicators)
-- [Progressive Disclosure — Simple View vs Expert View](#-progressive-disclosure)
+- [The Three Pillars](#-the-three-pillars)
+  - [Deliberation Engine](#pillar-i--latent-deliberation-engine)
+  - [Source Grounding](#pillar-ii--source-grounding-visualizer)
+  - [Certainty Indicators](#pillar-iii--certainty-indicators)
+- [Progressive Disclosure](#-progressive-disclosure)
 - [Architecture & Tech Stack](#-architecture--tech-stack)
-- [Gemma 4 Prompting & State Management](#-gemma-4-prompting--state-management)
-- [Model Specifications](#-model-specifications)
+- [Gemma 4 Integration](#-gemma-4-integration)
 - [Fine-Tuning with Unsloth](#-fine-tuning-with-unsloth)
-- [Edge Deployment](#-edge-deployment)
-- [Getting Started](#-getting-started-local-deployment)
+- [Demo Scenarios](#-demo-scenarios)
+- [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
 - [Hackathon Alignment](#-hackathon-alignment)
 - [Roadmap](#-roadmap)
@@ -50,180 +48,152 @@ Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma
 
 ## 🚨 The Problem
 
-Community health workers (CHWs) in rural and resource-limited clinics face a critical gap: they need diagnostic decision support, but existing AI tools are either **cloud-dependent** (unusable offline) or **opaque** (give confident-sounding answers with no way to judge reliability).
+Every LLM today has the same fundamental UX failure:
 
-| Failure Mode | Consequence for the CHW |
+> **The model sounds equally confident whether it's right or wrong. The user has no way to tell the difference.**
+
+| What Users Get Today | What's Missing |
 |---|---|
-| **AI gives an assertive diagnosis** with no reasoning | CHW cannot tell if the recommendation is sound |
-| **AI hallucinates a treatment protocol** | Patient receives dangerous misguidance |
-| **AI shows uniform confidence** on everything | CHW cannot prioritize what to trust vs. verify |
-| **AI requires internet** | Useless in the rural settings that need it most |
+| A confident-sounding answer | The reasoning that produced it |
+| Stated "facts" | Whether those facts are actually real |
+| Uniform authoritative tone | How certain the model actually is |
 
-> A triage assistant that the CHW cannot trust is worse than no assistant at all — it creates a false sense of safety.
+This isn't a model problem — it's an **interface problem**. The model already has internal reasoning traces, probability distributions, and the ability to check sources. Current UIs just throw all of that away and show you a flat text response.
 
----
-
-## 👤 The User & The Workflow
-
-> **One user. One workflow. One domain.**
-
-### The User
-
-The **Community Health Worker (CHW)** — a frontline healthcare provider in a rural or resource-limited setting, often with limited formal medical training, working offline, in challenging conditions (poor lighting, noisy environment, time pressure).
-
-### The Workflow
-
-```
-Patient arrives at rural clinic
-    ↓
-CHW enters symptoms (voice or text, in local language)
-    ↓
-Glass Box processes via Gemma 4 E4B (on-device, fully offline)
-    ↓
-SIMPLE VIEW shows:
-  • Triage level: 🔴 Urgent / 🟡 Semi-urgent / 🟢 Routine
-  • Suspected condition with confidence badge (✅ HIGH / ⚠️ MODERATE / ❓ LOW)
-  • Source verification dots (🟢 verified / 🟡 inferred / 🔴 unverified)
-    ↓
-CHW makes informed referral decision
-    ↓
-[Optional] Supervising clinician remotely reviews EXPERT VIEW
-```
-
-This is the **entire product**. Every architectural decision flows from making this workflow fast, trustworthy, and accessible.
+**P.R.I.S.M. fixes the interface.** It surfaces what the model already knows about its own uncertainty and reasoning, and presents it in a way humans can understand and act on.
 
 ---
 
-## ✨ Core Features
+## ✨ The Three Pillars
 
-### 🧠 Latent Deliberation Engine
+### Pillar I — Latent Deliberation Engine
 
-> Standard interfaces hide how an AI reaches its conclusion.
+> **What it does:** Shows you *how* the AI reached its conclusion.
 
-By injecting the `<|think|>` token into the system prompt, the Glass Box intercepts the native `<|channel>thought\n` text blocks streamed by Gemma 4 and captures the model's step-by-step reasoning and discarded hypotheses.
+Standard chatbot interfaces hide the model's internal reasoning. By injecting the `<|think|>` token into the system prompt, the Glass Box intercepts Gemma 4's native `<|channel>thought\n` blocks and captures:
 
-**Critically, this reasoning is NOT shown by default.** It is available through [Progressive Disclosure](#-progressive-disclosure) when a supervising clinician needs it.
-
-- **Competing hypotheses** — captured with probability estimates
+- **Competing hypotheses** the model considered, with probability estimates
 - **Discarded reasoning paths** — what the model rejected and why
-- **Step-by-step logical flow** — the full chain from symptoms to triage level
+- **Step-by-step logical chain** from question to conclusion
+
+**This is NOT dumped on the user by default.** The deliberation is captured and available through [progressive disclosure](#-progressive-disclosure) — the user sees a clean answer first, then clicks "Why?" to see the reasoning.
+
+```
+┌── Deliberation (visible when user clicks "Why?") ────┐
+│                                                       │
+│  Interpretation A: [subject claim]       [72.3%]      │
+│  ├── Supporting: [evidence 1], [evidence 2]           │
+│  └── Weakening: [counter-evidence]                    │
+│                                                       │
+│  Interpretation B: [alternative]         [21.8%]      │
+│  ├── Supporting: [evidence 3]                         │
+│  └── Weakening: [counter-evidence 2]                  │
+│                                                       │
+│  ✗ Discarded: [rejected hypothesis]                   │
+│                                                       │
+│  ▶ Selected: Interpretation A                         │
+└───────────────────────────────────────────────────────┘
+```
 
 ---
 
-### 🚦 Source Grounding Visualizer (Traffic-Light System)
+### Pillar II — Source Grounding Visualizer
 
-> AI hallucinates facts and presents them as truth.
+> **What it does:** Tells you *whether* each claim is backed by a real source.
 
-Every generated claim is automatically verified against a **local RAG vector database** (preloaded with WHO guidelines, clinical protocols, and drug references). We leverage Gemma 4's native function calling — parsing `<|tool_call>` and `<|"|>` delimiters — to trigger background validations:
+Every claim in the response is automatically verified against a **local RAG vector database**. We leverage Gemma 4's native function calling syntax — parsing `<|tool_call>` and `<|"|>` delimiters — to trigger background verification.
 
-1. **Claim Extraction** — Each response is decomposed into individual factual statements.
-2. **Verification** — Every claim is cross-referenced against the on-device knowledge base.
-3. **Inline Badges** — Each claim gets a simple colored dot.
+Each claim gets a simple colored dot inline:
 
-#### Traffic-Light Interface
-
-| Signal | Meaning | CHW sees |
+| Signal | Meaning | User Sees |
 |---|---|---|
-| 🟢 | Fully verified against clinical source | Green dot next to the claim |
-| 🟡 | Reasonable inference, not directly sourced | Yellow dot — use clinical judgment |
-| 🔴 | Could not be verified — possible hallucination | Red dot + warning: "Verify independently" |
+| 🟢 | Verified against a source in the knowledge base | Green dot — trustworthy |
+| 🟡 | Reasonable inference, but not directly sourced | Yellow dot — use judgment |
+| 🔴 | Could not be verified — possible hallucination | Red dot + "Verify independently" |
 
-The CHW sees colored dots inline. Tapping a dot shows the source in a simple popup — no complex panels.
+```
+Example output:
+
+  🟢 "The Earth orbits the Sun at approximately 107,000 km/h."
+      └─ Source: NASA Solar System Exploration
+
+  🟡 "This likely contributes to seasonal temperature variation."
+      └─ Inference from: orbital mechanics principles
+
+  🔴 "The orbit changes by 2% every century."
+      └─ ⚠️ No matching source — treat with caution
+```
+
+Tapping any dot shows the source document snippet in a simple popup.
 
 ---
 
-### 📊 Certainty Indicators
+### Pillar III — Certainty Indicators
 
-> AI sounds confident even when it doesn't know.
+> **What it does:** Shows you *how confident* the AI actually is.
 
-We stream **token-level logprobs** from Cactus Compute and translate them into **explicit, accessible confidence signals**.
-
-#### Why We Don't Use Blur or Opacity
-
-The previous design proposed blurring or fading text to represent low confidence. **We removed this** because:
-
-- ❌ Blurred text is unreadable in harsh lighting (field clinics have poor lighting)
-- ❌ Faded text fails for users with visual impairments
-- ❌ Low-literacy users cannot interpret opacity as a metaphor for uncertainty
-- ❌ It's a well-documented accessibility anti-pattern
-
-#### What We Use Instead
+We stream **token-level logprobs** from the inference engine and translate them into **explicit, accessible confidence signals**:
 
 | Indicator | Example | Why It Works |
 |---|---|---|
-| **Confidence Badges** | ✅ `HIGH` · ⚠️ `MODERATE` · ❓ `LOW` | Universally understood symbols + color |
+| **Confidence Badges** | ✅ `HIGH` · ⚠️ `MODERATE` · ❓ `LOW` | Universal symbols + color |
 | **Progress Bar** | `████████░░` (80%) | Visual fill — no reading required |
-| **Plain-Language Labels** | "The AI is confident" / "The AI is guessing — verify" | Works for low-literacy users |
-| **Color-Coded Borders** | Green / amber / red border around each section | Visible in poor lighting conditions |
-| **Audio Confidence (Voice Mode)** | Spoken: "I am fairly confident this is..." | Accessible to visually impaired users |
+| **Plain-Language Labels** | "The AI is confident" / "The AI is guessing" | Works for all literacy levels |
+| **Color-Coded Borders** | Green / amber / red border per section | Visible at a glance |
+
+#### Why Not Blur or Opacity?
+
+We explicitly chose **not** to blur or fade text to show uncertainty:
+
+- ❌ Blurred text is unreadable in poor lighting
+- ❌ Faded text fails for visually impaired users
+- ❌ Opacity is not a universally understood metaphor for uncertainty
+
+Explicit badges and labels are clearer, more accessible, and more actionable.
 
 #### Calibration
 
-To ensure these confidence scores are *meaningful* (not just raw logits):
+Raw logprobs are meaningless if they're not calibrated. We fine-tune via Unsloth using:
 
-- **Brier Score minimization** — Reduces the gap between predicted and actual accuracy
-- **Expected Calibration Error (ECE)** — Ensures confidence bins align with true correctness
-- **Fine-tuning via Unsloth** — Model trained to produce well-calibrated probability outputs
+- **Brier Score minimization** — Predicted confidence matches actual accuracy
+- **Expected Calibration Error (ECE)** — Confidence bins align with true correctness rates
 
 ---
 
 ## 🔀 Progressive Disclosure
 
-The Glass Box has **two display modes**, controlled by a single toggle. This prevents cognitive overload while preserving full transparency for those who need it.
+The Glass Box uses **two display modes** to prevent cognitive overload:
 
-### Simple View (Default)
+### Default View
 
-This is what the CHW sees. Clean, actionable, fast.
+Clean answer + confidence badge + source dots. No raw reasoning.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  🔴 HIGH PRIORITY — Refer to physician urgently     │
 │                                                      │
-│  Suspected: Cardiac event                           │
+│  🟢 "The Earth orbits the Sun every 365.25 days."   │
+│  🟢 "This is why we have leap years."               │
+│  🟡 "The orbit is nearly circular."                  │
+│  🔴 "The orbit changes by 2% every century."         │
+│     └─ ⚠️ Unverified                                │
+│                                                      │
 │  Confidence: ████████░░  ✅ HIGH                    │
 │                                                      │
-│  🟢 "Aspirin is recommended for suspected ACS"      │
-│  🟡 "Patient's age increases cardiovascular risk"    │
-│  🔴 "95% survival rate with early intervention"      │
-│     └─ ⚠️ Unverified — do not rely on this figure   │
-│                                                      │
-│  [Why did the AI decide this?]  ← expand button     │
+│  [Why did the AI say this?]  ← expand               │
 └─────────────────────────────────────────────────────┘
 ```
 
-**What's shown:** Triage level, suspected condition, confidence badge, source-verified claims with colored dots.
+### Expert View (click to expand)
 
-**What's hidden:** Raw deliberation trace, competing hypotheses, probability distributions, discarded reasoning.
+Full deliberation tree, competing hypotheses, calibration metrics, source chains.
 
-### Expert View (On Demand)
-
-Activated by tapping "Why did the AI decide this?" — designed for supervising clinicians or experienced CHWs.
-
-```
-┌─────────────────────────────────────────────────────┐
-│  EXPERT VIEW — Full Deliberation                    │
-│                                                      │
-│  Hypothesis A: Cardiac Ischemia          [72.3%]    │
-│  ├── Supporting: ST-segment elevation, age > 55     │
-│  └── Weakening: No troponin elevation reported      │
-│                                                      │
-│  Hypothesis B: Pulmonary Embolism        [21.8%]    │
-│  ├── Supporting: Sudden onset dyspnea, tachycardia  │
-│  └── Weakening: No DVT history                      │
-│                                                      │
-│  Hypothesis C: Musculoskeletal           [ 5.9%]    │
-│  └── Discarded — insufficient clinical evidence     │
-│                                                      │
-│  Source chain: WHO ACS Guidelines 2023 → Section 4  │
-│  Calibration: Brier = 0.12, ECE = 0.04              │
-└─────────────────────────────────────────────────────┘
-```
+Users who want the detail can get it. Users who just want the answer aren't overwhelmed.
 
 ---
 
 ## 🛠 Architecture & Tech Stack
 
-Built to run **entirely on-device**, preserving absolute data sovereignty for sensitive medical data.
+Runs **locally on your machine** — no cloud APIs, no data leaving your device.
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -232,124 +202,84 @@ Built to run **entirely on-device**, preserving absolute data sovereignty for se
 │                                                                  │
 │   FRONTEND (Next.js + Tailwind CSS)                              │
 │   ┌──────────────────────────────────────────────────────┐       │
-│   │  Progressive Disclosure UI:                          │       │
-│   │  • Simple View: Triage + badges + dots (default)     │       │
-│   │  • Expert View: Deliberation + probabilities         │       │
+│   │  Default View:  Answer + badges + source dots        │       │
+│   │  Expert View:   Deliberation tree + calibration      │       │
 │   │                                                      │       │
 │   │  Multiplexed Streams:                                │       │
-│   │  • Text stream ──────────► Triage recommendation     │       │
-│   │  • Thought blocks ───────► Expert deliberation panel │       │
-│   │  • Tool-call statuses ───► Source grounding dots      │       │
-│   │  • Probability metrics ──► Confidence badges/bars     │       │
+│   │  • Text ─────────────► Response rendering            │       │
+│   │  • Thought blocks ───► Deliberation panel            │       │
+│   │  • Tool-call status ─► Source dots (🟢🟡🔴)          │       │
+│   │  • Logprobs ─────────► Confidence badges/bars        │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                          ▲                                       │
 │                          │ SSE / WebSocket                       │
 │                          ▼                                       │
 │   BACKEND (Python)                                               │
 │   ┌──────────────────────────────────────────────────────┐       │
-│   │  Streaming Server (server.py)                        │       │
-│   │  ├── Deliberation parser (<|channel>thought\n)       │       │
-│   │  ├── Tool-call parser (<|tool_call>, <|"|>)          │       │
+│   │  Streaming Server                                    │       │
+│   │  ├── <|channel>thought\n parser → deliberation       │       │
+│   │  ├── <|tool_call> / <|"|> parser → RAG verification  │       │
 │   │  ├── Logprobs extractor → confidence scoring         │       │
-│   │  └── RAG verification (local medical knowledge base) │       │
+│   │  └── RAG pipeline (local vector store)               │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                          ▲                                       │
-│                          │ Zero-copy inference                   │
+│                          │ Local inference                       │
 │                          ▼                                       │
-│   INFERENCE ENGINE (Cactus Compute)                              │
+│   INFERENCE (Cactus Compute / Ollama)                            │
 │   ┌──────────────────────────────────────────────────────┐       │
-│   │  Gemma 4 E4B (Unsloth fine-tuned, calibrated)        │       │
-│   │  • Ultra-low latency on ARM CPUs                     │       │
-│   │  • Zero-copy memory mapping                          │       │
-│   │  • Adaptive context: 8K (edge) → 128K (workstation)  │       │
-│   │  • Fully offline                                     │       │
+│   │  Gemma 4 E4B (Unsloth fine-tuned)                    │       │
+│   │  • Runs on your laptop — no cloud                    │       │
+│   │  • Logprobs streaming for certainty extraction       │       │
+│   │  • 128K context window                               │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-| Layer | Technology | Role |
+| Layer | Technology | Why |
 |---|---|---|
-| **Foundation Model** | Gemma 4 E4B (4.5B effective / 8.0B total) | 128K max context, multimodal, PLE architecture |
-| **Fine-Tuning** | Unsloth | Calibration + medical triage adaptation in ~10 GB VRAM |
-| **Inference** | Cactus Compute | Zero-copy, ARM-optimized, offline, logprobs streaming |
-| **Backend** | Python streaming server | Parses Gemma 4 delimiters, runs RAG verification, computes confidence scores |
-| **Frontend** | Next.js + Tailwind CSS | Progressive disclosure UI — Simple View default, Expert View on demand |
-| **Knowledge Base** | Local RAG vector store | WHO guidelines, clinical protocols, drug references — all on-device |
+| **Model** | Gemma 4 E4B (4.5B effective / 8.0B total) | 128K context, multimodal, edge-optimized with PLE architecture |
+| **Fine-Tuning** | Unsloth | Confidence calibration via QLoRA in ~10 GB VRAM (60% reduction, 2× faster) |
+| **Inference** | Cactus Compute / Ollama | Local execution, logprobs access, offline-capable |
+| **Backend** | Python | Gemma 4 delimiter parsing, RAG verification, stream multiplexing |
+| **Frontend** | Next.js + Tailwind CSS | Progressive disclosure UI rendering four multiplexed streams |
 
 ---
 
-## 🧩 Gemma 4 Prompting & State Management
+## 🧩 Gemma 4 Integration
 
 ### Prompt Structure
 
-We use Gemma 4's native `system`, `user`, and `assistant` roles with `<|think|>` to activate deliberation:
-
 ```
 <system>
-You are a medical triage assistant. For every patient case:
-1. Begin reasoning with <|think|> — enumerate differential diagnoses with probabilities
-2. Use tool calls to verify each clinical claim against the knowledge base
-3. Provide a triage level (urgent/semi-urgent/routine) with a calibrated confidence score
-4. Keep the final recommendation simple and actionable
+For every response:
+1. Begin reasoning with <|think|> to expose your deliberation
+2. Enumerate competing interpretations with probability estimates
+3. Use tool calls to verify factual claims against the knowledge base
+4. Provide a calibrated confidence score for each major conclusion
 </system>
-
-<user>
-Patient: 58-year-old male. Acute chest pain, shortness of breath.
-History of deep vein thrombosis. No known cardiac history.
-</user>
 ```
 
 ### Turn Management
 
-During multi-turn conversations, the system automatically **strips previous `<|channel>thought\n` blocks** from the context to prevent cyclical hallucination loops:
+Previous `<|channel>thought\n` blocks are automatically **stripped from context history** between turns to prevent the model from entering cyclical hallucination loops — referencing its own prior reasoning as fact.
 
 ```python
-def sanitize_context(conversation_history):
-    """Remove previous thought blocks to prevent reasoning contamination."""
-    sanitized = []
-    for turn in conversation_history:
-        cleaned = re.sub(
-            r'<\|channel\>thought\\n.*?</\|channel\>',
-            '', turn.content, flags=re.DOTALL
-        )
-        sanitized.append(cleaned)
-    return sanitized
+def sanitize_context(history):
+    """Strip thought blocks from prior turns."""
+    return [
+        re.sub(r'<\|channel\>thought\\n.*?</\|channel\>', '', turn, flags=re.DOTALL)
+        for turn in history
+    ]
 ```
 
-### Gemma 4 Delimiter Handling
+### Delimiter Handling
 
-| Delimiter | Purpose | P.R.I.S.M. Handling |
+| Delimiter | Purpose | Glass Box Handling |
 |---|---|---|
-| `<\|channel>thought\n` | Internal reasoning / deliberation | Captured → Expert View (hidden by default) |
-| `<\|tool_call>` | Function call invocation | Triggers RAG verification → source dots |
+| `<\|channel>thought\n` | Internal reasoning | Routed to deliberation panel (Expert View) |
+| `<\|tool_call>` | Function call invocation | Triggers RAG verification pipeline |
 | `<\|"\|>` | Tool call argument delimiters | Parsed for claim text to verify |
-
----
-
-## 🧠 Model Specifications
-
-| Model | Active Params | Total Params | Context | Modalities | Role |
-|---|---|---|---|---|---|
-| **Gemma 4 E4B** ⭐ | 4.5B | 8.0B | 128K | Text, Image, Audio | **Primary — clinic laptop, Apple Silicon** |
-| **Gemma 4 E2B** | 2.3B | 5.1B | 128K | Text, Image, Audio | Fallback — ultra-constrained devices |
-
-### Adaptive Context Window
-
-The 128K context window is a *maximum capability*, not a constant. P.R.I.S.M. adapts context size to hardware:
-
-| Deployment | Effective Context | Rationale |
-|---|---|---|
-| Raspberry Pi / mobile | 4K–8K | Sufficient for triage questionnaire + brief history |
-| Clinic laptop | 16K–32K | Handles multi-page lab reports and images |
-| Workstation / server | Up to 128K | Full medical record analysis |
-
-### Why Gemma 4 E4B?
-
-- **Per-Layer Embeddings (PLE)** — Efficient inference on local hardware
-- **Offline-first** — No internet required; critical for rural deployment
-- **140+ languages** — CHWs can interact in local language
-- **Multimodal** — Upload X-rays, lab reports; speak symptoms via voice
 
 ---
 
@@ -357,29 +287,18 @@ The 128K context window is a *maximum capability*, not a constant. P.R.I.S.M. ad
 
 > **Special Track: Unsloth** — *Best fine-tuned Gemma 4 model optimized for a specific, impactful task.*
 
-[Unsloth](https://github.com/unslothai/unsloth) powers P.R.I.S.M.'s **medical triage fine-tuning and confidence calibration**:
+P.R.I.S.M. fine-tunes Gemma 4 E4B for **confidence calibration** — teaching the model to output probability scores that actually match its real accuracy.
 
-### What We Fine-Tune
-
-| Adapter | Purpose | Dataset |
-|---|---|---|
-| **Calibration Adapter** | Well-calibrated confidence scores | Custom dataset with known correctness labels |
-| **Medical Triage Adapter** | Domain-specific reasoning with structured deliberation | MedReason, Syntech AI Triage 500, Medical Meadow Wikidoc |
-| **Deliberation Adapter** | Structured `<\|think\|>` output with hypothesis enumeration | Synthetic deliberation traces |
-
-### Training Efficiency
+| Adapter | Purpose |
+|---|---|
+| **Calibration Adapter** | Well-calibrated confidence scores (Brier + ECE optimized) |
+| **Deliberation Adapter** | Structured `<\|think\|>` output with enumerated hypotheses |
 
 | Metric | Without Unsloth | With Unsloth |
 |---|---|---|
 | E4B fine-tune VRAM | ~24 GB | **~10 GB** |
 | Training speed | Baseline | **2× faster** |
 | Memory reduction | — | **~60%** |
-
-### Techniques
-
-- **Quantized LoRA (QLoRA)** — 4-bit NF4 quantization, rank-16
-- **Attention layer tuning** — Calibration-focused attention head fine-tuning
-- **Unsloth fused kernels** — 2× training speedup
 
 ```python
 from unsloth import FastModel
@@ -392,72 +311,49 @@ model, tokenizer = FastModel.from_pretrained(
 )
 
 model = FastModel.get_peft_model(
-    model,
-    r=16,
+    model, r=16,
     target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-    lora_alpha=16,
-    lora_dropout=0,
+    lora_alpha=16, lora_dropout=0,
 )
 
 trainer = SFTTrainer(
     model=model,
-    dataset=medical_triage_calibration_dataset,
+    dataset=calibration_dataset,
     max_seq_length=8192,
 )
 trainer.train()
-
-model.save_pretrained_merged("prism-triage-e4b", tokenizer)
+model.save_pretrained_merged("prism-calibrated-e4b", tokenizer)
 ```
 
 ---
 
-## 📡 Edge Deployment
+## 🎬 Demo Scenarios
 
-### Adaptive Stream Strategy
+The Glass Box works with **any query, any domain**. The transparency pillars are domain-agnostic:
 
-Not all four data streams run simultaneously on all hardware. The system **gracefully degrades** based on device capability:
+### 🏥 Medical
+> "Patient has chest pain and shortness of breath. History of DVT. What are the possible diagnoses?"
 
-| Hardware Tier | Active Streams | Context | Latency Target |
-|---|---|---|---|
-| **Constrained** (RPi, mobile) | Text + Certainty only | 4K–8K | < 3s first token |
-| **Standard** (clinic laptop) | Text + Certainty + Verification | 16K–32K | < 1s first token |
-| **Full** (workstation/server) | All four streams (+ Expert View) | Up to 128K | < 500ms first token |
+→ Deliberation shows competing diagnoses (cardiac vs. pulmonary vs. musculoskeletal) with probabilities. Source dots verify clinical claims against medical literature. Confidence badge shows calibrated certainty.
 
-On constrained hardware:
-- Expert View (deliberation) is **disabled** — CHW gets Simple View only
-- Source verification runs **asynchronously after response** — dots appear with slight delay
-- Context window is **capped** to prevent memory/latency issues
+### ⚖️ Legal
+> "What are a tenant's rights if a landlord refuses to return a security deposit in California?"
 
-This ensures the CHW **always gets a fast, actionable triage recommendation**, even on a Raspberry Pi.
+→ Deliberation shows statutory analysis chain. Source dots verify specific codes (CA Civil Code §1950.5). Red dots flag any unverified legal claims.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CACTUS COMPUTE INFERENCE ENGINE                   │
-│            (ARM CPU optimized · zero-copy · offline)                │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│   Stream 1: TEXT ───────────────► Triage recommendation             │
-│   Stream 2: CERTAINTY ─────────► Confidence badges + bars           │
-│   Stream 3: VERIFICATION ──────► Source dots (async on edge)        │
-│   Stream 4: DELIBERATION ──────► Expert View (disabled on edge)     │
-│                                                                     │
-├─────────────────────────────────────────────────────────────────────┤
-│          NEXT.JS PROGRESSIVE DISCLOSURE UI                          │
-│        Simple View (default) ←→ Expert View (toggle)                │
-└─────────────────────────────────────────────────────────────────────┘
-```
+### 🔬 Science
+> "Is there evidence that intermittent fasting improves longevity in humans?"
 
-### Deployment Targets
+→ Deliberation weighs animal vs. human studies. Source dots verify cited papers. Low confidence badge on claims where human data is limited.
 
-| Platform | Model | RAM | Context | Features Available |
-|---|---|---|---|---|
-| Raspberry Pi 5 | E2B (quantized) | ~4 GB | 4K–8K | Simple View + certainty badges |
-| Clinic laptop (Apple Silicon) | E4B | ~8 GB | 16K–32K | Full Simple View + async verification |
-| Workstation / server | E4B | ~16 GB | Up to 128K | All features + Expert View |
+### 📚 General Knowledge
+> "Why did the Roman Empire fall?"
+
+→ Deliberation shows multiple historiographic perspectives. Yellow dots on interpretive claims. Confidence varies across competing theories.
 
 ---
 
-## 🚀 Getting Started (Local Deployment)
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -465,64 +361,40 @@ This ensures the CHW **always gets a fast, actionable triage recommendation**, e
 - Python 3.10+
 - Node.js 18+
 
-### 1. Clone the Repository
+### Option A: Cactus Compute
 
 ```bash
 git clone https://github.com/chandan989/P.R.I.S.M..git
 cd P.R.I.S.M.
-```
 
-### 2. Setup the Inference Backend
-
-```bash
-# Install Cactus Compute
+# Install Cactus Compute + download model
 brew install cactus-compute/cactus/cactus
+cactus download chandan989/gemma-4-e4b-calibrated
 
-# Download the Unsloth fine-tuned Gemma 4 E4B weights
-cactus download chandan989/gemma-4-e4b-triage
+# Start backend
+python backend/server.py --model gemma-4-e4b-calibrated --port 8000
 
-# Start the local streaming server (with logprobs enabled)
-python backend/server.py --model gemma-4-e4b-triage --port 8000
+# Start frontend
+cd frontend && npm install && npm run dev
 ```
 
-### 3. Setup the Frontend
+### Option B: Ollama
 
 ```bash
-cd frontend
-npm install
+git clone https://github.com/chandan989/P.R.I.S.M..git
+cd P.R.I.S.M.
 
-# Start the Next.js development server
-npm run dev
+# Pull model via Ollama
+ollama pull gemma4:e4b
+
+# Start backend
+python backend/server.py --runtime ollama --port 8000
+
+# Start frontend
+cd frontend && npm install && npm run dev
 ```
 
-Navigate to **http://localhost:3000** to interact with The Glass Box.
-
-### Quick Start (Pseudo-code)
-
-```python
-from prism import GlassBoxInterpreter
-
-interpreter = GlassBoxInterpreter(
-    model="gemma-4-e4b-triage",
-    runtime="cactus",
-    port=8000,
-)
-
-response = interpreter.query(
-    "58-year-old male. Acute chest pain and dyspnea. History of DVT.",
-    domain="triage"
-)
-
-# Simple View outputs
-print(response.triage_level)        # 🔴 URGENT
-print(response.suspected_condition) # Cardiac event
-print(response.confidence)          # ✅ HIGH (0.87)
-print(response.source_dots)         # [🟢, 🟡, 🔴] per claim
-
-# Expert View outputs (for supervising clinician)
-print(response.deliberation)        # Full hypothesis tree
-print(response.calibration_metrics) # Brier: 0.12, ECE: 0.04
-```
+Open **http://localhost:3000** → ask anything → see the Glass Box in action.
 
 ---
 
@@ -537,15 +409,12 @@ P.R.I.S.M./
 ├── backend/
 │   ├── server.py                # Python streaming server
 │   ├── parsers/
-│   │   ├── deliberation.py      # <|channel>thought\n block parser
+│   │   ├── deliberation.py      # <|channel>thought\n parser
 │   │   ├── tool_calls.py        # <|tool_call> / <|"|> parser
-│   │   └── logprobs.py          # Logprobs → confidence score
+│   │   └── logprobs.py          # Logprobs → confidence scores
 │   ├── grounding/
-│   │   ├── rag_pipeline.py      # RAG verification (medical KB)
-│   │   └── vector_store.py      # WHO guidelines, clinical protocols
-│   ├── triage/
-│   │   ├── classifier.py        # Triage level determination
-│   │   └── confidence.py        # Brier/ECE calibrated scoring
+│   │   ├── rag_pipeline.py      # Claim verification via RAG
+│   │   └── vector_store.py      # Local knowledge base
 │   └── calibration/
 │       ├── brier.py             # Brier Score
 │       └── ece.py               # Expected Calibration Error
@@ -557,24 +426,19 @@ P.R.I.S.M./
 │   │   ├── page.tsx             # Main Glass Box interface
 │   │   ├── layout.tsx           # App layout
 │   │   └── components/
-│   │       ├── SimpleView.tsx         # Default CHW interface
-│   │       ├── ExpertView.tsx         # Expandable deliberation
+│   │       ├── DefaultView.tsx        # Answer + badges + dots
+│   │       ├── ExpertView.tsx         # Full deliberation tree
 │   │       ├── ConfidenceBadge.tsx    # ✅ ⚠️ ❓ indicators
-│   │       ├── ConfidenceBar.tsx      # Progress bar visualization
+│   │       ├── ConfidenceBar.tsx      # Progress bar
 │   │       ├── SourceDot.tsx          # 🟢🟡🔴 inline badges
-│   │       ├── TriageCard.tsx         # Triage recommendation card
-│   │       └── StreamMultiplexer.tsx  # Multi-stream handler
+│   │       └── StreamMultiplexer.tsx  # Four-stream handler
 │   └── public/
 │
 ├── training/
-│   ├── finetune.py              # Unsloth fine-tuning pipeline
-│   ├── datasets/                # Medical triage training data
+│   ├── finetune.py              # Unsloth fine-tuning
 │   └── adapters/                # Exported LoRA adapters
 │
-├── knowledge_base/              # Local RAG data (preloaded)
-│   ├── who_guidelines/          # WHO clinical protocols
-│   ├── drug_references/         # Essential medicines
-│   └── triage_protocols/        # Emergency triage standards
+├── knowledge_base/              # Local RAG data
 │
 ├── scripts/
 │   ├── download_model.py
@@ -587,59 +451,47 @@ P.R.I.S.M./
 
 ## 🎯 Hackathon Alignment
 
-### Main Track Criteria
+### Main Tracks
 
-| Criterion | P.R.I.S.M. Strategy |
+| Track | Fit |
 |---|---|
-| 🧪 **Innovation** | First transparent triage interface with progressive disclosure for edge LLMs |
-| 🌍 **Problem Relevance** | One user (CHW), one workflow (triage), one real-world impact (trustworthy medical AI in rural clinics) |
-| ⚙️ **Technical Execution** | Gemma 4 delimiter parsing + calibration pipeline + Cactus Compute + adaptive streaming |
-| 📐 **Clarity** | Accessible confidence badges, colored dots, plain-language labels — no jargon |
-| 🎨 **UI/UX** | Progressive disclosure prevents cognitive overload; Simple View works for low-literacy users |
+| 🛡 **Safety & Trust** | Core mission — making every AI response auditable, verifiable, and confidence-calibrated |
+| 🏥 **Health & Sciences** | Medical triage is a high-impact demo scenario for the transparency layer |
 
-### Main Track Categories
+### Special Technology Tracks
 
-| Category | Fit |
-|---|---|
-| 🛡 **Safety & Trust** | Core mission — every feature exists to make AI triage auditable, verifiable, and calibrated |
-| 🏥 **Health & Sciences** | Medical triage for underserved rural clinics with transparent AI reasoning |
-
-### Special Technology Tracks ($50,000)
-
-| Track | Prize | How P.R.I.S.M. Qualifies |
+| Track | Prize | How P.R.I.S.M. Uses It |
 |---|---|---|
-| 🌵 **Cactus** | $10,000 | Cactus Compute powers all on-device inference — zero-copy memory mapping on ARM, fully offline, logprobs streaming for confidence extraction |
-| ⚡ **Unsloth** | $10,000 | Medical triage and calibration LoRA adapters fine-tuned with QLoRA at ~10 GB VRAM, 60% memory reduction, 2× speedup |
-| 🦙 **llama.cpp** | $10,000 | Alternative backend for ultra-constrained hardware (RPi kiosks) via GGUF quantization with `--logprobs` |
-| 📱 **LiteRT** | $10,000 | Future mobile deployment path — E2B as LiteRT model with direct logit access on Android/iOS |
-| 🦙 **Ollama** | $10,000 | Developer-friendly local runtime for rapid prototyping and model switching |
+| 🌵 **Cactus** | $10,000 | Primary local inference engine with logprobs streaming |
+| ⚡ **Unsloth** | $10,000 | Confidence calibration + deliberation fine-tuning (QLoRA, ~10 GB, 2× faster) |
+| 🦙 **Ollama** | $10,000 | Alternative local runtime for development and model switching |
+| 🦙 **llama.cpp** | $10,000 | Lightweight alternative inference backend |
+| 📱 **LiteRT** | $10,000 | Future mobile deployment path |
 
 ---
 
 ## 🗺 Roadmap
 
 - [x] Architectural design and brief
-- [ ] Cactus Compute inference backend with logprobs streaming
+- [ ] Cactus Compute / Ollama inference backend with logprobs
 - [ ] `<|channel>thought\n` deliberation parser
 - [ ] `<|tool_call>` / `<|"|>` function-call parser
-- [ ] RAG verification pipeline (local medical knowledge base)
-- [ ] Confidence scoring engine (logprobs → badges/bars)
-- [ ] Next.js frontend — Simple View (default)
-- [ ] Next.js frontend — Expert View (toggle)
-- [ ] Confidence badges and progress bars (accessible design)
-- [ ] Traffic-Light source dots (inline)
+- [ ] RAG verification pipeline (local vector store)
+- [ ] Confidence scoring (logprobs → calibrated badges)
+- [ ] Next.js frontend — Default View
+- [ ] Next.js frontend — Expert View (expandable)
+- [ ] Confidence badges, bars, and plain-language labels
+- [ ] Source dots (🟢🟡🔴) with tap-to-inspect
 - [ ] Turn management (thought block stripping)
-- [ ] Unsloth fine-tuning (triage + calibration adapters)
-- [ ] Adaptive context sizing (4K edge → 128K workstation)
-- [ ] Graceful stream degradation on constrained hardware
-- [ ] Voice interaction (local language input/output)
-- [ ] Community evaluation and feedback
+- [ ] Unsloth fine-tuning (calibration + deliberation adapters)
+- [ ] Calibration evaluation (Brier + ECE)
+- [ ] Demo scenarios (medical, legal, science, general)
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Whether you're a clinician, developer, designer, or public health researcher — there's a place for you.
+Contributions welcome — developers, designers, researchers, domain experts.
 
 1. **Fork** the repository
 2. **Create** a feature branch (`git checkout -b feature/your-feature`)
@@ -658,18 +510,16 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ## 🙏 Acknowledgments
 
 - **[Google DeepMind](https://deepmind.google/)** — Gemma 4 model family
-- **[Cactus Compute](https://cactuscompute.com)** — On-device inference engine
+- **[Cactus Compute](https://cactuscompute.com)** — Local inference engine
 - **[Unsloth](https://github.com/unslothai/unsloth)** — Memory-efficient fine-tuning
-- **[Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon)** — For catalyzing responsible AI development
-- WHO, MedReason, and open clinical knowledge communities
+- **[Ollama](https://ollama.com)** — Local model serving
+- **[Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon)**
 
 ---
 
 <div align="center">
 
-*Built with conviction that AI transparency is not a feature — it is a fundamental right.*
-
-*One user. One workflow. One mission: trustworthy triage.*
+*Users don't need AI to be perfect. They need AI to show its work.*
 
 **P.R.I.S.M.** · Probabilistic Reasoning and Interpretability System for Models
 
