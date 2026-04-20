@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧊 P.R.I.S.M.
+# 🧊 P.R.I.S.M
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
 
@@ -290,7 +290,7 @@ A critical bottleneck in health & science applications is **Protected Health Inf
 
 > **The model comes to the data, not the data to the model.**
 
-By leveraging the Gemma 4 A4B MoE architecture and optimizing it via the **llama.cpp** engine, P.R.I.S.M. enables **flagship-tier 26B conversational capabilities directly on the user's clinical workstation**. 
+By leveraging the Gemma 4 A4B MoE architecture and optimizing it via the **llama.cpp** engine, P.R.I.S.M. enables **flagship-tier 26B conversational capabilities directly on the user's clinical workstation**.
 
 1. **MXFP4 Quantization:** **llama.cpp** uses native MXFP4 (Microscaling Formats 4-bit) precision—specifically the `gemma-4-26B-A4B-it-MXFP4_MOE.gguf` formulation—to execute the 26B Mixture-of-Experts layers within a 16GB VRAM footprint with near-uncompressed quality.
 2. **RotorQuant KV Cache:** Upgrades from legacy TurboQuant to **RotorQuant**, using sparse 3D Clifford rotors for 5.3x faster prefill speeds and 28% faster text decoding to prevent OOM errors on massive documents.
@@ -303,12 +303,15 @@ Because all inference happens entirely offline or safely on-premise, enterprise-
 To solve the clinical privacy requirement without sacrificing 26B generative power, P.R.I.S.M. relies on a completely offline, closed-loop stack:
 
 #### 1. 🦥 Unsloth (Model Preparation & Fine-Tuning)
+
 We use Unsloth to fine-tune the Gemma 4 26B A4B Mixture-of-Experts (MoE) model on specific clinical datasets using VRAM-efficient QLoRA. To achieve extreme memory efficiency, we export the final weights into the newly supported MXFP4 (Microscaling Formats 4-bit) quantization format. This technique—the same one powering OpenAI's GPT-OSS models—squeezes the 26B model securely into 16GB of VRAM with minimal quality loss.
 
 #### 2. 🦙 llama.cpp (The Local Hub Engine)
+
 The local clinical workstation runs llama.cpp as its bare-metal backend to execute the MXFP4-quantized 26B model. Crucially, we implement RotorQuant (the state-of-the-art successor to TurboQuant) to handle the Key-Value (KV) cache. By replacing heavy dense transforms with sparse 3D Clifford rotors, RotorQuant delivers a 5.3x faster prefill speed and 28% faster text decoding than TurboQuant, allowing the processing of massive patient records instantly without causing the machine to run out of memory.
 
 #### 3. 🦙 Ollama (Clinical API Integration)
+
 Ollama wraps the llama.cpp execution engine on the workstation, exposing a seamless, containerized, OpenAI-compatible REST API. This provides a standardized, zero-configuration endpoint for all mobile devices in the clinic to ping securely over the local Wi-Fi, completely eliminating the need for commercial cloud services.
 
 ---
@@ -406,7 +409,7 @@ model.push_to_hub("chandan989/prism-a4b-deliberation")
 
 The fine-tuned adapter is merged and exported using Unsloth, then optimized for local deployment:
 
-1. **Train** on a Kaggle notebook (free T4/P100 GPU) or local machine with Unsloth
+1. **Train** on a Kaggle notebook (free **2x T4 GPUs** or P100) or local machine with Unsloth
 2. **Export to MXFP4 GGUF:** Convert the merged model to the **MXFP4 GGUF** format using Unsloth's native llama.cpp bindings.
 3. **Optimize KV Cache:** Utilize **llama.cpp's native RotorQuant algorithm** (sparse 3D Clifford rotors) for 5.3x faster prefill and 28% faster decoding over legacy methods.
 4. **Deploy Locally:** Spin up the optimized model natively via **Ollama** on clinical desktops for robust, offline execution.
@@ -424,16 +427,19 @@ The fine-tuned adapter is merged and exported using Unsloth, then optimized for 
 The Glass Box MVP is optimized specifically for **clinical decision support and medical triage**:
 
 ### 🚑 Emergency Triage Assessment
+>
 > "Patient is a 54yo male presenting with sudden onset dyspnea and pleuritic chest pain. History of DVT. Vitals: HR 115, O2 91% on RA. What is the most likely diagnosis?"
 
 → Deliberation exposes the active ranking of Pulmonary Embolism vs. Acute Coronary Syndrome. Source dots verify the Well's Score criteria against clinical guidelines.
 
 ### 💊 Pharmacological Safety Check
+>
 > "Is it safe to prescribe Clarithromycin to a patient currently taking Atorvastatin and Amlodipine?"
 
 → Deliberation explicitly chains the CYP3A4 inhibition risks. Source dots tap into the FDA index to verify contraindications. High confidence badges triggered for known adverse combinations.
 
 ### 🔬 Experimental Treatment Intake
+>
 > "What are the latest clinical trial indicators for using GLP-1 agonists in patients with sleep apnea?"
 
 → Deliberation weighs recent 2024 trial data versus historical weight-loss indicators. Gray dots correctly flag claims where literature is too sparse to support definitive clinical use yet.
@@ -450,7 +456,17 @@ The Glass Box MVP is optimized specifically for **clinical decision support and 
 
 **Consumer-grade hardware is fully supported.**
 
-### Quick Start
+### 🌐 Live Evaluation Demo (For Kaggle Judges)
+
+To eliminate the friction of downloading a 16GB 26B parameter model natively for hackathon evaluation, we provide a **1-Click Kaggle Notebook** for judges to test the system seamlessly within their own hardware-accelerated environments:
+
+1. **1-Click Kaggle Notebook:** Provided directly within the Kaggle ecosystem, this notebook launches with **2 T4 GPUs** allocated, automatically pulls the MXFP4 quantized 26B model, and exposes a temporary URL to interact with the full Glass Box UI.
+   - 🔗 **[Run Kaggle Evaluation Notebook](#)** *(Replace with your Kaggle Notebook URL)*
+   - *Note: This guarantees you can evaluate the complete 26B Mixture-of-Experts reasoning without any local deployment.*
+2. **Screencast Video:** A comprehensive, unedited video demonstrating the complete local Ollama 26B execution from cold boot to medical triage completion.
+   - 📺 **[Watch YouTube Walkthrough](#)** *(Replace with your Video URL)*
+
+### Quick Start (Local Production)
 
 ```bash
 git clone https://github.com/chandan989/P.R.I.S.M..git
@@ -471,7 +487,7 @@ python server.py --port 8000
 cd frontend && npm install && npm run dev
 ```
 
-Open **http://localhost:3000** → ask anything → see the Glass Box locally in action.
+Open **<http://localhost:3000>** → ask anything → see the Glass Box locally in action.
 
 ### Local-First Architecture
 
@@ -551,7 +567,7 @@ P.R.I.S.M./
 
 ### Special Technology Tracks
 
-We built the Glass Box to directly showcase the power of the complete **Gemma Developer Ecosystem**, claiming all 5 Special Tracks by demonstrating how they stack to solve local execution for massive models.
+We built the Glass Box to directly showcase the power of the **Gemma Developer Ecosystem**, claiming 3 Special Technology Tracks by demonstrating how they stack to solve local execution for massive models.
 
 | Track | How P.R.I.S.M. Uses It |
 |---|---|
@@ -566,6 +582,7 @@ We built the Glass Box to directly showcase the power of the complete **Gemma De
 Rather than pitching an unfinished super-architecture, we've tightly scoped the Gemma 4 Good hackathon deliverable to a robust, **fully functional MVP** that runs live today.
 
 ### Hackathon MVP Deliverable (Completed)
+
 - [x] **Architecture Design:** Zero-Data-Egress Offline Pipeline established.
 - [x] **UI/UX Prototype:** Next.js Progressive Disclosure frontend actively running.
 - [x] **Unsloth Fine-Tuning:** Executed the MXFP4 structured deliberation QLoRA training over broad clinical datasets.
@@ -575,6 +592,7 @@ Rather than pitching an unfinished super-architecture, we've tightly scoped the 
 - [x] **Demonstration Scenarios:** Workflows built and tuned specifically for localized Clinical Decision Support.
 
 ### Future Roadmap
+
 - [ ] **Expanded Modality:** Integrating the Gemma 4 vision encoder to allow on-device optical character recognition for physical patient charts.
 - [ ] **Global Deployment:** Package the local llama.cpp stack into an automated `.exe`/`.dmg` installer for frictionless 1-click hospital desk installation.
 
