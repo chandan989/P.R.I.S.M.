@@ -10,7 +10,7 @@
 [![Gemma 4](https://img.shields.io/badge/Powered%20by-Gemma%204%20A4B%2026B-4285F4?logo=google&logoColor=white)](https://ai.google.dev/gemma)
 [![Hackathon](https://img.shields.io/badge/Kaggle-Gemma%204%20Good-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/competitions/gemma-4-good-hackathon)
 [![Tracks](https://img.shields.io/badge/Tracks-Safety%20%26%20Trust%20%7C%20Health%20%26%20Sciences-34A853)]()
-[![Tech](https://img.shields.io/badge/Tech-Cactus%20%7C%20LiteRT%20%7C%20llama.cpp%20%7C%20Ollama%20%7C%20Unsloth-FF6F00)]()
+[![Tech](https://img.shields.io/badge/Tech-llama.cpp%20%7C%20Ollama%20%7C%20Unsloth-FF6F00)]()
 
 ---
 
@@ -18,7 +18,7 @@
 
 **Zero-leak HIPAA compliant. Open a browser. Ask clinical questions. See the Glass Box.**
 
-Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **All 5 Tech Tracks**
+Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **All 3 Tech Tracks**
 
 [The Problem](#-the-problem) · [Three Pillars](#-the-three-pillars) · [Architecture](#-architecture--tech-stack) · [Demo](#-demo-scenarios) · [Getting Started](#-getting-started)
 
@@ -103,9 +103,9 @@ Standard chatbot interfaces hide the model's internal reasoning. By injecting th
 
 > **What it does:** Tells you *whether* each claim is backed by a real source.
 
-Factual claims in the response are verified against a **hybrid knowledge base** (curated clinical guidelines like PubMed/MIMIC for health, plus live web search for general queries) using **selective, asynchronous verification**.
+Factual claims in the response are verified against a **curated clinical knowledge base** (e.g., PubMed/MIMIC) using **selective, synchronous verification**. There is no live web search, guaranteeing a strictly air-gapped, zero-data-egress environment.
 
-**Crucially, this pipeline is non-blocking to prevent UI latency.** The AI's response streams to the user instantly. In the background, the claim extractor identifies factual assertions (dates, statistics, citations) and runs vector searches. The interface seamlessly "hydrates" with verification dots over the text as background checks complete, ensuring a frictionless user experience.
+**Crucially, this pipeline is synchronized to prevent dangerous medical UX.** While raw speed is often prioritized in generic chatbots, clinical settings demand safety over instant gratification. The AI's response rendering is deliberately blocked until the claim extractor identifies factual assertions and runs vector searches. The interface only presents the clinical text to the user once the verification dots (🟢🔴) are complete, ensuring no clinician ever acts organically on an unflagged hallucination.
 
 Each verified claim gets a simple colored dot inline:
 
@@ -134,7 +134,7 @@ Example output:
 
 Tapping any dot shows the source document snippet in a simple popup.
 
-> **Why selective verification?** A4B (26B) hallucinates far less than smaller models on factual claims. By verifying only extracted assertions asynchronously, we eradicate latency bottlenecks and stop the UI from feeling overly pessimistic when addressing out-of-scope truths.
+> **Why selective verification?** A4B (26B) hallucinates far less than smaller models on factual claims. By verifying only extracted assertions (rather than entire paragraphs), we minimize the necessary synchronous blocking time and stop the UI from feeling overly pessimistic when addressing out-of-scope truths.
 
 ---
 
@@ -265,12 +265,12 @@ Users who want the detail can get it. Users who just want the answer aren't over
 │                          ▲                                       │
 │                          │ Local API call                        │
 │                          ▼                                       │
-│   LOCAL WORKSTATION HOST (Ollama / llama.cpp / Cactus)           │
+│   LOCAL WORKSTATION HOST (Ollama / llama.cpp)                    │
 │   ┌──────────────────────────────────────────────────────┐       │
 │   │  Gemma 4 A4B 26B MoE (Unsloth fine-tuned)            │       │
 │   │  • MXFP4 Quantization + RotorQuant KV Compression    │       │
 │   │  • ~4B active — MoE local workstation efficiency     │       │
-│   │  • Hybrid Routed to LiteRT for Field Mobile Edge     │       │
+│   │  • Locally executed (Clinical Desktop)               │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
@@ -281,8 +281,6 @@ Users who want the detail can get it. Users who just want the answer aren't over
 | **Model** | Gemma 4 A4B (26B MoE, ~4B active) | 256K context, multimodal, MoE efficiency, best-in-class reasoning |
 | **Fine-Tuning** | Unsloth | Deliberation format adapter via QLoRA (~16 GB VRAM, 2× faster) + temperature scaling |
 | **Local Hosting** | Ollama / llama.cpp | Base 26B MoE tensor execution, RotorQuant KV cache compression, and containerization |
-| **Routing** | Cactus | Intelligent 7-layer hybrid routing balancing tasks between mobile edge and 26B workstation |
-| **Field Edge**| LiteRT | On-device native execution for field deployments under ultra-low memory constraints (1.5GB) |
 | **Backend** | Python (FastAPI) | Local thought block parsing, selective verification, logprob extraction |
 | **Frontend** | Next.js / React Native | Progressive disclosure UI rendering streaming response, deliberation, sources |
 
@@ -292,13 +290,11 @@ A critical bottleneck in health & science applications is **Protected Health Inf
 
 > **The model comes to the data, not the data to the model.**
 
-By leveraging the Gemma 4 A4B MoE architecture and optimizing it with **Cactus** and **llama.cpp**, P.R.I.S.M. enables **flagship-tier 26B conversational capabilities directly on the user's clinical workstation or mobile device**. 
+By leveraging the Gemma 4 A4B MoE architecture and optimizing it via the **llama.cpp** engine, P.R.I.S.M. enables **flagship-tier 26B conversational capabilities directly on the user's clinical workstation**. 
 
 1. **MXFP4 Quantization:** **llama.cpp** uses native MXFP4 (Microscaling Formats 4-bit) precision—specifically the `gemma-4-26B-A4B-it-MXFP4_MOE.gguf` formulation—to execute the 26B Mixture-of-Experts layers within a 16GB VRAM footprint with near-uncompressed quality.
 2. **RotorQuant KV Cache:** Upgrades from legacy TurboQuant to **RotorQuant**, using sparse 3D Clifford rotors for 5.3x faster prefill speeds and 28% faster text decoding to prevent OOM errors on massive documents.
 3. **Clinical Workstation:** The 26B MoE model operates on local host hardware (e.g., Apple Silicon or RTX 4070) via **Ollama**.
-4. **True Mobile Edge:** **LiteRT** executes the smaller E2B and E4B models for ultra-low latency field ops on local mobile under 1.5GB RAM.
-5. **Intelligent Routing:** **Cactus** provides an intelligent 7-layer hybrid routing engine that dynamically balances workloads between the LiteRT mobile models and the local 26B workstation.
 
 Because all inference happens entirely offline or safely on-premise, enterprise-grade compliance and PHI privacy are medically guaranteed.
 
@@ -417,7 +413,7 @@ The fine-tuned adapter is merged and exported using Unsloth, then optimized for 
 1. **Train** on a Kaggle notebook (free T4/P100 GPU) or local machine with Unsloth
 2. **Export to MXFP4 GGUF:** Convert the merged model to the **MXFP4 GGUF** format using Unsloth's native llama.cpp bindings.
 3. **Optimize KV Cache:** Utilize **llama.cpp's native RotorQuant algorithm** (sparse 3D Clifford rotors) for 5.3x faster prefill and 28% faster decoding over legacy methods.
-4. **Deploy via Hybrid Routing:** Use **Ollama** for the primary workstation host, managed by **Cactus** to intelligently zero-copy map and triage tasks to **LiteRT** for true mobile edge execution.
+4. **Deploy Locally:** Spin up the optimized model natively via **Ollama** on clinical desktops for robust, offline execution.
 
 | Metric | Without Unsloth | With Unsloth |
 |---|---|---|
@@ -454,7 +450,7 @@ The Glass Box MVP is optimized specifically for **clinical decision support and 
 
 - Python 3.10+
 - Node.js 18+
-- Ollama installed natively, or a LiteRT-compatible mobile environment.
+- Ollama installed natively on your workstation.
 
 **Consumer-grade hardware is fully supported.**
 
@@ -486,10 +482,8 @@ Open **http://localhost:3000** → ask anything → see the Glass Box locally in
 | Target Environment | Technology | Best For |
 |---|---|---|
 | **Clinical Desktop** | **Ollama / llama.cpp** | Seamless hospital intranet / robust workstation execution for 26B MoE models |
-| **Mobile Edge** | **LiteRT** | Native on-device mobile execution under 1.5GB RAM for field deployments and mobile practitioners |
-| **Hybrid Routing** | **Cactus Engine** | Intelligent 7-layer routing balancing concurrent tasks between mobile and local workstation |
 
-> P.R.I.S.M. is designed **local-first**. By leveraging extreme quantization (MXFP4 precision and llama.cpp's RotorQuant) and intelligent workload balancing via Cactus, we shatter the cloud dependency bottleneck. Data never egresses. Compliance is guaranteed.
+> P.R.I.S.M. is designed **local-first**. By leveraging extreme quantization (MXFP4 precision and llama.cpp's RotorQuant), we shatter the cloud dependency bottleneck. Data never egresses. Compliance is guaranteed.
 
 ---
 
@@ -568,8 +562,6 @@ We built the Glass Box to directly showcase the power of the complete **Gemma De
 | 🦥 **Unsloth** | VRAM-efficient fine-tuning (QLoRA) and dynamic parameter adaptation exported directly to MXFP4 GGUF formats. |
 | 🦙 **llama.cpp** | The core bare-metal backend for 26B MoE tensor execution using native MXFP4 precision and RotorQuant KV cache compression (sparse 3D Clifford rotors) on the local host. |
 | 🦙 **Ollama** | Seamless clinical workstation containerization and REST API integration. |
-| 🌵 **Cactus** | Zero-copy memory mapping and intelligent hybrid routing to determine when to triage tasks on mobile versus handing off to the local 26B workstation. |
-| 📱 **LiteRT** | On-device native querying and CPU/NPU inference for ultra-low latency field deployments on mobile devices. |
 
 ---
 
@@ -577,18 +569,18 @@ We built the Glass Box to directly showcase the power of the complete **Gemma De
 
 Rather than pitching an unfinished super-architecture, we've tightly scoped the Gemma 4 Good hackathon deliverable to a robust, **fully functional MVP** that runs live today.
 
-### Phase 1: Core Framework (Completed for Hackathon Demo)
-- [x] **Architecture Design:** Zero-Leak PII Masking Pipeline defined.
+### Hackathon MVP Deliverable (Completed)
+- [x] **Architecture Design:** Zero-Data-Egress Offline Pipeline established.
 - [x] **UI/UX Prototype:** Next.js Progressive Disclosure frontend actively running.
-- [x] **Live Verification Engine:** Instead of mocking verifications, the MVP executes live RAG vector searches against a lightweight FAISS index loaded with the **Merck Manual Professional Version** and **FDA Drug Labels**.
-- [x] **Latency-Optimized State:** Asynchronous UI hydration and optimistic rendering working for live verification dots.
-- [x] **Model Integration Strategy:** Gemma 4 thought block (`<|think|>`) parsing and logprob mapping explicitly extracted.
-- [x] **Demonstration Scenarios:** Workflows built and tuned specifically for Clinical Decision Support.
+- [x] **Unsloth Fine-Tuning:** Executed the MXFP4 structured deliberation QLoRA training over broad clinical datasets.
+- [x] **Live Verification Engine:** The MVP executes live local vector searches against a dense index loaded with **PubMed**, **MIMIC-IV**, and **FDA Drug Labels**.
+- [x] **Safety-Optimized State:** Synchronous UI holding and pessimistic rendering implemented to prevent premature clinical action on unverified text.
+- [x] **Model Integration Strategy:** Gemma 4 thought block (`<|think|>`) parsing and logprob mapping explicitly extracted via Ollama API.
+- [x] **Demonstration Scenarios:** Workflows built and tuned specifically for localized Clinical Decision Support.
 
-### Phase 2: Production Scaling (Post-Hackathon)
-- [ ] **Unsloth Fine-Tuning:** Execute the structured deliberation LoRA training over larger clinical datasets.
-- [ ] **Expanded Knowledge Base:** Transition the FAISS index to live-updating enterprise deployments of PubMed and MIMIC-IV.
-- [ ] **Global Deployment:** Package the local intercept proxy for seamless hospital intranet installation.
+### Future Roadmap
+- [ ] **Expanded Modality:** Integrating the Gemma 4 vision encoder to allow on-device optical character recognition for physical patient charts.
+- [ ] **Global Deployment:** Package the local llama.cpp stack into an automated `.exe`/`.dmg` installer for frictionless 1-click hospital desk installation.
 
 ---
 
