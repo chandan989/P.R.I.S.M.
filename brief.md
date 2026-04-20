@@ -6,7 +6,7 @@
 
 ## Introduction: The Paradigm Shift Toward Transparent Artificial Intelligence
 
-The deployment of large language models in high-stakes domains—such as medical triage and legal navigation—has been limited by their inherent opacity.
+The deployment of large language models in high-stakes medical environments has been limited by their inherent opacity.
 
 Traditional AI systems:
 
@@ -17,8 +17,8 @@ Traditional AI systems:
 This leads to:
 
 * Increased hallucination risk
-* Reduced user trust
-* Poor suitability for high-accountability environments
+* Reduced clinician trust
+* Poor suitability for high-accountability triage decisions
 
 ### The Glass Box Concept
 
@@ -28,8 +28,14 @@ The **Glass Box Interpreter** introduces a new paradigm:
 
 Instead of acting as a black-box oracle, it becomes:
 
-* A **diagnostic overlay**
-* A **collaborative analytical engine**
+* A **diagnostic overlay** for clinical reasoning
+* A **collaborative triage assistant** that shows its work
+
+### One User, One Workflow
+
+The Glass Box targets a **single, specific user**: the **community health worker (CHW)** conducting medical triage in a rural or resource-limited clinic, offline, with limited formal medical training.
+
+The **single workflow**: Patient walks in → CHW enters symptoms (voice or text) → Glass Box provides a triage recommendation → CHW sees *why* the AI reached that conclusion and *how confident* it is → CHW makes an informed decision.
 
 ---
 
@@ -44,40 +50,50 @@ The hackathon emphasizes:
 
 ### Glass Box Alignment
 
-| Criterion           | Requirement             | Glass Box Strategy               |
-| ------------------- | ----------------------- | -------------------------------- |
-| Innovation          | Novel approach          | Transparent diagnostic interface |
-| Problem Relevance   | Real-world impact       | Trust in high-stakes AI          |
-| Technical Execution | Functional prototype    | Tool invocation + calibration    |
-| Clarity             | Understandable solution | Visual metaphors for uncertainty |
-| UI/UX               | User-friendly           | Cognitive design patterns        |
+| Criterion           | Requirement             | Glass Box Strategy                          |
+| ------------------- | ----------------------- | ------------------------------------------- |
+| Innovation          | Novel approach          | Transparent diagnostic interface for triage |
+| Problem Relevance   | Real-world impact       | Trust in medical AI for underserved clinics |
+| Technical Execution | Functional prototype    | Tool invocation + calibration pipeline      |
+| Clarity             | Understandable solution | Accessible confidence indicators            |
+| UI/UX               | User-friendly           | Progressive disclosure — simple by default  |
 
 ---
 
 ## The Imperative for Gemma 4 Edge Architecture
 
-The system uses **Gemma 4 E2B and E4B models** because:
+The system uses **Gemma 4 E4B** as its primary model because:
 
 * Designed for **edge deployment**
-* Support **128K context**
-* Work **offline**
-* Provide **multilingual capability (140+ languages)**
+* Supports **128K context** (used adaptively: 8K on edge, full 128K on workstation)
+* Works **offline**
+* Provides **multilingual capability (140+ languages)**
 
 ### Key Advantage: Per-Layer Embeddings
 
-* Improves efficiency
-* Maintains high performance on low-resource hardware
+* Improves efficiency on constrained hardware
+* Maintains high performance on ARM CPUs
 
 ---
 
 ## Model Specifications
 
-| Model       | Parameters        | Context | Modalities         |
-| ----------- | ----------------- | ------- | ------------------ |
-| Gemma 4 E2B | 2.3B (5.1B total) | 128K    | Text, Image, Audio |
-| Gemma 4 E4B | 4.5B (8.0B total) | 128K    | Text, Image, Audio |
-| Gemma 4 26B | 25.2B (MoE)       | 256K    | Text, Image, Video |
-| Gemma 4 31B | 30.7B             | 256K    | Text, Image, Video |
+| Model       | Parameters        | Context | Modalities         | Role in P.R.I.S.M.       |
+| ----------- | ----------------- | ------- | ------------------ | ------------------------- |
+| Gemma 4 E2B | 2.3B (5.1B total) | 128K    | Text, Image, Audio | Ultra-constrained fallback |
+| Gemma 4 E4B | 4.5B (8.0B total) | 128K    | Text, Image, Audio | **Primary deployment**    |
+
+### Adaptive Context Window Strategy
+
+The 128K context window is a *maximum capability*, not a runtime constant. P.R.I.S.M. uses adaptive context sizing based on hardware:
+
+| Deployment Target    | Effective Context | Rationale                                     |
+| -------------------- | ----------------- | --------------------------------------------- |
+| Constrained edge     | 4K–8K             | Sufficient for triage questionnaire + history |
+| Laptop / clinic PC   | 16K–32K           | Handles multi-page lab reports                |
+| Workstation / server | Up to 128K        | Full medical record analysis                  |
+
+This prevents the latency and memory problems that would result from naively loading 128K context on a Raspberry Pi or low-RAM ARM device.
 
 ---
 
@@ -95,23 +111,42 @@ Expose **internal thought process** using:
 <|think|>
 ```
 
-### Features
+The UI intercepts `<|channel>thought\n` text blocks and presents them through **progressive disclosure** — not raw dumps.
 
-* Captures internal reasoning stream
-* Displays competing hypotheses
-* Shows probabilistic decision-making
+### Progressive Disclosure Design
 
-### Example
+The deliberation engine has **two modes**, controlled by a single toggle:
+
+1. **Simple View (Default):** The CHW sees only a clean triage recommendation with a confidence badge. No raw reasoning is shown. This is the view optimized for low-literacy, high-stress triage environments.
+
+2. **Expert View (On Demand):** A supervising clinician or trained CHW can toggle to see the full deliberation: competing hypotheses, probability weights, and discarded reasoning paths.
+
+### Example (Expert View)
 
 **Medical Scenario:**
 
-* Hypothesis A: Cardiac Ischemia
-* Hypothesis B: Pulmonary Embolism
+* Hypothesis A: Cardiac Ischemia — 72.3%
+* Hypothesis B: Pulmonary Embolism — 21.8%
+* Hypothesis C: Musculoskeletal — 5.9%
 
 Displayed as:
 
-* Visual branching
+* Visual branching diagram
 * Probability-weighted reasoning
+* Discarded hypotheses greyed out
+
+### Example (Simple View — Default)
+
+```
+┌─────────────────────────────────────────────────┐
+│  🔴 HIGH PRIORITY — Refer to physician urgently │
+│                                                  │
+│  Suspected: Cardiac event                       │
+│  Confidence: ████████░░ HIGH                    │
+│                                                  │
+│  [Why?]  ← tap to expand reasoning              │
+└─────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -123,7 +158,7 @@ AI hallucinates facts.
 
 ### Solution
 
-Claim-by-claim verification pipeline:
+Claim-by-claim verification pipeline using Gemma 4's native function calling (`<|tool_call>` and `<|"|>` delimiters):
 
 #### Step 1: Claim Extraction
 
@@ -135,8 +170,8 @@ Break responses into:
 
 Compare against:
 
-* Retrieved documents
-* Vector database
+* Local RAG vector database (medical literature, WHO guidelines)
+* On-device clinical knowledge base
 
 ---
 
@@ -148,6 +183,8 @@ Compare against:
 | 🟡 Yellow | Inference                 |
 | 🔴 Red    | Unverified / hallucinated |
 
+Claims are shown as **inline badges** next to each statement — not complex expandable panels. The CHW sees green/yellow/red dots; tapping a dot shows the source in a simple popup.
+
 ---
 
 ## Architectural Pillar III: Sliding Scale of Certainty
@@ -158,27 +195,47 @@ AI sounds confident even when uncertain.
 
 ### Solution
 
-Expose **token-level probability**
+Expose **token-level probability** via logprobs from the inference engine.
 
 ### Calibration Techniques
 
 * Brier Score minimization
 * Expected Calibration Error
-* Reinforcement learning
+* Reinforcement learning fine-tuning
 
 ---
 
-### Visual Representation
+### Accessible Visual Representation
 
-1. **Opacity**
+**Previous approach (REMOVED — accessibility anti-pattern):**
+~~Blur/fade text to show low confidence.~~ This was dropped because:
+* Blurred text is unreadable in harsh lighting (field clinics)
+* Faded text fails for users with visual impairments
+* Low-literacy users cannot interpret opacity as a confidence signal
 
-   * High confidence → solid text
-   * Low confidence → faded text
+**New approach — Explicit Confidence Indicators:**
 
-2. **Blur**
+1. **Confidence Badges**
 
-   * Low confidence → blurred text
-   * Requires user interaction
+   * ✅ `HIGH CONFIDENCE` — solid green border, bold text
+   * ⚠️ `MODERATE` — amber border, normal text
+   * ❓ `LOW CONFIDENCE — verify independently` — red border, warning icon
+
+2. **Progress Bar**
+
+   * Visual fill bar (████████░░) next to each claim
+   * Universally understandable regardless of literacy level
+
+3. **Plain-Language Labels**
+
+   * "The AI is confident about this"
+   * "The AI is somewhat sure — double-check"
+   * "The AI is guessing — do not rely on this alone"
+
+4. **Audio Feedback (Voice Mode)**
+
+   * Spoken confidence level alongside the recommendation
+   * Tone and pacing vary with confidence level
 
 ---
 
@@ -192,50 +249,55 @@ Expose **token-level probability**
 
 ### Techniques Used
 
-* Quantized LoRA
-* Attention layer tuning
+* Quantized LoRA (QLoRA) — 4-bit NF4 quantization
+* Attention layer tuning for confidence calibration
+* Gradient checkpointing
 
 ---
 
-## Application Domain A: Medical Triage
+## Application Domain: Medical Triage
 
-### Use Case
+> **One user. One workflow. One domain.**
 
-* Rural healthcare
-* Low literacy environments
+### Target User
+
+The **Community Health Worker (CHW)** — a frontline healthcare provider in a rural or resource-limited setting, often with limited formal medical training, working offline.
+
+### The Workflow
+
+```
+Patient arrives
+    ↓
+CHW enters symptoms (voice or text, local language)
+    ↓
+Glass Box processes via Gemma 4 E4B (on-device, offline)
+    ↓
+Simple View shows:
+  • Triage level (🔴 Urgent / 🟡 Semi-urgent / 🟢 Routine)
+  • Top suspected condition with confidence badge
+  • Source verification dots (green/yellow/red)
+    ↓
+CHW makes informed referral decision
+    ↓
+[Optional] Supervising clinician reviews Expert View remotely
+```
 
 ### Features
 
-* Image-based report understanding
-* Voice interaction
-* Transparent diagnosis reasoning
+* Image-based report understanding (X-rays, lab reports)
+* Voice interaction in local language (140+ languages)
+* Transparent diagnosis reasoning via progressive disclosure
+* Fully offline operation via Cactus Compute
 
-### Datasets Used
+### Datasets Used (Fine-Tuned via Unsloth)
 
-* MedReason
-* Syntech AI Triage 500
-* Medical Meadow Wikidoc
+* MedReason — Chain-of-thought medical reasoning
+* Syntech AI Triage 500 — Emergency department triage scenarios
+* Medical Meadow Wikidoc — Clinical knowledge base
 
----
+### Future Domain Expansion
 
-## Application Domain B: Legal Rights Navigation
-
-### Use Case
-
-* Marginalized communities
-* Offline legal assistance
-
-### Features
-
-* Privacy-first
-* Citation-backed legal info
-* Confidence-aware outputs
-
-### Datasets Used
-
-* Pile of Law
-* Caselaw Access Project
-* Legal Q&A datasets
+Legal rights navigation for marginalized communities is a natural future extension of the Glass Box framework, leveraging the same transparency pillars with domain-specific fine-tuning. This is explicitly out of scope for the hackathon submission to maintain focus.
 
 ---
 
@@ -243,23 +305,35 @@ Expose **token-level probability**
 
 ### Key Components
 
-1. **Local Inference Engine**
+1. **Cactus Compute Inference Engine**
 
-   * Runs on CPU/GPU
-   * Extracts probabilities
+   * Ultra-low latency on ARM CPUs
+   * Zero-copy memory mapping
+   * Logprobs streaming for confidence extraction
+   * Fully offline
 
 2. **Streaming Pipeline**
 
-   * Real-time response rendering
+   * Real-time response rendering via SSE/WebSocket
 
 ---
 
-### Parallel Data Streams
+### Adaptive Stream Strategy
 
-* Text Stream
-* Deliberation Stream
-* Probability Stream
-* Verification Stream
+Not all four data streams run simultaneously on all hardware. The system gracefully degrades:
+
+| Hardware Tier       | Active Streams                          | Latency Target |
+| ------------------- | --------------------------------------- | -------------- |
+| Constrained (RPi)   | Text + Certainty only                  | < 3s first token |
+| Laptop / clinic PC  | Text + Certainty + Verification        | < 1s first token |
+| Workstation / server | All four (+ Deliberation)              | < 500ms first token |
+
+On constrained hardware:
+* Deliberation stream is **disabled by default** (Expert View unavailable)
+* Source verification runs **asynchronously after response** (badges appear with slight delay)
+* Context window is capped at 4K–8K tokens
+
+This ensures the CHW always gets a fast, actionable triage recommendation — even on a Raspberry Pi.
 
 ---
 
@@ -270,16 +344,9 @@ The **Glass Box Interpreter** transforms AI from:
 > ❌ Black-box authority
 > ✅ Transparent collaborator
 
-It enables:
+For one specific user — the community health worker — it enables:
 
-* Trust
-* Explainability
-* Safe deployment in critical domains
-
----
-
-If you want, I can also:
-
-* Convert this into a **pitch deck (PPT)**
-* Compress it into a **1-page hackathon submission**
-* Or turn it into a **winning Kaggle submission writeup**
+* **Trust** through visible reasoning
+* **Safety** through source verification
+* **Accessibility** through progressive disclosure and explicit confidence indicators
+* **Reliability** through honest hardware adaptation
