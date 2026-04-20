@@ -11,15 +11,16 @@
 [![Hackathon](https://img.shields.io/badge/Kaggle-Gemma%204%20Good-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/competitions/gemma-4-good-hackathon)
 [![Tracks](https://img.shields.io/badge/Tracks-Safety%20%26%20Trust%20%7C%20Health%20%26%20Sciences-34A853)]()
 [![Unsloth](https://img.shields.io/badge/Fine--Tuned%20with-Unsloth-FF6F00)](https://github.com/unslothai/unsloth)
-[![Cactus](https://img.shields.io/badge/Inference-Cactus%20Compute-000000)](https://cactuscompute.com)
 
 ---
 
 **P.R.I.S.M.** is a transparency layer for Gemma 4 that transforms any AI conversation from a black-box interaction into an **auditable, verifiable, trust-calibrated experience**. Ask it anything — medicine, law, science, history — and the Glass Box shows you the model's reasoning, verifies its claims, and tells you how confident it actually is.
 
-Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **Unsloth** · **Cactus**
+**No GPU required. Open a browser. Ask anything. See the Glass Box.**
 
-[The Problem](#-the-problem) · [Three Pillars](#-the-three-pillars) · [Why A4B](#-why-gemma-4-a4b-26b) · [Architecture](#-architecture--tech-stack) · [Demo](#-demo-scenarios) · [Getting Started](#-getting-started)
+Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **Unsloth**
+
+[The Problem](#-the-problem) · [Three Pillars](#-the-three-pillars) · [Architecture](#-architecture--tech-stack) · [Demo](#-demo-scenarios) · [Getting Started](#-getting-started)
 
 </div>
 
@@ -102,7 +103,7 @@ Standard chatbot interfaces hide the model's internal reasoning. By injecting th
 
 > **What it does:** Tells you *whether* each claim is backed by a real source.
 
-Factual claims in the response are verified against a **local RAG vector database** using **selective verification**. Rather than checking every sentence (which was identified as a critical latency bottleneck), the system extracts only factual assertions — dates, statistics, citations, proper nouns, and specific claims — and verifies those.
+Factual claims in the response are verified against a **curated knowledge base** using **selective verification**. Rather than checking every sentence (which would add massive latency), the system extracts only factual assertions — dates, statistics, citations, proper nouns, and specific claims — and verifies those.
 
 We leverage Gemma 4's native function calling syntax — parsing `<|tool_call>` and `<|"|>` delimiters — to trigger background verification.
 
@@ -129,7 +130,7 @@ Example output:
 
 Tapping any dot shows the source document snippet in a simple popup.
 
-> **Why selective verification?** A4B (26B) hallucinates far less than E4B (4.5B) on factual claims. By verifying only extracted factual assertions, we cut RAG verification calls by ~70% while still catching the claims most likely to be wrong — eliminating the primary latency bottleneck from the original design.
+> **Why selective verification?** A4B (26B) hallucinates far less than smaller models on factual claims. By verifying only extracted factual assertions, we cut verification calls by ~70% while still catching the claims most likely to be wrong.
 
 ---
 
@@ -137,7 +138,7 @@ Tapping any dot shows the source document snippet in a simple popup.
 
 > **What it does:** Shows you *how confident* the AI actually is.
 
-We stream **token-level logprobs** from the inference engine and translate them into **explicit, accessible confidence signals**:
+We extract **token-level logprobs** from the model and translate them into **explicit, accessible confidence signals**:
 
 | Indicator | Example | Why It Works |
 |---|---|---|
@@ -156,23 +157,19 @@ We explicitly chose **not** to blur or fade text to show uncertainty:
 
 Explicit badges and labels are clearer, more accessible, and more actionable.
 
-#### Calibration (Simplified with A4B)
+#### Calibration
 
-Raw logprobs from A4B are **naturally better calibrated** than smaller models, thanks to the 26B parameter knowledge base. Instead of the original heavy-handed approach (full Brier Score minimization training), we use a streamlined strategy:
+A4B's 26B parameter space produces **naturally better-calibrated logprobs** than smaller models. We apply lightweight post-processing:
 
-1. **Temperature scaling** — A single learned scalar applied post-hoc to logits. Simple, proven, and effective
+1. **Temperature scaling** — A single learned scalar applied post-hoc to logits, trained via Unsloth
 2. **Validation** — Brier Score and ECE measured on a held-out eval set to confirm calibration quality
-3. **Deliberation format adapter** — Small Unsloth LoRA to teach structured hypothesis enumeration (keeps the Unsloth track alive)
-
-This achieves comparable calibration with a fraction of the training complexity.
+3. **Deliberation format adapter** — Small Unsloth LoRA to teach structured hypothesis enumeration
 
 ---
 
 ## 🧠 Why Gemma 4 A4B (26B)
 
-The original design used Gemma 4 E4B (4.5B effective). After identifying three critical technical hurdles — latency bottlenecks, context management fragility, and calibration difficulty — we upgraded to **Gemma 4 A4B**.
-
-### A4B: The Best of Both Worlds
+### A4B: Knowledge of a Large Model, Cost of a Small One
 
 A4B is a **Mixture of Experts (MoE)** model:
 
@@ -184,26 +181,17 @@ A4B is a **Mixture of Experts (MoE)** model:
 | Architecture | MoE with selective expert routing |
 | License | Apache 2.0 |
 
-**The key insight:** A4B delivers **26B of learned knowledge** with the **inference cost of a ~4B model**. The MoE routing activates only the relevant expert subnetworks per token, keeping compute and memory requirements on par with E4B while dramatically improving output quality.
+**The key insight:** A4B delivers **26B of learned knowledge** with the **inference cost of a ~4B model**. The MoE routing activates only the relevant expert subnetworks per token, making it economical to host while delivering flagship-tier reasoning quality.
 
-### What This Fixes
+### Why A4B is the Right Choice for Transparency
 
-| Original Problem (E4B) | How A4B Solves It |
+| Requirement | How A4B Delivers |
 |---|---|
-| **Severe latency:** RAG verification on every sentence + small model = massive user-facing delay | A4B produces higher-quality output → selective verification only → ~70% fewer RAG calls |
-| **Flawed context management:** Stripping thought blocks caused model to "forget" its own reasoning | A4B's 256K context + stronger reasoning → keep summarized thought history → coherent multi-turn |
-| **Calibration difficulty:** E4B logprobs wildly uncalibrated across domains → needed heavy fine-tuning | A4B logprobs naturally better calibrated → temperature scaling sufficient → simpler training |
-| **Pipeline complexity:** 5-stage pipeline compensating for weak model | Stronger model → simpler pipeline → fewer failure points |
-
-### Hardware Requirements
-
-| Config | VRAM | Suitable For |
-|---|---|---|
-| A4B Q4 (4-bit quantized) | ~16 GB | RTX 4090, Apple M2 Pro/Max (unified memory) |
-| A4B Q8 (8-bit quantized) | ~28 GB | Apple M3 Max, dual GPU setups |
-| A4B FP16 (full precision) | ~52 GB | Cloud / multi-GPU environments |
-
-> The MoE architecture means that despite 26B total params, active memory during inference is dominated by the ~4B active experts — making quantized A4B surprisingly lightweight and still viable for local execution.
+| **High-quality reasoning traces** | 26B knowledge produces coherent, structured deliberation — smaller models produce noisy, unreliable thought chains |
+| **Reliable factual grounding** | Lower baseline hallucination rate → selective verification catches real problems, not noise |
+| **Calibrated confidence** | Larger models produce naturally better-calibrated logprobs → lightweight post-processing sufficient |
+| **Long multi-turn conversations** | 256K context window → full thought history retained across turns, no lossy summarization |
+| **Cost-efficient hosting** | MoE architecture → only ~4B params active per token → affordable to serve |
 
 ---
 
@@ -240,45 +228,46 @@ Users who want the detail can get it. Users who just want the answer aren't over
 
 ## 🛠 Architecture & Tech Stack
 
-Runs **locally on your machine** — no cloud APIs, no data leaving your device.
+**Cloud-hosted model, accessible from any device — no GPU required.**
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                       P.R.I.S.M. ARCHITECTURE                    │
 ├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│   FRONTEND (Next.js + Tailwind CSS)                              │
+│   FRONTEND (Next.js)                                             │
 │   ┌──────────────────────────────────────────────────────┐       │
 │   │  Default View:  Answer + badges + source dots        │       │
 │   │  Expert View:   Deliberation tree + calibration      │       │
 │   │                                                      │       │
-│   │  Multiplexed Streams:                                │       │
-│   │  • Text ─────────────► Response rendering            │       │
-│   │  • Thought blocks ───► Deliberation panel            │       │
-│   │  • Verification ─────► Source dots (🟢🟡🔴)          │       │
-│   │  • Logprobs ─────────► Confidence badges/bars        │       │
+│   │  Streams:                                            │       │
+│   │  • Response text ────► Answer rendering              │       │
+│   │  • Thought blocks ──► Deliberation panel             │       │
+│   │  • Verification ────► Source dots (🟢🟡🔴)          │       │
+│   │  • Confidence ──────► Badges / bars                  │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                          ▲                                       │
-│                          │ SSE / WebSocket                       │
+│                          │ API                                   │
 │                          ▼                                       │
-│   BACKEND (Python)                                               │
+│   BACKEND (Python — FastAPI)                                     │
 │   ┌──────────────────────────────────────────────────────┐       │
-│   │  Streaming Server                                    │       │
-│   │  ├── <|channel>thought\n parser → deliberation       │       │
-│   │  ├── Claim extractor → selective RAG verification    │       │
-│   │  ├── Logprobs extractor → temperature-scaled scores  │       │
-│   │  └── RAG pipeline (local vector store)               │       │
+│   │  API Server                                          │       │
+│   │  ├── Gemma 4 A4B API client (streaming)             │       │
+│   │  ├── Thought block parser → deliberation            │       │
+│   │  ├── Claim extractor → selective verification       │       │
+│   │  ├── Logprobs extractor → confidence scores         │       │
+│   │  └── Knowledge base (vector search)                 │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                          ▲                                       │
-│                          │ Local inference                       │
+│                          │ API call                              │
 │                          ▼                                       │
-│   INFERENCE (Cactus Compute / Ollama)                            │
+│   MODEL HOST (Kaggle / Vertex AI / HF Inference Endpoints)      │
 │   ┌──────────────────────────────────────────────────────┐       │
-│   │  Gemma 4 A4B 26B MoE (Unsloth format-tuned)         │       │
+│   │  Gemma 4 A4B 26B MoE (Unsloth fine-tuned)           │       │
 │   │  • 26B total / ~4B active — MoE efficiency           │       │
 │   │  • 256K context window                               │       │
-│   │  • Logprobs streaming for certainty extraction       │       │
-│   │  • Runs locally — no cloud                           │       │
+│   │  • Logprobs returned via API                         │       │
+│   │  • Hosted — accessible from any device               │       │
 │   └──────────────────────────────────────────────────────┘       │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
@@ -286,11 +275,25 @@ Runs **locally on your machine** — no cloud APIs, no data leaving your device.
 
 | Layer | Technology | Why |
 |---|---|---|
-| **Model** | Gemma 4 A4B (26B MoE, ~4B active) | 256K context, multimodal, MoE efficiency — 26B knowledge with ~4B inference cost |
+| **Model** | Gemma 4 A4B (26B MoE, ~4B active) | 256K context, multimodal, MoE efficiency, best-in-class reasoning |
 | **Fine-Tuning** | Unsloth | Deliberation format adapter via QLoRA (~16 GB VRAM, 2× faster) + temperature scaling |
-| **Inference** | Cactus Compute / Ollama | Local execution, logprobs access, offline-capable |
-| **Backend** | Python | Gemma 4 delimiter parsing, selective RAG verification, stream multiplexing |
-| **Frontend** | Next.js + Tailwind CSS | Progressive disclosure UI rendering four multiplexed streams |
+| **Model Hosting** | Kaggle Notebooks / Vertex AI / HF Inference Endpoints | No end-user GPU required — model runs in the cloud |
+| **Backend** | Python (FastAPI) | Thought block parsing, selective verification, logprob extraction, knowledge base queries |
+| **Frontend** | Next.js | Progressive disclosure UI rendering streaming response, deliberation, sources, and confidence |
+
+### Why We Moved Away From Local Inference
+
+The original P.R.I.S.M. design required the model to run entirely on the user's local machine. During development, we identified **five critical bottlenecks** that made local-only execution untenable for a project focused on broad societal impact:
+
+| Bottleneck | Impact | How Cloud Hosting Solves It |
+|---|---|---|
+| **Hardware exclusivity** | Required $1,500+ GPU (RTX 4090 / M2 Pro) — excludes most users | Any device with a browser |
+| **Pipeline fragility** | Local inference engine + custom delimiter parsing + SSE multiplexing = many failure points | Standard API calls, model host handles inference reliability |
+| **Lossy context summarization** | Local VRAM limits forced aggressive thought-block summarization, degrading coherence over turns | 256K context via API — full thought history retained |
+| **Brittle calibration** | Temperature scaling on local logprobs failed on out-of-distribution queries | Cloud-hosted model with consistent inference environment + validated calibration |
+| **Demo reliability** | Multi-stage local pipeline susceptible to race conditions and streaming desyncs | Single API endpoint — dramatically simpler demo path |
+
+> **A "transparent AI for everyone" that requires a $1,500 GPU isn't for everyone.** Moving to cloud-hosted inference makes P.R.I.S.M. accessible to any user with a browser — which is the entire point.
 
 ---
 
@@ -308,25 +311,22 @@ For every response:
 </system>
 ```
 
-### Turn Management (Revised)
+### Turn Management
 
-The original design stripped all `<|channel>thought\n` blocks from context history between turns. While this prevented cyclical hallucination loops, it caused the model to **"forget" its own reasoning** — crippling multi-turn coherence.
-
-**New approach with A4B's 256K context:**
+With A4B's 256K context window accessed via API, we no longer need aggressive thought-block stripping or lossy summarization. The full conversation history — including condensed reasoning summaries — fits comfortably within the context window.
 
 ```python
-def prepare_context(history):
-    """Summarize (not strip) thought blocks from prior turns.
+def prepare_context(history: list[dict]) -> list[dict]:
+    """Prepare conversation history for the next turn.
     
-    A4B's 256K context and stronger reasoning make it robust
-    enough to handle condensed versions of its prior thoughts
-    without entering hallucination loops.
+    With 256K context via API, we retain condensed reasoning
+    summaries from prior turns. No aggressive stripping needed.
     """
     prepared = []
     for turn in history:
         thought_blocks = extract_thought_blocks(turn)
         if thought_blocks:
-            # Keep a one-line summary of prior reasoning, not the full block
+            # Keep a concise summary of prior reasoning
             summary = summarize_reasoning(thought_blocks)
             cleaned = strip_raw_thought_blocks(turn)
             prepared.append(f"{cleaned}\n[Prior reasoning: {summary}]")
@@ -335,14 +335,14 @@ def prepare_context(history):
     return prepared
 ```
 
-This preserves reasoning continuity across turns while keeping context lean. The model retains awareness of *what* it reasoned and *why*, without the full verbose thought blocks that could trigger cyclical loops.
+This preserves reasoning continuity across turns. The model retains awareness of *what* it reasoned and *why*, enabling coherent multi-turn conversations even in complex domains like medical triage or legal analysis.
 
 ### Delimiter Handling
 
 | Delimiter | Purpose | Glass Box Handling |
 |---|---|---|
 | `<\|channel>thought\n` | Internal reasoning | Routed to deliberation panel (Expert View) |
-| `<\|tool_call>` | Function call invocation | Triggers selective RAG verification pipeline |
+| `<\|tool_call>` | Function call invocation | Triggers selective verification pipeline |
 | `<\|"\|>` | Tool call argument delimiters | Parsed for claim text to verify |
 
 ---
@@ -353,20 +353,14 @@ This preserves reasoning continuity across turns while keeping context lean. The
 
 P.R.I.S.M. fine-tunes Gemma 4 A4B for **structured deliberation output** and **confidence calibration** — teaching the model to produce well-formatted reasoning traces with calibrated probability scores.
 
-### Adapter Strategy (Simplified)
+### What We Fine-Tune
 
 | Adapter | Purpose |
 |---|---|
-| **Deliberation Format Adapter** | Structured `<\|think\|>` output with enumerated hypotheses and probability estimates |
-| **Temperature Scaling Layer** | Post-hoc logprob calibration — single learned scalar validated against Brier/ECE |
+| **Deliberation Format Adapter** | Structured `<\|think\|>` output with enumerated hypotheses, probability estimates, and supporting/weakening evidence |
+| **Temperature Scaling Layer** | Post-hoc logprob calibration — single learned scalar validated against Brier/ECE metrics |
 
-> **Why simplified?** The original plan called for a full calibration adapter trained with Brier Score minimization loss across all domains. A4B's 26B parameter space produces naturally better-calibrated logprobs than E4B, meaning a simple temperature scaling layer achieves comparable calibration with a fraction of the training complexity. This avoids the risk of miscalibration on out-of-distribution topics that plagued the original design.
-
-| Metric | Without Unsloth | With Unsloth |
-|---|---|---|
-| A4B fine-tune VRAM | ~48 GB | **~16 GB** |
-| Training speed | Baseline | **2× faster** |
-| Memory reduction | — | **~67%** |
+### Training Pipeline
 
 ```python
 from unsloth import FastModel
@@ -390,8 +384,26 @@ trainer = SFTTrainer(
     max_seq_length=8192,
 )
 trainer.train()
+
+# Export adapter to HuggingFace Hub
 model.save_pretrained_merged("prism-a4b-deliberation", tokenizer)
+model.push_to_hub("chandan989/prism-a4b-deliberation")
 ```
+
+### Deployment After Fine-Tuning
+
+The fine-tuned adapter is uploaded to HuggingFace Hub and loaded at inference time on the cloud host:
+
+1. **Train** on a Kaggle notebook (free T4/P100 GPU) or local machine with Unsloth
+2. **Upload** the LoRA adapter to HuggingFace Hub
+3. **Load** the adapter on the model host (Kaggle Notebook / Vertex AI / HF Inference Endpoints)
+4. **Serve** via API — the backend calls this endpoint, users never need a GPU
+
+| Metric | Without Unsloth | With Unsloth |
+|---|---|---|
+| A4B fine-tune VRAM | ~48 GB | **~16 GB** |
+| Training speed | Baseline | **2× faster** |
+| Memory reduction | — | **~67%** |
 
 ---
 
@@ -425,44 +437,42 @@ The Glass Box works with **any query, any domain**. The transparency pillars are
 
 ### Prerequisites
 
-- **macOS** (Apple Silicon M2 Pro+ recommended) or **Linux** with 16GB+ VRAM GPU
 - Python 3.10+
 - Node.js 18+
+- A HuggingFace account (for model hosting) or Kaggle account
 
-### Option A: Cactus Compute
+**No GPU required on your machine.** The model runs in the cloud.
 
-```bash
-git clone https://github.com/chandan989/P.R.I.S.M..git
-cd P.R.I.S.M.
-
-# Install Cactus Compute + download model
-brew install cactus-compute/cactus/cactus
-cactus download chandan989/gemma-4-a4b-calibrated
-
-# Start backend
-python backend/server.py --model gemma-4-a4b-calibrated --port 8000
-
-# Start frontend
-cd frontend && npm install && npm run dev
-```
-
-### Option B: Ollama
+### Quick Start
 
 ```bash
 git clone https://github.com/chandan989/P.R.I.S.M..git
 cd P.R.I.S.M.
 
-# Pull model via Ollama
-ollama pull gemma4:a4b
+# Set up backend
+cd backend
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your model endpoint URL and API key
 
-# Start backend
-python backend/server.py --runtime ollama --port 8000
+python server.py --port 8000
 
-# Start frontend
+# In a new terminal — set up frontend
 cd frontend && npm install && npm run dev
 ```
 
 Open **http://localhost:3000** → ask anything → see the Glass Box in action.
+
+### Model Hosting Options
+
+| Option | Cost | Best For |
+|---|---|---|
+| **Kaggle Notebook** | Free (30h/week GPU) | Hackathon demo, development |
+| **HuggingFace Inference Endpoints** | ~$1.30/hr (A10G) | Production-like deployment |
+| **Vertex AI** | Pay-per-use | Scalable production |
+| **Self-hosted** (optional) | Your GPU | If you *want* to run locally |
+
+> P.R.I.S.M. is designed API-first. The backend talks to a model endpoint — it doesn't care whether that endpoint is Kaggle, Vertex, HuggingFace, or your own machine running Ollama. Swap the endpoint URL in `.env` and everything works.
 
 ---
 
@@ -470,19 +480,21 @@ Open **http://localhost:3000** → ask anything → see the Glass Box in action.
 
 ```
 P.R.I.S.M./
-├── brief.md                     # Architectural blueprint
 ├── README.md                    # You are here
 ├── LICENSE                      # MIT License
 │
 ├── backend/
-│   ├── server.py                # Python streaming server
+│   ├── server.py                # FastAPI server
+│   ├── config.py                # Model endpoint config (.env)
+│   ├── client/
+│   │   └── gemma_client.py      # Gemma 4 API client (streaming + logprobs)
 │   ├── parsers/
-│   │   ├── deliberation.py      # <|channel>thought\n parser
+│   │   ├── deliberation.py      # Thought block parser
 │   │   ├── claim_extractor.py   # Factual claim extraction for selective verification
-│   │   └── logprobs.py          # Logprobs → temperature-scaled confidence scores
+│   │   └── logprobs.py          # Logprobs → confidence scores
 │   ├── grounding/
-│   │   ├── rag_pipeline.py      # Selective claim verification via RAG
-│   │   └── vector_store.py      # Local knowledge base
+│   │   ├── verifier.py          # Selective claim verification
+│   │   └── knowledge_base.py    # Vector search over curated sources
 │   └── calibration/
 │       ├── temperature.py       # Temperature scaling layer
 │       ├── brier.py             # Brier Score (validation)
@@ -490,7 +502,6 @@ P.R.I.S.M./
 │
 ├── frontend/
 │   ├── package.json
-│   ├── tailwind.config.js
 │   ├── app/
 │   │   ├── page.tsx             # Main Glass Box interface
 │   │   ├── layout.tsx           # App layout
@@ -500,18 +511,21 @@ P.R.I.S.M./
 │   │       ├── ConfidenceBadge.tsx    # ✅ ⚠️ ❓ indicators
 │   │       ├── ConfidenceBar.tsx      # Progress bar
 │   │       ├── SourceDot.tsx          # 🟢🟡🔴 inline badges
-│   │       └── StreamMultiplexer.tsx  # Four-stream handler
+│   │       └── StreamHandler.tsx      # API stream handler
 │   └── public/
 │
 ├── training/
 │   ├── finetune.py              # Unsloth fine-tuning (deliberation adapter)
 │   ├── temperature_scaling.py   # Post-hoc calibration training
+│   ├── eval/
+│   │   ├── brier_eval.py        # Brier Score evaluation
+│   │   └── ece_eval.py          # ECE evaluation
 │   └── adapters/                # Exported LoRA adapters
 │
-├── knowledge_base/              # Local RAG data
+├── knowledge_base/              # Curated source documents for verification
 │
 ├── scripts/
-│   ├── download_model.py
+│   ├── deploy_model.py          # Upload fine-tuned model to hosting
 │   └── evaluate.py              # Calibration evaluation (Brier + ECE)
 │
 └── tests/
@@ -528,35 +542,44 @@ P.R.I.S.M./
 | 🛡 **Safety & Trust** | Core mission — making every AI response auditable, verifiable, and confidence-calibrated |
 | 🏥 **Health & Sciences** | Medical triage is a high-impact demo scenario for the transparency layer |
 
-### Special Technology Tracks
+### Special Technology Track
 
 | Track | Prize | How P.R.I.S.M. Uses It |
 |---|---|---|
-| 🌵 **Cactus** | $10,000 | Primary local inference engine with logprobs streaming for A4B |
-| ⚡ **Unsloth** | $10,000 | Deliberation format fine-tuning + temperature scaling calibration (QLoRA, ~16 GB, 2× faster) |
-| 🦙 **Ollama** | $10,000 | Alternative local runtime for development and model switching |
-| 🦙 **llama.cpp** | $10,000 | Lightweight alternative inference backend (powers Cactus and Ollama under the hood) |
-| 📱 **LiteRT** | $10,000 | Future mobile deployment path — A4B's MoE efficiency makes this viable |
+| ⚡ **Unsloth** | $10,000 | Deliberation format fine-tuning + temperature scaling calibration (QLoRA, ~16 GB, 2× faster). Adapter uploaded to HuggingFace and loaded at inference time. |
+
+### Why We Don't Claim Other Special Tracks
+
+Transparency about our technology choices:
+
+- **Cactus / Ollama / llama.cpp** — These are local inference engines. P.R.I.S.M. is designed API-first for maximum accessibility. Users *can* self-host with any of these tools by pointing the backend at a local endpoint, but local inference is not our primary architecture and we don't want to claim a track we didn't build around.
+- **LiteRT** — Mobile deployment is a roadmap item, not a hackathon deliverable.
+
+> We'd rather be honest about three tracks and deliver a polished, accessible product than claim five tracks and ship a fragile demo that only works on $1,500 hardware.
 
 ---
 
 ## 🗺 Roadmap
 
 - [x] Architectural design and brief
-- [x] Model selection: Gemma 4 A4B (26B MoE) — resolving latency/calibration/context concerns
-- [ ] Cactus Compute / Ollama inference backend with logprobs
-- [ ] `<|channel>thought\n` deliberation parser
+- [x] Model selection: Gemma 4 A4B (26B MoE)
+- [x] Architecture pivot: local → cloud-hosted (API-first)
+- [ ] Unsloth fine-tuning — deliberation format adapter
+- [ ] Temperature scaling calibration + Brier/ECE validation
+- [ ] Upload fine-tuned adapter to HuggingFace Hub
+- [ ] Deploy model to Kaggle Notebook / hosting endpoint
+- [ ] FastAPI backend — Gemma 4 API client (streaming + logprobs)
+- [ ] Thought block parser (deliberation extraction)
 - [ ] Claim extractor (selective factual assertion extraction)
-- [ ] Selective RAG verification pipeline (local vector store)
-- [ ] Confidence scoring (logprobs → temperature-scaled badges)
+- [ ] Selective verification pipeline (knowledge base)
+- [ ] Confidence scoring (logprobs → calibrated badges)
 - [ ] Next.js frontend — Default View
 - [ ] Next.js frontend — Expert View (expandable)
 - [ ] Confidence badges, bars, and plain-language labels
 - [ ] Source dots (🟢🟡🔴) with tap-to-inspect
-- [ ] Turn management (thought block summarization, not stripping)
-- [ ] Unsloth fine-tuning (deliberation format adapter)
-- [ ] Temperature scaling calibration + Brier/ECE validation
+- [ ] Turn management (thought block summarization)
 - [ ] Demo scenarios (medical, legal, science, general)
+- [ ] Public deployment — shareable demo URL
 
 ---
 
@@ -581,9 +604,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ## 🙏 Acknowledgments
 
 - **[Google DeepMind](https://deepmind.google/)** — Gemma 4 model family
-- **[Cactus Compute](https://cactuscompute.com)** — Local inference engine
 - **[Unsloth](https://github.com/unslothai/unsloth)** — Memory-efficient fine-tuning
-- **[Ollama](https://ollama.com)** — Local model serving
 - **[Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon)**
 
 ---
