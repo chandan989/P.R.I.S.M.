@@ -1,3 +1,5 @@
+<div align="center">
+
 <img src="thumbnail.png" alt="Logo" height="300"/>
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
