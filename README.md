@@ -1,7 +1,3 @@
-<div align="center">
-
-# P.R.I.S.M
-
 <img src="thumbnail.png" alt="Logo" height="300"/>
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
