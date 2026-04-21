@@ -2,7 +2,7 @@
 
 # P.R.I.S.M
 
-<img src="Logo.svg" alt="Logo" width="100"/>
+<img src="/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./thumbnail.png" alt="Logo" height="300"/>
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
 
