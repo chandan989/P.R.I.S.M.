@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🧊 P.R.I.S.M
+# P.R.I.S.M
+
+<img src="logo.svg" alt="Agentia Protocol Logo" width="100"/>
 
 ### **Probabilistic Reasoning and Interpretability System for Models**
 
