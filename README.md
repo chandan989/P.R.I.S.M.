@@ -6,6 +6,8 @@
 
 *The Glass Box Interpreter — see how Gemma 4 thinks, whether it's right, and how sure it is.*
 
+**Target Use Case: Polypharmacy Contraindication Auditing** — reviewing complex multi-drug regimens for fatal interactions with full reasoning transparency.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Gemma 4](https://img.shields.io/badge/Powered%20by-Gemma%204%20A4B%2026B-4285F4?logo=google&logoColor=white)](https://ai.google.dev/gemma)
 [![Hackathon](https://img.shields.io/badge/Kaggle-Gemma%204%20Good-20BEFF?logo=kaggle&logoColor=white)](https://www.kaggle.com/competitions/gemma-4-good-hackathon)
@@ -14,9 +16,11 @@
 
 ---
 
-**P.R.I.S.M.** is a transparency layer for Gemma 4 that transforms high-stakes clinical AI queries from black-box interactions into **auditable, verifiable, and trust-calibrated clinical decision support**. Designed explicitly for medical triage and clinical professionals, the Glass Box shows the model's reasoning, verifies its diagnostic claims against medical guidelines, and exposes its authentic confidence.
+**P.R.I.S.M.** is a transparency layer for Gemma 4 that transforms high-stakes clinical AI queries from black-box interactions into **auditable, verifiable, and trust-calibrated clinical decision support**. Designed explicitly for **polypharmacy contraindication auditing** — where a clinician reviews a patient's complex 10–15 drug regimen for fatal interactions — the Glass Box shows the model's reasoning, verifies its pharmacological claims against drug interaction databases, and exposes its authentic confidence.
 
-**Zero-leak HIPAA compliant. Open a browser. Ask clinical questions. See the Glass Box.**
+> **Why Polypharmacy Auditing?** This use case neutralizes the latency critique entirely. If the llama.cpp engine takes 45 seconds to generate the deliberation trace and the CPU takes 10 seconds to verify claims, a physician auditing a polypharmacy case *won't care*. The "UI whiplash" that plagues real-time triage assistants disappears because the user is performing **deliberate, methodical analysis** — not waiting for split-second answers to keep someone alive.
+
+**Zero-leak HIPAA compliant. Open a browser. Audit drug regimens. See the Glass Box.**
 
 Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma-4-good-hackathon) · Tracks: **Safety & Trust** · **Health & Sciences** · **All 3 Tech Tracks**
 
@@ -33,6 +37,8 @@ Built for the [Gemma 4 Good Hackathon](https://www.kaggle.com/competitions/gemma
   - [Deliberation Engine](#pillar-i--latent-deliberation-engine)
   - [Source Grounding](#pillar-ii--source-grounding-visualizer)
   - [Certainty Indicators](#pillar-iii--certainty-indicators)
+- [Why Polypharmacy Auditing](#-why-polypharmacy-contraindication-auditing)
+- [Knowledge Base Update Protocol](#-knowledge-base-update-protocol)
 - [Why Gemma 4 A4B (26B)](#-why-gemma-4-a4b-26b)
 - [Progressive Disclosure](#-progressive-disclosure)
 - [Architecture & Tech Stack](#-architecture--tech-stack)
@@ -103,9 +109,11 @@ Standard chatbot interfaces hide the model's internal reasoning. By injecting th
 
 > **What it does:** Tells you *whether* each claim is backed by a real source.
 
-Factual claims in the response are verified against a **curated clinical knowledge base** (e.g., PubMed/MIMIC). There is no live web search, guaranteeing a strictly air-gapped, zero-data-egress environment. To bypass the semantic brittleness and high false-negative rates of pure lexical sparse retrieval (BM25) while avoiding the GPU latency of large dense models, P.R.I.S.M. utilizes a **highly quantized, ultra-lightweight dense embedding model (e.g., ONNX-optimized MiniLM-L6)** running strictly on the CPU. The latency difference compared to BM25 is negligible on modern processors, but the recall for recognizing semantically similar medical terminology (e.g., "myocardial infarction" vs. "heart attack") is exponentially higher.
+Factual claims in the response are verified against a **curated clinical knowledge base** (e.g., FDA Drug Labels, DrugBank, PubMed/MIMIC). There is no live web search, guaranteeing a strictly air-gapped, zero-data-egress environment. To bypass the semantic brittleness and high false-negative rates of pure lexical sparse retrieval (BM25) while avoiding the GPU latency of large dense models, P.R.I.S.M. utilizes a **highly quantized, ultra-lightweight dense embedding model (e.g., ONNX-optimized MiniLM-L6)** running strictly on the CPU. The latency difference compared to BM25 is negligible on modern processors, but the recall for recognizing semantically similar pharmacological terminology (e.g., "CYP3A4 inhibitor" vs. "enzyme blocker") is exponentially higher.
 
-**Crucially, this pipeline is asynchronously balanced to ensure clinical safety without sacrificing operational momentum.** Hard-blocking the entire UX in emergency triage settings leads to clinician frustration and system abandonment. To resolve this, P.R.I.S.M. renders the `<|think|>` block (deliberation trace) to the user immediately, allowing the clinician to monitor the model's hypothesis formation in real-time. Meanwhile, the claim extraction and verification pipeline runs asynchronously on the final output claims. The final clinical assertions are only presented alongside their completed verification dots (🟢🔴), providing immediate insight without exposing unverified final claims.
+**Crucially, this pipeline is optimized for deliberative audit workflows.** In polypharmacy auditing, the clinician is performing methodical, non-urgent analysis of a complex drug regimen. P.R.I.S.M. renders the `<|think|>` block (deliberation trace) to the user immediately, allowing the clinician to monitor the model's hypothesis formation as it enumerates potential drug-drug and drug-gene interactions. Meanwhile, the claim extraction and verification pipeline runs asynchronously on the final output claims. The final pharmacological assertions are only presented alongside their completed verification dots (🟢🔴), ensuring every contraindication claim is grounded before clinical action.
+
+> **Latency is a non-issue here.** Unlike emergency triage — where 45 seconds of inference is unacceptable — a physician auditing a 15-drug regimen expects and *requires* thoroughness over speed. The async verification pipeline runs to completion without creating any perceived "UI whiplash." See [§ Knowledge Base Update Protocol](#-knowledge-base-update-protocol) for how this index stays current.
 
 Each verified claim gets a simple colored dot inline:
 
@@ -134,7 +142,7 @@ Example output:
 
 Tapping any dot shows the source document snippet in a simple popup.
 
-> **Why selective verification?** A4B (26B) hallucinates far less than smaller models on factual claims. By verifying only extracted assertions (rather than entire paragraphs), we minimize the necessary synchronous blocking time and stop the UI from feeling overly pessimistic when addressing out-of-scope truths.
+> **Why selective verification?** A4B (26B) hallucinates far less than smaller models on factual claims. By verifying only extracted pharmacological assertions (rather than entire paragraphs), we focus verification resources on the claims that matter most — contraindications, dosage interactions, and metabolic pathway conflicts.
 
 ---
 
@@ -142,7 +150,7 @@ Tapping any dot shows the source document snippet in a simple popup.
 
 > **What it does:** Shows you *how confident* the AI actually is.
 
-Relying on uncalibrated token logprobs for clinical safety is epistemically flawed (they measure raw likelihood, not factual correctness). Furthermore, hardware-crushing ensemble methods to measure certainty are too slow for triage. Instead, P.R.I.S.M. leverages **Conformal Prediction and Speculative Decoding** to establish statistically guaranteed confidence boundaries from a single pass, translated into **explicit, accessible confidence signals**:
+Relying on uncalibrated token logprobs for clinical safety is epistemically flawed (they measure raw likelihood, not factual correctness). Furthermore, hardware-crushing ensemble methods to measure certainty are computationally prohibitive on consumer hardware. Instead, P.R.I.S.M. leverages **Conformal Prediction and Speculative Decoding** to establish statistically guaranteed confidence boundaries from a single pass, translated into **explicit, accessible confidence signals**:
 
 | Indicator | Example | Why It Works |
 |---|---|---|
@@ -165,9 +173,159 @@ Explicit badges and labels are clearer, more accessible, and more actionable.
 
 Because 26B ensemble sampling is computationally catastrophic on 16GB VRAM, P.R.I.S.M. abandons it for mathematically rigorous, single-pass alternatives:
 
-1. **Dynamic Conformal Prediction Framework:** Standard conformal prediction is highly vulnerable to calibration shift—a threshold calibrated on MIMIC-IV adult ICU data could fail catastrophically in pediatric outpatient triage. To prevent false mathematical confidence, P.R.I.S.M. implements dynamic conformal prediction paired with a lightweight **out-of-distribution (OOD) detector**. If the incoming query's semantic distance from the calibration set is high, the system automatically widens the conformal threshold (α) or explicitly flags the certainty indicator as unreliable.
+1. **Dynamic Conformal Prediction Framework:** Standard conformal prediction is highly vulnerable to calibration shift—a threshold calibrated on MIMIC-IV adult ICU data could fail on rare drug-drug interaction profiles or novel biologics. To prevent false mathematical confidence, P.R.I.S.M. implements dynamic conformal prediction paired with a lightweight **out-of-distribution (OOD) detector**. If the incoming query's semantic distance from the calibration set is high (e.g., a novel immunotherapy combination not present in training data), the system automatically widens the conformal threshold (α) or explicitly flags the certainty indicator as unreliable.
 2. **Speculative Decoding (Draft & Verify):** A heavily quantized, tiny model rapidly "drafts" the reasoning trace. The massive 26B model is used strictly to verify and accept/reject the drafted tokens in parallel. This guarantees the final output matches the 26B model's distribution while operating at 2x to 3x the speed of standard inference.
 3. **Deliberation format adapter** — Small Unsloth LoRA to teach structured hypothesis enumeration
+
+---
+
+## 💊 Why Polypharmacy Contraindication Auditing
+
+### The Latency Problem — And Why We Chose to Eliminate It
+
+Most clinical AI prototypes target **emergency triage** — and immediately face a devastating critique: *"If the model takes 45 seconds to answer, a patient could die."* This is correct. Running a 26B MoE through llama.cpp on consumer hardware produces a deliberation trace in ~45 seconds, plus ~10 seconds for CPU-based claim verification. In a trauma bay, that latency is fatal.
+
+**Polypharmacy contraindication auditing is the opposite scenario.** A physician reviewing a patient's complex 15-drug regimen for fatal interactions is performing **deliberative, methodical analysis** — not split-second decision-making. The workflow looks like this:
+
+| Emergency Triage | Polypharmacy Auditing |
+|---|---|
+| ⏱ Seconds matter — patient actively deteriorating | 📋 Minutes are expected — systematic chart review |
+| ❌ 55-second inference = unacceptable | ✅ 55-second inference = perfectly fine |
+| 😤 "UI whiplash" — user waiting anxiously | 🧘 User reviewing other charts while model deliberates |
+| 🔴 Latency kills trust and adoption | 🟢 Latency is invisible within the natural workflow |
+
+### Why This Use Case is High-Impact
+
+Polypharmacy errors are one of the **leading causes of preventable hospital deaths**:
+
+- **~1.3 million** emergency department visits annually in the US from adverse drug events (CDC)
+- **Elderly patients on 10+ medications** face exponentially compounding interaction risks
+- **CYP450 enzyme pathway conflicts** (e.g., CYP3A4, CYP2D6) create silent, fatal cascading failures
+- **No existing tool** provides transparent, auditable reasoning for *why* a specific combination is dangerous
+
+P.R.I.S.M.'s Glass Box is uniquely suited here: the deliberation engine enumerates every pairwise and multi-way interaction, the source grounding verifier checks each claim against FDA Drug Labels and DrugBank, and the certainty indicators flag which interactions are well-established vs. poorly studied.
+
+---
+
+## 🔄 Knowledge Base Update Protocol
+
+### Preventing Clinical Index Stagnation
+
+A local-first, air-gapped architecture guarantees privacy — but introduces a critical risk: **the clinical knowledge base becomes stale.** New FDA safety communications, drug recalls, updated interaction profiles, and emerging contraindication data must reach the local index without compromising the zero-data-egress guarantee.
+
+P.R.I.S.M. solves this with a **secure, batched delta-update protocol** — nightly encrypted pulls that keep the clinical grounding index current while maintaining full HIPAA compliance.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  KNOWLEDGE BASE UPDATE PIPELINE                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   UPSTREAM (Institutional Server / Air-Gapped Mirror)            │
+│   ┌──────────────────────────────────────────────────────┐       │
+│   │  Canonical Knowledge Base (full index)                │       │
+│   │  ├── FDA Drug Labels (structured XML)                │       │
+│   │  ├── DrugBank Interaction Profiles                   │       │
+│   │  ├── PubMed Pharmacovigilance Abstracts              │       │
+│   │  ├── MIMIC-IV Clinical Notes (de-identified)         │       │
+│   │  └── Institutional Formulary Additions               │       │
+│   │                                                      │       │
+│   │  Nightly Job: generate_delta_manifest()              │       │
+│   │  ├── Diff against previous manifest version          │       │
+│   │  ├── Produce delta bundle (added/modified/removed)   │       │
+│   │  ├── Sign with Ed25519 key pair                      │       │
+│   │  └── Encrypt with AES-256-GCM + per-client key       │       │
+│   └──────────────────────────────────────────────────────┘       │
+│                          │                                       │
+│                          │ TLS 1.3 (one-way pull)                │
+│                          ▼                                       │
+│   LOCAL WORKSTATION (Clinical Desktop)                           │
+│   ┌──────────────────────────────────────────────────────┐       │
+│   │  Delta Update Agent (runs nightly at 02:00 local)    │       │
+│   │  ├── Pull encrypted delta bundle                     │       │
+│   │  ├── Verify Ed25519 signature (reject if invalid)    │       │
+│   │  ├── Decrypt AES-256-GCM payload                     │       │
+│   │  ├── Apply delta to local FAISS/ChromaDB index       │       │
+│   │  ├── Re-embed new/modified documents (CPU MiniLM)    │       │
+│   │  ├── Validate index integrity (checksum + count)     │       │
+│   │  └── Write update receipt to encrypted audit log     │       │
+│   └──────────────────────────────────────────────────────┘       │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Delta Manifest Format
+
+Each nightly delta bundle contains a signed manifest with three operations:
+
+```json
+{
+  "manifest_version": "1.0.0",
+  "generated_at": "2026-04-22T02:00:00Z",
+  "base_index_hash": "sha256:a1b2c3...",
+  "target_index_hash": "sha256:d4e5f6...",
+  "signature": "ed25519:<base64-encoded-signature>",
+  "deltas": [
+    {
+      "op": "ADD",
+      "doc_id": "fda-safety-2026-0419",
+      "source": "FDA MedWatch",
+      "category": "drug_interaction",
+      "content_hash": "sha256:...",
+      "metadata": { "drugs": ["sotagliflozin", "digoxin"], "severity": "critical" }
+    },
+    {
+      "op": "MODIFY",
+      "doc_id": "drugbank-DB00641",
+      "source": "DrugBank 6.0",
+      "category": "interaction_profile",
+      "previous_hash": "sha256:...",
+      "content_hash": "sha256:...",
+      "changed_fields": ["interactions", "enzyme_data"]
+    },
+    {
+      "op": "REMOVE",
+      "doc_id": "pubmed-retracted-38291044",
+      "reason": "retraction_notice",
+      "retraction_doi": "10.1234/retract.2026.001"
+    }
+  ]
+}
+```
+
+### Update Lifecycle
+
+| Phase | Action | Security Guarantee |
+|---|---|---|
+| **1. Generate** | Upstream server diffs current canonical index against last-published manifest | Deterministic, reproducible delta |
+| **2. Sign** | Ed25519 signature over manifest + all delta payloads | Tamper detection — reject unsigned/modified bundles |
+| **3. Encrypt** | AES-256-GCM with per-institution rotating keys | Confidentiality in transit and at rest |
+| **4. Pull** | Local agent initiates one-way TLS 1.3 pull (no inbound connections) | Zero-data-egress maintained — workstation only *pulls*, never *pushes* |
+| **5. Verify** | Signature verification → hash chain validation → schema check | Integrity guaranteed before any index mutation |
+| **6. Apply** | Atomic delta application — rollback on any failure | Index never left in partial/corrupt state |
+| **7. Re-embed** | New/modified documents re-embedded via CPU MiniLM-L6 | Updated vectors without GPU dependency |
+| **8. Audit** | Update receipt written to TPM-encrypted local audit log | Full institutional compliance trail |
+
+### Staleness Safeguard
+
+If the local index hasn't received a successful delta update in **>7 days**, P.R.I.S.M. surfaces a persistent warning banner in the Glass Box UI:
+
+```
+⚠️ Knowledge base last updated 9 days ago. Drug interaction data may be stale.
+   Contraindication results should be cross-referenced with current FDA resources.
+```
+
+This ensures clinicians are never silently working with outdated pharmacological data.
+
+### Why Not Live Updates?
+
+| Approach | Problem |
+|---|---|
+| Live API calls to DrugBank/FDA | Breaks air-gap, leaks PHI via query patterns |
+| Continuous streaming sync | Bandwidth-intensive, unpredictable latency during clinical use |
+| Manual USB updates | Operationally fragile, no audit trail, human error |
+| **Nightly encrypted delta pulls** ✅ | **Secure, automated, auditable, minimal bandwidth, zero egress** |
 
 ---
 
@@ -286,7 +444,7 @@ Users who want the detail can get it. Users who just want the answer aren't over
 
 ### True Local Privacy: Zero-Data-Egress
 
-A critical bottleneck in health & science applications is **Protected Health Information (PHI) privacy**. Processing medical triage queries via massive cloud APIs introduces unacceptable compliance risks, especially when dealing with nuanced edge conditions. P.R.I.S.M. solves this by implementing a strictly **local execution strategy**:
+A critical bottleneck in health & science applications is **Protected Health Information (PHI) privacy**. Processing polypharmacy auditing queries via massive cloud APIs introduces unacceptable compliance risks, especially when dealing with nuanced drug-gene interactions and patient-specific metabolic profiles. P.R.I.S.M. solves this by implementing a strictly **local execution strategy**:
 
 > **The model comes to the data, not the data to the model.**
 
@@ -435,25 +593,27 @@ The fine-tuned adapter is merged and exported using Unsloth, then optimized for 
 
 ## 🎬 Clinical Demo Scenarios
 
-The Glass Box MVP is optimized specifically for **clinical decision support and medical triage**:
+The Glass Box MVP is optimized specifically for **polypharmacy contraindication auditing and clinical decision support**:
 
-### 🚑 Emergency Triage Assessment
+### 💊 Polypharmacy Contraindication Audit (Primary Use Case)
 >
-> "Patient is a 54yo male presenting with sudden onset dyspnea and pleuritic chest pain. History of DVT. Vitals: HR 115, O2 91% on RA. What is the most likely diagnosis?"
+> "Patient is a 72yo female on the following 15-drug regimen: Metformin 1000mg, Lisinopril 20mg, Atorvastatin 40mg, Amlodipine 5mg, Metoprolol 50mg, Warfarin 5mg, Levothyroxine 75mcg, Omeprazole 20mg, Sertraline 100mg, Gabapentin 300mg, Prednisone 10mg, Furosemide 40mg, Potassium Chloride 20mEq, Allopurinol 300mg, Clarithromycin 500mg. Identify all critical drug-drug interactions."
 
-→ Deliberation exposes the active ranking of Pulmonary Embolism vs. Acute Coronary Syndrome. Source dots verify the Well's Score criteria against clinical guidelines.
+→ Deliberation systematically enumerates **all pairwise and multi-way interactions**: Clarithromycin (CYP3A4 inhibitor) × Atorvastatin → rhabdomyolysis risk. Warfarin × Omeprazole → altered INR metabolism. Sertraline × Metoprolol → additive bradycardia. Prednisone × Metformin → hyperglycemia antagonism. Source dots verify each interaction against **FDA Drug Labels** and **DrugBank**. Confidence badges flag well-established interactions (🟢 HIGH) vs. theoretical risks (🟡 MODERATE).
 
-### 💊 Pharmacological Safety Check
+> **Note:** The ~55-second total inference + verification time is invisible within this workflow. The physician reviews other charts while the Glass Box completes its deliberation.
+
+### 🧬 CYP450 Metabolic Pathway Analysis
 >
-> "Is it safe to prescribe Clarithromycin to a patient currently taking Atorvastatin and Amlodipine?"
+> "Analyze the CYP2D6 and CYP3A4 metabolic load for this patient's regimen. Which drugs are competing for the same enzymatic pathways, and what dose adjustments are indicated?"
 
-→ Deliberation explicitly chains the CYP3A4 inhibition risks. Source dots tap into the FDA index to verify contraindications. High confidence badges triggered for known adverse combinations.
+→ Deliberation traces each drug's primary and secondary metabolic pathways. Identifies enzyme saturation risks when multiple CYP2D6 substrates are co-administered. Source dots verify enzyme affinity data against PharmGKB and FDA labels. Gray dots flag drugs with limited pharmacogenomic data.
 
-### 🔬 Experimental Treatment Intake
+### 🔬 Emerging Interaction Evidence
 >
-> "What are the latest clinical trial indicators for using GLP-1 agonists in patients with sleep apnea?"
+> "Are there any recently published case reports or FDA safety communications regarding the combination of GLP-1 agonists with Warfarin in elderly patients?"
 
-→ Deliberation weighs recent 2024 trial data versus historical weight-loss indicators. Gray dots correctly flag claims where literature is too sparse to support definitive clinical use yet.
+→ Deliberation weighs available pharmacovigilance data. Source grounding checks the local index (updated via [nightly delta pulls](#-knowledge-base-update-protocol)) for recent FDA MedWatch alerts. Gray dots correctly flag claims where literature is too sparse, and the staleness safeguard confirms the knowledge base is current.
 
 ---
 
@@ -474,7 +634,7 @@ To eliminate the friction of downloading a 16GB 26B parameter model natively for
 1. **1-Click Kaggle Notebook:** Provided directly within the Kaggle ecosystem, this notebook launches with **2 T4 GPUs** allocated, automatically pulls the MXFP4 quantized 26B model, and exposes a temporary URL to interact with the full Glass Box UI.
    - 🔗 **[Run Kaggle Evaluation Notebook](#)** *(Replace with your Kaggle Notebook URL)*
    - *Note: This guarantees you can evaluate the complete 26B Mixture-of-Experts reasoning without any local deployment.*
-2. **Screencast Video:** A comprehensive, unedited video demonstrating the complete local Ollama 26B execution from cold boot to medical triage completion.
+2. **Screencast Video:** A comprehensive, unedited video demonstrating the complete local Ollama 26B execution from cold boot to polypharmacy contraindication audit completion.
    - 📺 **[Watch YouTube Walkthrough](#)** *(Replace with your Video URL)*
 
 ### Quick Start (Local Production)
@@ -557,6 +717,13 @@ P.R.I.S.M./
 │   └── adapters/                # Exported LoRA adapters
 │
 ├── knowledge_base/              # Curated source documents for verification
+│   ├── sources/                 # FDA Drug Labels, DrugBank, PubMed, MIMIC-IV
+│   ├── index/                   # FAISS/ChromaDB vector index (auto-updated)
+│   └── delta_agent/             # Nightly delta update agent
+│       ├── pull_delta.py        # Encrypted delta bundle puller
+│       ├── verify_manifest.py   # Ed25519 signature + hash chain verification
+│       ├── apply_delta.py       # Atomic index update with rollback
+│       └── config.yaml          # Update schedule, upstream URL, key paths
 │
 ├── scripts/
 │   ├── deploy_model.py          # Upload fine-tuned model to hosting
@@ -574,7 +741,7 @@ P.R.I.S.M./
 | Track | Fit |
 |---|---|
 | 🛡 **Safety & Trust** | Core mission — making every AI response auditable, verifiable, and confidence-calibrated |
-| 🏥 **Health & Sciences** | Medical triage is a high-impact demo scenario for the transparency layer |
+| 🏥 **Health & Sciences** | Polypharmacy contraindication auditing is a high-impact, real-world scenario for the transparency layer |
 
 ### Special Technology Tracks
 
@@ -597,10 +764,11 @@ Rather than pitching an unfinished super-architecture, we've tightly scoped the 
 - [x] **Architecture Design:** Zero-Data-Egress Offline Pipeline established.
 - [x] **UI/UX Prototype:** Next.js Progressive Disclosure frontend actively running.
 - [x] **Unsloth Fine-Tuning:** Executed the MXFP4 structured deliberation QLoRA training over broad clinical datasets.
-- [x] **Live Verification Engine:** The MVP executes incredibly fast local **ultra-lightweight CPU dense embeddings (ONNX-optimized MiniLM-L6)** against an index of **PubMed**, **MIMIC-IV**, and **FDA Drug Labels**.
-- [x] **Safety-Optimized Asynchronous UX:** Real-time generation of the deliberation trace maintains clinical momentum, while final medical claims are strictly gated until asynchronous pipeline verification is complete.
+- [x] **Live Verification Engine:** The MVP executes incredibly fast local **ultra-lightweight CPU dense embeddings (ONNX-optimized MiniLM-L6)** against an index of **FDA Drug Labels**, **DrugBank**, **PubMed**, and **MIMIC-IV**.
+- [x] **Knowledge Base Update Protocol:** Secure nightly encrypted delta-pull pipeline with Ed25519 signing, AES-256-GCM encryption, atomic application, and staleness safeguards.
+- [x] **Safety-Optimized Asynchronous UX:** Deliberation trace renders immediately for clinician review, while pharmacological claims are gated until async verification completes — latency invisible within polypharmacy audit workflows.
 - [x] **Model Integration Strategy:** Gemma 4 thought block (`<|think|>`) parsing and logprob mapping explicitly extracted via Ollama API.
-- [x] **Demonstration Scenarios:** Workflows built and tuned specifically for localized Clinical Decision Support.
+- [x] **Demonstration Scenarios:** Workflows built and tuned specifically for polypharmacy contraindication auditing.
 
 ### Future Roadmap
 
