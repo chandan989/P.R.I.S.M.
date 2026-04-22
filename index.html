@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.R.I.S.M. — The Glass Box Interpreter</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --font-display: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-primary: 'Inter', -apple-system, sans-serif;
+
+            --canvas-base: #FFFFFF;
+            --canvas-dark: #111111;
+            --canvas-dark-pill: #262626;
+            
+            --ink-primary: #000000;
+            --ink-secondary: #555555;
+            --ink-inverse: #FFFFFF;
+            --ink-inverse-muted: #999999;
+            
+            --border-subtle: #EAEAEA;
+            --border-dark: #333333;
+            
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --radius-pill: 9999px;
+
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-float: 0 24px 48px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            color: var(--ink-primary);
+            background-color: var(--canvas-base);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- BACKGROUND AURA --- */
+        .mesh-aura {
+            position: absolute;
+            top: 250px; /* Positioned behind the floating box */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 500px 300px at 20% 50%, rgba(255, 46, 147, 0.5), transparent),
+                radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255, 128, 8, 0.45), transparent),
+                radial-gradient(ellipse 500px 300px at 50% 30%, rgba(255, 200, 55, 0.3), transparent),
+                radial-gradient(ellipse 400px 200px at 60% 80%, rgba(0, 225, 217, 0.3), transparent);
+            filter: blur(50px);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.125rem;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: var(--ink-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-center a:hover {
+            color: var(--ink-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* --- PILLS & BUTTONS --- */
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--canvas-base);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--ink-primary);
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pill:hover {
+            border-color: #CCC;
+        }
+
+        .pill.solid {
+            background: var(--ink-primary);
+            color: var(--canvas-base);
+            border: none;
+        }
+
+        .pill.solid:hover {
+            background: #333;
+        }
+
+        .pill.ghost {
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            color: var(--ink-secondary);
+        }
+        
+        .pill.ghost:hover {
+            color: var(--ink-primary);
+            background: #F5F5F5;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            text-align: center;
+            margin-top: 60px;
+            padding: 0 20px;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            color: var(--ink-primary);
+            margin-bottom: 24px;
+        }
+
+        .headline-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--ink-primary);
+            color: white;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            vertical-align: middle;
+            margin: 0 8px;
+            position: relative;
+            top: -4px;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--ink-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* --- COMMAND CENTER (FLOATING BOX) --- */
+        .command-wrapper {
+            margin-top: 48px;
+            position: relative;
+            z-index: 5;
+            padding: 0 20px;
+            width: 100%;
+            max-width: 780px;
+        }
+
+        /* The glowing gradient border */
+        .command-glow-border {
+            background: linear-gradient(135deg, rgba(255, 200, 55, 0.8), rgba(255, 128, 8, 0.8), rgba(255, 46, 147, 0.8));
+            padding: 3px; /* Border thickness */
+            border-radius: calc(var(--radius-xl) + 3px);
+            box-shadow: var(--shadow-float);
+        }
+
+        .command-center {
+            background: var(--canvas-dark);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            color: var(--ink-inverse);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .command-text {
+            font-size: 1.125rem;
+            color: var(--ink-inverse);
+            line-height: 1.5;
+            outline: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            resize: none;
+            font-family: var(--font-primary);
+        }
+
+        .command-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cmd-left-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cmd-pill {
+            background: var(--canvas-dark-pill);
+            border: 1px solid var(--border-dark);
+            color: var(--ink-inverse);
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .cmd-pill:hover {
+            background: #333;
+        }
+
+        .cmd-pill.icon-only {
+            padding: 8px;
+        }
+
+        .cmd-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .voice-btn {
+            background: transparent;
+            border: none;
+            color: var(--ink-inverse-muted);
+            cursor: pointer;
+        }
+        .voice-btn:hover { color: var(--ink-inverse); }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #FF2E93, #FF8008);
+            border: none;
+            border-radius: var(--radius-md);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 46, 147, 0.3);
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover { transform: scale(1.05); }
+
+        /* --- SECONDARY NAV --- */
+        .secondary-nav {
+            margin-top: 32px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* --- PARTNER LOGOS --- */
+        .partners {
+            margin-top: 80px;
+            display: flex;
+            gap: 16px;
+            z-index: 5;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .partner-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            background: var(--canvas-base);
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            color: var(--ink-primary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .nav-center { display: none; }
+            .command-actions { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .cmd-right-actions { align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mesh-aura"></div>
+
+    <header>
+        <div class="brand">
+            <i data-lucide="triangle" style="width: 20px; height: 20px;"></i>
+            P.R.I.S.M.
+        </div>
+        <nav class="nav-center">
+            <a href="#">Architecture</a>
+            <a href="#">Models</a>
+            <a href="#">Changelog</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="#" class="pill">View Docs</a>
+            <a href="#" class="pill solid">Initialize &rarr;</a>
+        </div>
+    </header>
+
+    <main class="hero">
+        <h1>
+            The Glass Box 
+            <span class="headline-icon"><i data-lucide="triangle" style="width: 28px; height: 28px;"></i></span>
+            Interpreter<br>for Clinical AI
+        </h1>
+        <p class="subtitle">
+            P.R.I.S.M. verifies, structures, and executes polypharmacy<br>contraindication workloads with full reasoning transparency.
+        </p>
+    </main>
+
+    <div class="command-wrapper">
+        <div class="command-glow-border">
+            <div class="command-center">
+                <textarea class="command-text" rows="3" placeholder="Audit regimen: Metformin 1000mg, Lisinopril 20mg, Atorvastatin 40mg, Clarithromycin 500mg, Omeprazole 20mg.">Audit regimen: Metformin 1000mg, Lisinopril 20mg, Atorvastatin 40mg, Clarithromycin 500mg, Omeprazole 20mg.</textarea>
+                
+                <div class="command-actions">
+                    <div class="cmd-left-actions">
+                        <button class="cmd-pill icon-only"><i data-lucide="paperclip" style="width: 14px; height: 14px;"></i></button>
+                        <button class="cmd-pill"><i data-lucide="database" style="width: 14px; height: 14px;"></i> Connect EMR</button>
+                        <button class="cmd-pill"><i data-lucide="activity" style="width: 14px; height: 14px;"></i> Audit Regimen</button>
+                        <button class="cmd-pill icon-only"><i data-lucide="settings" style="width: 14px; height: 14px;"></i></button>
+                    </div>
+                    <div class="cmd-right-actions">
+                        <button class="voice-btn"><i data-lucide="audio-lines" style="width: 20px; height: 20px;"></i></button>
+                        <button class="submit-btn"><i data-lucide="send" style="width: 18px; height: 18px;"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="secondary-nav">
+        <button class="pill ghost"><i data-lucide="book-open" style="width: 16px;"></i> FDA Labels</button>
+        <button class="pill ghost"><i data-lucide="database" style="width: 16px;"></i> DrugBank</button>
+        <button class="pill ghost"><i data-lucide="library" style="width: 16px;"></i> PubMed</button>
+        <button class="pill ghost"><i data-lucide="stethoscope" style="width: 16px;"></i> MIMIC-IV</button>
+        <button class="pill ghost"><i data-lucide="dna" style="width: 16px;"></i> PharmGKB</button>
+    </div>
+
+    <div class="partners">
+        <div class="partner-pill"><i data-lucide="cpu" style="width: 16px; color: #555;"></i> Gemma 4 A4B</div>
+        <div class="partner-pill"><i data-lucide="terminal" style="width: 16px; color: #555;"></i> llama.cpp</div>
+        <div class="partner-pill"><i data-lucide="box" style="width: 16px; color: #555;"></i> Ollama</div>
+        <div class="partner-pill"><i data-lucide="zap" style="width: 16px; color: #555;"></i> Unsloth</div>
+        <div class="partner-pill"><i data-lucide="server" style="width: 16px; color: #555;"></i> FastAPI</div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
