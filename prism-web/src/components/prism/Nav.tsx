@@ -11,14 +11,23 @@ const links = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const loc = useLocation();
   useEffect(() => setOpen(false), [loc.pathname]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="nav" aria-label="Primary">
+    <nav className={`nav ${scrolled ? "nav--scrolled" : ""}`} aria-label="Primary">
       <div className="container nav-inner">
         <Link to="/" className="nav-logo" aria-label="P.R.I.S.M. home">
-          P.R.I.S.M.
+          <img src="/Logo.svg" alt="P.R.I.S.M." style={{ height: 28 }} />
         </Link>
         <div className="nav-links" role="menubar">
           {links.slice(1).map((l) => (

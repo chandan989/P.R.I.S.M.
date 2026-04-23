@@ -7,6 +7,7 @@ import SkeletonLoader from "@/components/prism/SkeletonLoader";
 import { streamAudit } from "@/lib/api";
 import type { AuditStreamEvent, Confidence, Interpretation } from "@/lib/types";
 import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Tab = "default" | "expert";
 
@@ -69,17 +70,17 @@ export default function Audit() {
   };
 
   return (
-    <div className="container audit-grid">
-      <section aria-label="Patient and regimen input">
+    <motion.div className="container audit-grid" initial="hidden" animate="show" variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } }}>
+      <motion.section aria-label="Patient and regimen input" variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } }}>
         <PatientRegimenForm
           value={patient}
           onChange={setPatient}
           onSubmit={run}
           busy={busy}
         />
-      </section>
+      </motion.section>
 
-      <section className="output-panel" aria-label="Glass Box output">
+      <motion.section className="output-panel" aria-label="Glass Box output" variants={{ hidden: { opacity: 0, x: 20 }, show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } } }}>
         <div className="tab-strip" role="tablist">
           <button
             role="tab"
@@ -111,8 +112,9 @@ export default function Audit() {
 
           {busy && tokens.length === 0 && <SkeletonLoader rows={4} />}
 
+          <AnimatePresence mode="wait">
           {tab === "default" ? (
-            <>
+            <motion.div key="default" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
               {tokens.length > 0 && <StreamingText tokens={tokens} isStreaming={busy} />}
               {confidence && <ConfidenceBadge level={confidence.level} score={confidence.score} />}
               {interps.length > 0 && (
@@ -124,9 +126,9 @@ export default function Audit() {
                   Why did the AI say this? <ChevronDown size={14} />
                 </button>
               )}
-            </>
+            </motion.div>
           ) : (
-            <>
+            <motion.div key="expert" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
               {interps.length > 0 ? (
                 <DeliberationTree
                   interpretations={interps}
@@ -139,10 +141,11 @@ export default function Audit() {
                   Run an analysis to see the model's deliberation tree.
                 </div>
               )}
-            </>
+            </motion.div>
           )}
+          </AnimatePresence>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

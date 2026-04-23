@@ -4,7 +4,9 @@ export default function Footer() {
   return (
     <footer className="container footer">
       <div className="footer-left">
-        <div className="nav-logo">P.R.I.S.M.</div>
+        <div className="nav-logo">
+          <img src="/Logo.svg" alt="P.R.I.S.M." style={{ height: 32 }} />
+        </div>
         <p className="footer-tagline">The Glass Box Interpreter — a transparency layer for clinical AI.</p>
         <span className="footer-badge">
           <ShieldCheck size={12} /> Zero-Data-Egress · HIPAA-Compliant

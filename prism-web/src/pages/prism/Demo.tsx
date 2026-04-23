@@ -7,6 +7,17 @@ import SkeletonLoader from "@/components/prism/SkeletonLoader";
 import { streamAudit } from "@/lib/api";
 import { demoQueries } from "@/lib/mock-data";
 import type { AuditStreamEvent, Confidence, Interpretation } from "@/lib/types";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.15 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function Demo() {
   const [query, setQuery] = useState(demoQueries.polypharmacy);
@@ -55,16 +66,16 @@ export default function Demo() {
   ];
 
   return (
-    <div className="container" style={{ paddingTop: "var(--space-8)", position: "relative" }}>
+    <motion.div className="container" style={{ paddingTop: "var(--space-8)", position: "relative" }} variants={containerVariants} initial="hidden" animate="show">
       <div className="mesh-aura" />
-      <header style={{ textAlign: "center", marginBottom: "var(--space-8)" }}>
+      <motion.header style={{ textAlign: "center", marginBottom: "var(--space-8)" }} variants={itemVariants}>
         <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}>Try the Glass Box</h1>
         <p className="hero-sub" style={{ marginTop: "var(--space-3)" }}>
           Pick a scenario or write your own. Every claim is tagged with a verified / inferred / contradicted / unknown source.
         </p>
-      </header>
+      </motion.header>
 
-      <div style={{ maxWidth: 820, margin: "0 auto var(--space-8)" }}>
+      <motion.div style={{ maxWidth: 820, margin: "0 auto var(--space-8)" }} variants={itemVariants}>
         <CommandCenter
           value={query}
           onChange={setQuery}
@@ -72,9 +83,9 @@ export default function Demo() {
           busy={busy}
           scenarios={scenarios}
         />
-      </div>
+      </motion.div>
 
-      <section className="output-panel" style={{ maxWidth: 820, margin: "0 auto" }} aria-label="Demo output">
+      <motion.section className="output-panel" style={{ maxWidth: 820, margin: "0 auto" }} aria-label="Demo output" variants={itemVariants}>
         <div className="output-body">
           {busy && tokens.length === 0 && <SkeletonLoader rows={4} />}
           {tokens.length > 0 && <StreamingText tokens={tokens} isStreaming={busy} />}
@@ -95,7 +106,7 @@ export default function Demo() {
             </div>
           )}
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

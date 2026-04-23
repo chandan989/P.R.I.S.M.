@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { motion } from "framer-motion";
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
 const pillars = [
   {
@@ -29,15 +35,15 @@ export default function HowItWorks() {
   useEffect(() => { document.title = "How It Works · P.R.I.S.M."; }, []);
 
   return (
-    <div className="container" style={{ paddingTop: "var(--space-12)" }}>
-      <header style={{ textAlign: "center", marginBottom: "var(--space-12)" }}>
+    <motion.div className="container" style={{ paddingTop: "var(--space-12)" }} initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.15 } } }}>
+      <motion.header style={{ textAlign: "center", marginBottom: "var(--space-12)" }} variants={sectionVariants}>
         <h1 style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>The Glass Box, Explained.</h1>
         <p className="hero-sub" style={{ marginTop: "var(--space-4)" }}>
           A transparency stack built around three pillars, a hardened ingestion pipeline, and zero data egress.
         </p>
-      </header>
+      </motion.header>
 
-      <section aria-label="Three pillars" style={{ marginBottom: "var(--space-12)" }}>
+      <motion.section aria-label="Three pillars" style={{ marginBottom: "var(--space-12)" }} variants={sectionVariants}>
         {pillars.map((p, i) => (
           <div key={i} className="accordion">
             <button
@@ -51,9 +57,9 @@ export default function HowItWorks() {
             {open === i && <div className="accordion-body">{p.body}</div>}
           </div>
         ))}
-      </section>
+      </motion.section>
 
-      <section aria-label="Architecture" style={{ marginBottom: "var(--space-12)" }}>
+      <motion.section aria-label="Architecture" style={{ marginBottom: "var(--space-12)" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
         <h2 style={{ marginBottom: "var(--space-6)" }}>Architecture</h2>
         <div className="arch-diagram">
           <div className="arch-box">React + Vite — Glass Box UI</div>
@@ -65,9 +71,9 @@ export default function HowItWorks() {
             <div className="arch-box">Vector store — corpus index</div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-label="Update protocol" style={{ marginBottom: "var(--space-12)" }}>
+      <motion.section aria-label="Update protocol" style={{ marginBottom: "var(--space-12)" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
         <h2 style={{ marginBottom: "var(--space-6)" }}>Knowledge Base Update Protocol</h2>
         <div className="timeline">
           {steps.map((s, i) => (
@@ -77,9 +83,9 @@ export default function HowItWorks() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section aria-label="Tech stack">
+      <motion.section aria-label="Tech stack" variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
         <h2 style={{ marginBottom: "var(--space-6)" }}>Tech Stack</h2>
         <div className="tech-table">
           <table>
@@ -94,7 +100,7 @@ export default function HowItWorks() {
             </tbody>
           </table>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
