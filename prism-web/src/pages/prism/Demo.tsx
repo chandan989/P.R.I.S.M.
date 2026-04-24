@@ -60,18 +60,19 @@ export default function Demo() {
   };
 
   const scenarios = [
-    { label: "💊 Polypharmacy Audit", onClick: () => { setQuery(demoQueries.polypharmacy); run(demoQueries.polypharmacy); } },
-    { label: "🧬 CYP450 Analysis", onClick: () => { setQuery(demoQueries.cyp450); run(demoQueries.cyp450); } },
-    { label: "🔬 Emerging Evidence", onClick: () => { setQuery(demoQueries.glp1); run(demoQueries.glp1); } },
+    { label: "💊 Polypharmacy Audit", desc: "72yo female on 15-drug regimen — enumerate all pairwise and multi-way interactions, verify against FDA Drug Labels and DrugBank.", onClick: () => { setQuery(demoQueries.polypharmacy); run(demoQueries.polypharmacy); } },
+    { label: "🧬 CYP450 Analysis", desc: "Analyze CYP2D6 and CYP3A4 metabolic load — identify enzyme saturation risks and dose adjustments via PharmGKB.", onClick: () => { setQuery(demoQueries.cyp450); run(demoQueries.cyp450); } },
+    { label: "🔬 Emerging Evidence", desc: "GLP-1 agonists with Warfarin — weigh pharmacovigilance data, check nightly delta-updated index for FDA MedWatch alerts.", onClick: () => { setQuery(demoQueries.glp1); run(demoQueries.glp1); } },
   ];
 
   return (
     <motion.div className="container" style={{ paddingTop: "var(--space-8)", position: "relative" }} variants={containerVariants} initial="hidden" animate="show">
       <div className="mesh-aura" />
       <motion.header style={{ textAlign: "center", marginBottom: "var(--space-8)" }} variants={itemVariants}>
-        <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}>Try the Glass Box</h1>
+        <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}>Clinical Demo Scenarios</h1>
         <p className="hero-sub" style={{ marginTop: "var(--space-3)" }}>
-          Pick a scenario or write your own. Every claim is tagged with a verified / inferred / contradicted / unknown source.
+          The Glass Box MVP is optimized for polypharmacy contraindication auditing and clinical decision support.
+          Pick a scenario or write your own — every claim is source-grounded with 🟢🟡🔴⚪ verification dots.
         </p>
       </motion.header>
 

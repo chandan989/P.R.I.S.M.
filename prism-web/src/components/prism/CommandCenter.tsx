@@ -9,7 +9,7 @@ interface Props {
   daysSinceUpdate?: number;
   quickInserts?: string[];
   onQuickInsert?: (s: string) => void;
-  scenarios?: { label: string; onClick: () => void }[];
+  scenarios?: { label: string; desc?: string; onClick: () => void }[];
 }
 
 export default function CommandCenter({
@@ -37,10 +37,21 @@ export default function CommandCenter({
         </div>
 
         {scenarios && scenarios.length > 0 && (
-          <div className="cmd-row" aria-label="Demo scenarios">
-            {scenarios.map((s, i) => (
-              <button key={i} className="cmd-pill" onClick={s.onClick}>{s.label}</button>
-            ))}
+          <div aria-label="Demo scenarios">
+            <div className="cmd-row">
+              {scenarios.map((s, i) => (
+                <button key={i} className="cmd-pill" onClick={s.onClick}>{s.label}</button>
+              ))}
+            </div>
+            {scenarios.some(s => s.desc) && (
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: "var(--space-3)" }}>
+                {scenarios.map((s, i) => s.desc ? (
+                  <div key={i} style={{ flex: "1 1 200px", fontSize: "var(--text-caption)", color: "var(--ink-inverse-muted)", lineHeight: 1.5, fontFamily: "var(--font-primary)" }}>
+                    <strong style={{ color: "var(--ink-inverse)" }}>{s.label}</strong>: {s.desc}
+                  </div>
+                ) : null)}
+              </div>
+            )}
           </div>
         )}
 

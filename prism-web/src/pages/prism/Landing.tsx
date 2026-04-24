@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sparkles, Brain, Link2, Gauge, ArrowRight, Github, Database, Lock, Cpu, Server, AlertCircle, CheckCircle2, Layers, Zap, ArchiveRestore, Workflow, ShieldCheck, ArrowDownToLine, RefreshCcw, DatabaseZap } from "lucide-react";
+import { Sparkles, Brain, Link2, Gauge, ArrowRight, Github, Database, Lock, Cpu, Server, AlertCircle, CheckCircle2, Layers, Zap, ArchiveRestore, Workflow, ShieldCheck, ArrowDownToLine, RefreshCcw, DatabaseZap, Shield, FlaskConical, Sloth, ExternalLink, Play } from "lucide-react";
 import PillarCard from "@/components/prism/PillarCard";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,27 +42,27 @@ export default function Landing() {
 
   useEffect(() => {
     document.title = "P.R.I.S.M. — The Glass Box Interpreter";
-    setMeta("description", "Transparency layer for clinical AI. Auditable, verifiable, trust-calibrated polypharmacy decision support powered by Gemma 4.");
+    setMeta("description", "The Glass Box Interpreter — see how Gemma 4 thinks, whether it's right, and how sure it is. Polypharmacy contraindication auditing powered by Gemma 4 A4B 26B.");
   }, []);
 
   return (
     <>
       <motion.section className="hero container" variants={heroVariants} initial="hidden" animate="show">
         <div className="mesh-aura" />
-        <motion.span className="eyebrow" variants={itemVariants}><Sparkles size={12} /> Built for the Gemma 4 Good Hackathon</motion.span>
+        <motion.span className="eyebrow" variants={itemVariants}><Sparkles size={12} /> Gemma 4 Good Hackathon · Safety & Trust · Health & Sciences</motion.span>
         <motion.h1 variants={itemVariants}>
-          See Inside the AI.<br />
-          <span className="hero-grad">Trust Every Answer.</span>
+          The Glass Box Interpreter.<br />
+          <span className="hero-grad">See How Gemma 4 Thinks.</span>
         </motion.h1>
         <motion.p className="hero-sub" variants={itemVariants}>
-          P.R.I.S.M. is a transparency layer for Gemma 4 that turns black-box clinical AI into auditable,
-          verifiable, trust-calibrated decision support.
+          P.R.I.S.M. is a transparency layer for Gemma 4 A4B (26B) that transforms high-stakes clinical AI queries
+          from black-box interactions into auditable, verifiable, and trust-calibrated clinical decision support.
         </motion.p>
         <motion.div className="hero-ctas" variants={itemVariants}>
           <Link to="/demo" className="pill pill--solid">
             <Sparkles size={14} /> Launch Glass Box
           </Link>
-          <a href="https://github.com" className="pill" target="_blank" rel="noreferrer">
+          <a href="https://github.com/chandan989/P.R.I.S.M." className="pill" target="_blank" rel="noreferrer">
             <Github size={14} /> View on GitHub ↗
           </a>
         </motion.div>
@@ -219,8 +219,8 @@ export default function Landing() {
 
       <motion.section className="container" aria-label="Tech Stack" style={{ padding: "var(--space-12) 0" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
         <div style={{ textAlign: "center" }}>
-          <h2>Gemma 4 A4B 26B + Unsloth</h2>
-          <p style={{ color: "var(--ink-secondary)", maxWidth: 600, margin: "var(--space-3) auto 0" }}>Knowledge of a large model. Cost of a small one.</p>
+          <h2>Gemma 4 A4B 26B MoE + Unsloth</h2>
+          <p style={{ color: "var(--ink-secondary)", maxWidth: 600, margin: "var(--space-3) auto 0" }}>26B of learned knowledge with the inference cost of a ~4B model. MoE routing activates only the relevant expert subnetworks per token.</p>
         </div>
         <motion.div className="tech-bento-grid" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }}>
           <motion.div className="tech-bento-item" variants={itemVariants} style={{ position: "relative", overflow: "hidden" }}>
@@ -238,7 +238,7 @@ export default function Landing() {
               </div>
               <div className="tech-bento-val" style={{ margin: 0, fontSize: "1.75rem" }}>26B <span style={{ fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500, display: "block" }}>total params</span></div>
             </div>
-            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>MoE routing activates ~4B relevant expert subnetworks per token, delivering flagship reasoning on consumer hardware.</p>
+            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>A4B delivers 26B of learned knowledge with the inference cost of a ~4B model. 16K token context window with Sliding Window restriction. Apache 2.0 licensed.</p>
           </motion.div>
 
           <motion.div className="tech-bento-item" variants={itemVariants}>
@@ -273,7 +273,7 @@ export default function Landing() {
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }} style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: "2px dashed var(--ink-tertiary)", borderTopColor: "var(--aura-cyan)", borderRightColor: "var(--aura-cyan)" }} />
               <div className="tech-bento-val" style={{ margin: 0, fontSize: "1.75rem" }}>2x <span style={{ fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500, display: "inline" }}>speed</span></div>
             </div>
-            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Fine-tuned deliberation format adapter and temperature scaling layer for rigorous probability calibration.</p>
+            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Deliberation Format Adapter (structured &lt;|think|&gt; output) + Temperature Scaling Layer for post-hoc logprob calibration. ~16 GB VRAM, ~67% memory reduction.</p>
           </motion.div>
         </motion.div>
       </motion.section>
@@ -437,6 +437,58 @@ export default function Landing() {
               <span style={{ color: "var(--ink-inverse-muted)", fontSize: 11 }}>Gemma 26B (MXFP4 / RotorQuant)</span>
             </div>
           </div>
+        </div>
+      </motion.section>
+
+      <motion.section className="container" aria-label="Hackathon Tracks" style={{ paddingBottom: "var(--space-12)" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
+        <div style={{ textAlign: "center", marginBottom: "var(--space-8)" }}>
+          <h2 style={{ fontSize: "var(--text-h1)", marginBottom: "var(--space-3)" }}>Hackathon Alignment</h2>
+          <p style={{ color: "var(--ink-secondary)", maxWidth: 640, margin: "0 auto" }}>Built to directly showcase the power of the Gemma Developer Ecosystem across 5 tracks.</p>
+        </div>
+        <motion.div className="tracks-grid" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }}>
+          <motion.div className="track-card track-card--main" variants={itemVariants}>
+            <Shield size={20} color="var(--aura-cyan)" />
+            <h4>Safety & Trust</h4>
+            <p>Core mission — making every AI response auditable, verifiable, and confidence-calibrated.</p>
+          </motion.div>
+          <motion.div className="track-card track-card--main" variants={itemVariants}>
+            <FlaskConical size={20} color="var(--aura-magenta)" />
+            <h4>Health & Sciences</h4>
+            <p>Polypharmacy contraindication auditing — high-impact, real-world clinical transparency.</p>
+          </motion.div>
+          <motion.div className="track-card" variants={itemVariants}>
+            <span style={{ fontSize: 18 }}>🦥</span>
+            <h4>Unsloth</h4>
+            <p>VRAM-efficient QLoRA fine-tuning exported to MXFP4 GGUF formats.</p>
+          </motion.div>
+          <motion.div className="track-card" variants={itemVariants}>
+            <span style={{ fontSize: 18 }}>🦙</span>
+            <h4>llama.cpp</h4>
+            <p>Bare-metal 26B MoE execution with MXFP4 precision + RotorQuant KV cache compression.</p>
+          </motion.div>
+          <motion.div className="track-card" variants={itemVariants}>
+            <span style={{ fontSize: 18 }}>🦙</span>
+            <h4>Ollama</h4>
+            <p>Seamless clinical workstation containerization and REST API integration.</p>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      <motion.section className="container judges-section" aria-label="For Judges" style={{ paddingBottom: "var(--space-16)" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
+        <div className="judges-card">
+          <div style={{ textAlign: "center", marginBottom: "var(--space-6)" }}>
+            <h2 style={{ fontSize: "var(--text-h1)", marginBottom: "var(--space-3)", color: "var(--ink-inverse)" }}>Live Evaluation Demo</h2>
+            <p style={{ color: "var(--ink-inverse-muted)", maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>To eliminate the friction of downloading a 16GB model for evaluation, we provide instant access to the full Glass Box experience.</p>
+          </div>
+          <div className="judges-ctas">
+            <a href="#" className="pill pill--solid" style={{ background: "var(--gradient-glow)", border: "none", padding: "12px 24px", fontSize: "var(--text-body)" }}>
+              <Play size={16} /> Run Kaggle Evaluation Notebook
+            </a>
+            <a href="#" className="pill" style={{ borderColor: "var(--border-dark)", color: "var(--ink-inverse)", padding: "12px 24px", fontSize: "var(--text-body)", background: "transparent" }}>
+              <ExternalLink size={16} /> Watch YouTube Walkthrough
+            </a>
+          </div>
+          <p style={{ color: "var(--ink-inverse-muted)", fontSize: "var(--text-caption)", textAlign: "center", marginTop: "var(--space-4)", fontFamily: "var(--font-mono)" }}>Evaluates the complete 26B MoE reasoning · 2x T4 GPUs · No local deployment needed</p>
         </div>
       </motion.section>
     </>
