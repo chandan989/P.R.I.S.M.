@@ -3,6 +3,19 @@ import { Sparkles, Brain, Link2, Gauge, ArrowRight, Github, Database, Lock, Cpu,
 import PillarCard from "@/components/prism/PillarCard";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+
+const comparisonData = [
+  { subject: 'Time Horizon (Minutes)', Triage: 1, Audit: 9, fullMark: 10 },
+  { subject: 'Data Density', Triage: 2, Audit: 10, fullMark: 10 },
+  { subject: 'Interpretability ROI', Triage: 4, Audit: 10, fullMark: 10 },
+  { subject: 'Audit-friendly', Triage: 3, Audit: 9, fullMark: 10 },
+];
+
+const archFlowVariants = {
+  hidden: { pathLength: 0, opacity: 0 },
+  show: { pathLength: 1, opacity: 1, transition: { duration: 1.5, ease: "easeInOut", repeat: Infinity, repeatType: "loop" as const } }
+};
 
 const heroVariants = {
   hidden: { opacity: 0 },
@@ -46,7 +59,9 @@ export default function Landing() {
           verifiable, trust-calibrated decision support.
         </motion.p>
         <motion.div className="hero-ctas" variants={itemVariants}>
-          <Link to="/audit" className="pill pill--solid">→ Launch Glass Box</Link>
+          <Link to="/demo" className="pill pill--solid">
+            <Sparkles size={14} /> Launch Glass Box
+          </Link>
           <a href="https://github.com" className="pill" target="_blank" rel="noreferrer">
             <Github size={14} /> View on GitHub ↗
           </a>
@@ -142,31 +157,31 @@ export default function Landing() {
             <AnimatePresence mode="wait">
               {!expertMode ? (
                 <motion.div key="default" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                <div className="cmd-preview-line"><span className="source-dot source-dot--green" /> The Earth orbits the Sun every 365.25 days.</div>
-                <div className="cmd-preview-line"><span className="source-dot source-dot--green" /> This is why we have leap years.</div>
-                <div className="cmd-preview-line"><span className="source-dot source-dot--yellow" /> The orbit is nearly circular.</div>
-                <div className="cmd-preview-line"><span className="source-dot source-dot--red" /> The orbit changes by 2% every century. <span style={{color: "#F87171", fontSize: 11, marginLeft: 4}}>⚠️ Contradicted</span></div>
-                <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ flex: 1, height: 6, background: "var(--canvas-dark-pill)", borderRadius: 99 }}><div style={{ height: "100%", width: "80%", background: "#4ADE80", borderRadius: 99 }} /></div>
-                  <span style={{ fontSize: 12, color: "#4ADE80", fontWeight: 600 }}>✅ HIGH CONFIDENCE</span>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div key="expert" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse-muted)" }}>
-                <div style={{ color: "var(--ink-inverse)", marginBottom: 8 }}>{"<|channel>thought\n"}</div>
-                <div style={{ paddingLeft: 16, borderLeft: "2px solid var(--border-dark)", marginBottom: 12 }}>
-                  <div style={{ color: "var(--ink-inverse)" }}>Interpretation A: Heliocentric model [99.8%]</div>
-                  <div>├── Supporting: Kepler's laws, stellar parallax</div>
-                  <div>└── Weakening: None significant</div>
-                  <div style={{ marginTop: 8 }}>✗ Discarded: Geocentric model [0.1%]</div>
-                </div>
-                <div style={{ color: "var(--aura-cyan)" }}>▶ Selected: Interpretation A</div>
-                <div style={{ marginTop: 12, borderTop: "1px dashed var(--border-dark)", paddingTop: 12, fontSize: 11 }}>
-                  CALIBRATION METRICS:<br />
-                  Brier Score: 0.042 · ECE: 0.015 · OOD Distance: 0.82 (Safe)
-                </div>
-              </motion.div>
-            )}
+                  <div className="cmd-preview-line"><span className="source-dot source-dot--green" /> The Earth orbits the Sun every 365.25 days.</div>
+                  <div className="cmd-preview-line"><span className="source-dot source-dot--green" /> This is why we have leap years.</div>
+                  <div className="cmd-preview-line"><span className="source-dot source-dot--yellow" /> The orbit is nearly circular.</div>
+                  <div className="cmd-preview-line"><span className="source-dot source-dot--red" /> The orbit changes by 2% every century. <span style={{ color: "#F87171", fontSize: 11, marginLeft: 4 }}>⚠️ Contradicted</span></div>
+                  <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ flex: 1, height: 6, background: "var(--canvas-dark-pill)", borderRadius: 99 }}><div style={{ height: "100%", width: "80%", background: "#4ADE80", borderRadius: 99 }} /></div>
+                    <span style={{ fontSize: 12, color: "#4ADE80", fontWeight: 600 }}>✅ HIGH CONFIDENCE</span>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div key="expert" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse-muted)" }}>
+                  <div style={{ color: "var(--ink-inverse)", marginBottom: 8 }}>{"<|channel>thought\n"}</div>
+                  <div style={{ paddingLeft: 16, borderLeft: "2px solid var(--border-dark)", marginBottom: 12 }}>
+                    <div style={{ color: "var(--ink-inverse)" }}>Interpretation A: Heliocentric model [99.8%]</div>
+                    <div>├── Supporting: Kepler's laws, stellar parallax</div>
+                    <div>└── Weakening: None significant</div>
+                    <div style={{ marginTop: 8 }}>✗ Discarded: Geocentric model [0.1%]</div>
+                  </div>
+                  <div style={{ color: "var(--aura-cyan)" }}>▶ Selected: Interpretation A</div>
+                  <div style={{ marginTop: 12, borderTop: "1px dashed var(--border-dark)", paddingTop: 12, fontSize: 11 }}>
+                    CALIBRATION METRICS:<br />
+                    Brier Score: 0.042 · ECE: 0.015 · OOD Distance: 0.82 (Safe)
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
@@ -187,19 +202,18 @@ export default function Landing() {
             Read the architecture <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="compare-card">
-          <table>
-            <thead>
-              <tr><th>Dimension</th><th>Emergency Triage</th><th>Polypharmacy Audit</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Time horizon</td><td>Seconds</td><td>Minutes</td></tr>
-              <tr><td>Data per patient</td><td>Sparse</td><td>Dense</td></tr>
-              <tr><td>Interpretability ROI</td><td>Modest</td><td>High</td></tr>
-              <tr><td>Audit-friendly</td><td>Hard</td><td>Natural fit</td></tr>
-              <tr><td>Failure mode</td><td>Missed dx</td><td>Silent interaction</td></tr>
-            </tbody>
-          </table>
+        <div className="compare-card" style={{ background: "transparent", border: "none", padding: 0, height: 350, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart cx="50%" cy="50%" outerRadius="70%" data={comparisonData}>
+              <PolarGrid stroke="var(--border-dark)" />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--ink-inverse-muted)', fontSize: 12, fontFamily: 'var(--font-mono)' }} />
+              <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
+              <Radar name="Emergency Triage" dataKey="Triage" stroke="#F87171" fill="#F87171" fillOpacity={0.3} />
+              <Radar name="Polypharmacy Audit" dataKey="Audit" stroke="var(--aura-cyan)" fill="var(--aura-cyan)" fillOpacity={0.6} />
+              <Legend wrapperStyle={{ fontFamily: 'var(--font-primary)', fontSize: 13 }} />
+              <Tooltip contentStyle={{ backgroundColor: 'var(--canvas-dark)', border: '1px solid var(--border-dark)', borderRadius: 8, fontFamily: 'var(--font-mono)' }} itemStyle={{ color: '#fff' }} />
+            </RadarChart>
+          </ResponsiveContainer>
         </div>
       </motion.section>
 
@@ -209,53 +223,157 @@ export default function Landing() {
           <p style={{ color: "var(--ink-secondary)", maxWidth: 600, margin: "var(--space-3) auto 0" }}>Knowledge of a large model. Cost of a small one.</p>
         </div>
         <motion.div className="tech-bento-grid" variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }}>
-          <motion.div className="tech-bento-item" variants={itemVariants}>
-            <h4><Layers size={16} style={{display: "inline", verticalAlign: "text-bottom", marginRight: 4}}/> MIXTURE OF EXPERTS</h4>
-            <div className="tech-bento-val">26B <span style={{fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500}}>total</span> / ~4B <span style={{fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500}}>active</span></div>
-            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>MoE routing activates only relevant expert subnetworks per token, delivering flagship reasoning on consumer hardware.</p>
+          <motion.div className="tech-bento-item" variants={itemVariants} style={{ position: "relative", overflow: "hidden" }}>
+            <h4><Layers size={16} style={{ display: "inline", verticalAlign: "text-bottom", marginRight: 4 }} /> MIXTURE OF EXPERTS</h4>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, margin: "16px 0" }}>
+              <div style={{ width: 80, height: 80 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[{ name: "Active", value: 4, fill: "var(--aura-magenta)" }, { name: "Idle", value: 22, fill: "var(--border-dark)" }]} layout="vertical" margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                    <XAxis type="number" hide domain={[0, 26]} />
+                    <YAxis dataKey="name" type="category" hide />
+                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: 'var(--canvas-dark)', border: '1px solid var(--border-dark)' }} />
+                    <Bar dataKey="value" stackId="a" radius={[4, 4, 4, 4]} barSize={12} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="tech-bento-val" style={{ margin: 0, fontSize: "1.75rem" }}>26B <span style={{ fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500, display: "block" }}>total params</span></div>
+            </div>
+            <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>MoE routing activates ~4B relevant expert subnetworks per token, delivering flagship reasoning on consumer hardware.</p>
           </motion.div>
+
           <motion.div className="tech-bento-item" variants={itemVariants}>
-            <h4><ArchiveRestore size={16} style={{display: "inline", verticalAlign: "text-bottom", marginRight: 4}}/> MXFP4 QUANTIZATION</h4>
-            <div className="tech-bento-val">16GB <span style={{fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500}}>VRAM target</span></div>
+            <h4><ArchiveRestore size={16} style={{ display: "inline", verticalAlign: "text-bottom", marginRight: 4 }} /> MXFP4 QUANTIZATION</h4>
+            <div style={{ margin: "16px 0", height: 80, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--ink-inverse-muted)" }}>
+                <span>VRAM Usage</span>
+                <span style={{ color: "var(--aura-cyan)" }}>16GB / 24GB</span>
+              </div>
+              <div style={{ height: 12, background: "var(--border-dark)", borderRadius: 6, overflow: "hidden" }}>
+                <motion.div initial={{ width: 0 }} whileInView={{ width: "66%" }} transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }} style={{ height: "100%", background: "var(--aura-cyan)", borderRadius: 6 }} />
+              </div>
+            </div>
             <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Microscaling Formats 4-bit precision squeezes the entire 26B model securely into consumer GPUs with near-uncompressed quality.</p>
           </motion.div>
+
           <motion.div className="tech-bento-item" variants={itemVariants}>
-            <h4><Zap size={16} style={{display: "inline", verticalAlign: "text-bottom", marginRight: 4}}/> ROTORQUANT KV CACHE</h4>
-            <div className="tech-bento-val">5.3x <span style={{fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500}}>faster prefill</span></div>
+            <h4><Zap size={16} style={{ display: "inline", verticalAlign: "text-bottom", marginRight: 4 }} /> ROTORQUANT KV CACHE</h4>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 16, margin: "16px 0", height: 80 }}>
+              <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 4, height: "100%" }}>
+                <motion.div initial={{ height: "20%" }} whileInView={{ height: "100%" }} transition={{ duration: 1, ease: "easeOut" }} style={{ flex: 1, background: "var(--aura-orange)", borderRadius: "4px 4px 0 0", opacity: 0.8 }} />
+                <motion.div initial={{ height: "20%" }} whileInView={{ height: "20%" }} style={{ flex: 1, background: "var(--border-dark)", borderRadius: "4px 4px 0 0" }} />
+              </div>
+              <div className="tech-bento-val" style={{ margin: 0, fontSize: "1.75rem" }}>5.3x <span style={{ fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500, display: "block" }}>faster prefill</span></div>
+            </div>
             <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Sparse 3D Clifford rotors replace heavy dense transforms, handling massive patient records instantly without OOM errors.</p>
           </motion.div>
+
           <motion.div className="tech-bento-item" variants={itemVariants}>
-            <h4><Workflow size={16} style={{display: "inline", verticalAlign: "text-bottom", marginRight: 4}}/> UNSLOTH QLoRA</h4>
-            <div className="tech-bento-val">2x <span style={{fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500}}>training speed</span></div>
+            <h4><Workflow size={16} style={{ display: "inline", verticalAlign: "text-bottom", marginRight: 4 }} /> UNSLOTH QLoRA</h4>
+            <div style={{ margin: "16px 0", height: 80, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }} style={{ position: "absolute", width: 60, height: 60, borderRadius: "50%", border: "2px dashed var(--ink-tertiary)", borderTopColor: "var(--aura-cyan)", borderRightColor: "var(--aura-cyan)" }} />
+              <div className="tech-bento-val" style={{ margin: 0, fontSize: "1.75rem" }}>2x <span style={{ fontSize: "1rem", color: "var(--ink-tertiary)", fontWeight: 500, display: "inline" }}>speed</span></div>
+            </div>
             <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Fine-tuned deliberation format adapter and temperature scaling layer for rigorous probability calibration.</p>
           </motion.div>
         </motion.div>
       </motion.section>
 
       <motion.section className="container" aria-label="Context Rolling" style={{ paddingBottom: "var(--space-12)" }} variants={sectionVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}>
+        <style>{`
+          .flowchart-split {
+            display: flex;
+            width: 320px;
+            height: 40px;
+            position: relative;
+          }
+          .flowchart-branches {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
+            gap: 32px;
+          }
+          @media (max-width: 768px) {
+            .flowchart-split {
+              display: none;
+            }
+            .flowchart-branches {
+              flex-direction: column;
+              gap: 32px;
+              align-items: center;
+            }
+          }
+        `}</style>
         <div className="context-rolling">
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <ShieldCheck size={24} color="var(--aura-cyan)" />
-            <h3 style={{ fontSize: "var(--text-body-lg)", color: "var(--ink-inverse)", fontFamily: "var(--font-display)" }}>Strict Extractive Context Rolling</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, justifyContent: "center" }}>
+            <ShieldCheck size={28} color="var(--aura-cyan)" />
+            <h3 style={{ fontSize: "var(--text-h2)", color: "var(--ink-inverse)", fontFamily: "var(--font-display)", margin: 0 }}>Strict Extractive Context Rolling</h3>
           </div>
-          <p style={{ color: "var(--ink-inverse-muted)", fontSize: "var(--text-ui)", fontFamily: "var(--font-primary)", marginBottom: 16, maxWidth: 800 }}>
+          <p style={{ color: "var(--ink-inverse-muted)", fontSize: "var(--text-ui)", fontFamily: "var(--font-primary)", marginBottom: 48, maxWidth: 800, textAlign: "center", marginInline: "auto", lineHeight: 1.6 }}>
             Attempting a 256K context window locally causes OOM failures. Lossy abstractive summarization drops critical PHI, creating fatal clinical risks. P.R.I.S.M. uses extractive rolling and hybrid memory pooling.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div className="cr-turn">
-              <div className="cr-box" style={{ borderColor: "#F87171" }}>
-                <span style={{color: "#F87171", fontWeight: 600}}>❌ BAD: Abstractive Summarization</span><br/>
-                "Patient has heart issues and takes meds." (Loses exact dosages & CYP pathways)
-              </div>
+
+          <div className="flowchart-container" style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+
+            <div style={{ background: "var(--canvas-dark-elevated)", border: "1px solid var(--border-dark)", padding: "16px 24px", borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 2, width: "100%", maxWidth: 300, boxShadow: "0 8px 32px rgba(0,0,0,0.2)" }}>
+              <Database size={24} style={{ color: "var(--ink-secondary)", marginBottom: 8 }} />
+              <strong style={{ color: "var(--ink-inverse)", fontSize: 15 }}>Raw Clinical Context</strong>
+              <span style={{ fontSize: 13, color: "var(--ink-inverse-muted)", marginTop: 4 }}>256K Tokens (OOM Risk)</span>
             </div>
-            <div className="cr-turn">
-              <div className="cr-box" style={{ borderColor: "var(--aura-cyan)" }}>
-                <span style={{color: "var(--aura-cyan)", fontWeight: 600}}>✅ GOOD: Extractive Rolling</span><br/>
-                "Metoprolol 50mg. Ejection fraction 35%." (Verbatim extraction)
+
+            <div className="flowchart-split">
+              <div style={{ position: "absolute", left: "50%", top: 0, bottom: "50%", width: 2, background: "var(--border-dark)", marginLeft: -1 }} />
+              <div style={{ position: "absolute", left: 0, right: 0, top: "50%", height: 2, background: "var(--border-dark)" }} />
+              <div style={{ position: "absolute", left: 0, top: "50%", bottom: 0, width: 2, background: "var(--border-dark)" }} />
+              <div style={{ position: "absolute", right: 0, top: "50%", bottom: 0, width: 2, background: "var(--border-dark)" }} />
+            </div>
+
+            <div className="flowchart-branches">
+
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 16, width: "100%" }}>
+                <div style={{ background: "rgba(248, 113, 113, 0.03)", border: "1px solid rgba(248, 113, 113, 0.2)", padding: "24px", borderRadius: 16, width: "100%", position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                    <AlertCircle size={20} color="#F87171" />
+                    <span style={{ color: "#F87171", fontWeight: 600, fontSize: 15 }}>Abstractive Summarization</span>
+                  </div>
+                  <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse-muted)", marginBottom: 20, background: "rgba(0,0,0,0.2)", padding: "12px 16px", borderRadius: 8, border: "1px dashed rgba(248, 113, 113, 0.2)" }}>
+                    "Patient has heart issues and takes meds."
+                  </div>
+                  <div style={{ marginTop: "auto", fontSize: 13, color: "#F87171", background: "rgba(248, 113, 113, 0.1)", padding: "10px 12px", borderRadius: 8, display: "flex", gap: 8, alignItems: "flex-start", border: "1px solid rgba(248, 113, 113, 0.2)" }}>
+                    <span style={{ fontSize: 16, lineHeight: 1 }}>⚠️</span>
+                    <span style={{ lineHeight: 1.4 }}>Information Loss Detected (Dosages, CYP pathways stripped)</span>
+                  </div>
+                </div>
               </div>
-              <div className="cr-arrow">→</div>
-              <div className="cr-box" style={{ borderStyle: "dashed", textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "var(--aura-cyan)", fontWeight: 600 }}>Hybrid Pool<br/>(RAM Offload)</span>
+
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 16, width: "100%" }}>
+                <div style={{ background: "rgba(34, 211, 238, 0.03)", border: "1px solid rgba(34, 211, 238, 0.3)", padding: "24px", borderRadius: 16, width: "100%", position: "relative", boxShadow: "0 0 40px rgba(34, 211, 238, 0.05)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                    <CheckCircle2 size={20} color="var(--aura-cyan)" />
+                    <span style={{ color: "var(--aura-cyan)", fontWeight: 600, fontSize: 15 }}>Extractive Rolling</span>
+                  </div>
+                  <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse)", marginBottom: 20, lineHeight: 1.6, background: "rgba(0,0,0,0.2)", padding: "12px 16px", borderRadius: 8, border: "1px dashed rgba(34, 211, 238, 0.3)" }}>
+                    "<span style={{ color: "var(--aura-cyan)", background: "rgba(34, 211, 238, 0.1)", padding: "2px 6px", borderRadius: 4 }}>Metoprolol 50mg</span>. Ejection fraction <span style={{ color: "var(--aura-cyan)", background: "rgba(34, 211, 238, 0.1)", padding: "2px 6px", borderRadius: 4 }}>35%</span>."
+                  </div>
+                  <div style={{ fontSize: 13, color: "var(--aura-cyan)", background: "rgba(34, 211, 238, 0.1)", padding: "10px 12px", borderRadius: 8, display: "flex", alignItems: "center", gap: 8, border: "1px solid rgba(34, 211, 238, 0.2)" }}>
+                    <ShieldCheck size={16} /> <span style={{ fontWeight: 500 }}>Critical PHI Preserved</span>
+                  </div>
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "100%", opacity: [0, 1, 0] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ position: "absolute", bottom: -1, left: 0, height: 2, background: "var(--aura-cyan)" }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                  <div style={{ width: 2, height: 24, background: "linear-gradient(to bottom, rgba(34,211,238,0.5), transparent)" }} />
+                  <motion.div style={{ background: "var(--canvas-dark-elevated)", border: "1px dashed var(--aura-cyan)", padding: "16px 24px", borderRadius: 12, display: "flex", alignItems: "center", gap: 12, position: "relative", overflow: "hidden", width: "100%", justifyContent: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }} animate={{ borderColor: ["rgba(34, 211, 238, 0.3)", "rgba(34, 211, 238, 0.8)", "rgba(34, 211, 238, 0.3)"] }} transition={{ duration: 3, repeat: Infinity }}>
+                    <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at center, rgba(34, 211, 238, 0.1) 0%, transparent 70%)" }} />
+                    <Server size={20} color="var(--aura-cyan)" style={{ position: "relative", zIndex: 1 }} />
+                    <span style={{ color: "var(--aura-cyan)", fontWeight: 600, fontSize: 14, position: "relative", zIndex: 1 }}>Hybrid Pool (RAM Offload)</span>
+                  </motion.div>
+                </div>
               </div>
             </div>
           </div>
@@ -288,31 +406,34 @@ export default function Landing() {
           <div className="arch-pipeline">
             <div className="arch-node" style={{ borderTopColor: "var(--aura-magenta)" }}>
               <DatabaseZap size={20} style={{ margin: "0 auto 8px", color: "var(--aura-magenta)" }} />
-              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)" }}>Institutional Server</strong><br/>
+              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)" }}>Institutional Server</strong><br />
               <span style={{ color: "var(--ink-inverse-muted)", fontSize: 11 }}>Canonical DB (FDA, DrugBank)</span>
             </div>
-            
-            <div className="arch-edge">
+
+            <div className="arch-edge" style={{ position: "relative", overflow: "hidden" }}>
               <ArrowDownToLine size={16} />
-              <span style={{ background: "var(--canvas-dark-pill)", padding: "2px 8px", borderRadius: 12, border: "1px solid var(--border-dark)" }}>Nightly Ed25519 Signed Delta</span>
+              <span style={{ background: "var(--canvas-dark-pill)", padding: "2px 8px", borderRadius: 12, border: "1px solid var(--border-dark)", position: "relative", zIndex: 1 }}>Nightly Ed25519 Signed Delta</span>
               <ArrowDownToLine size={16} />
+              <motion.div style={{ position: "absolute", top: 0, bottom: 0, width: 2, background: "linear-gradient(to bottom, transparent, var(--aura-magenta), transparent)", left: "50%", marginLeft: -1 }} animate={{ y: ["-100%", "100%"] }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} />
             </div>
 
-            <div className="arch-node" style={{ borderTopColor: "var(--aura-cyan)" }}>
-              <Lock size={20} style={{ margin: "0 auto 8px", color: "var(--aura-cyan)" }} />
-              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)" }}>Local Clinical Index</strong><br/>
-              <span style={{ color: "var(--ink-inverse-muted)", fontSize: 11 }}>CPU MiniLM-L6 Embeddings</span>
+            <div className="arch-node" style={{ borderTopColor: "var(--aura-cyan)", position: "relative" }}>
+              <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 3, repeat: Infinity }} style={{ position: "absolute", inset: -20, background: "radial-gradient(circle at center, rgba(34, 211, 238, 0.15) 0%, transparent 70%)", zIndex: 0 }} />
+              <Lock size={20} style={{ margin: "0 auto 8px", color: "var(--aura-cyan)", position: "relative", zIndex: 1 }} />
+              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)", position: "relative", zIndex: 1 }}>Local Clinical Index</strong><br />
+              <span style={{ color: "var(--ink-inverse-muted)", fontSize: 11, position: "relative", zIndex: 1 }}>CPU MiniLM-L6 Embeddings</span>
             </div>
 
-            <div className="arch-edge">
+            <div className="arch-edge" style={{ position: "relative", overflow: "hidden" }}>
               <RefreshCcw size={16} />
-              <span style={{ background: "var(--canvas-dark-pill)", padding: "2px 8px", borderRadius: 12, border: "1px solid var(--border-dark)" }}>Air-Gapped Claim Verification</span>
+              <span style={{ background: "var(--canvas-dark-pill)", padding: "2px 8px", borderRadius: 12, border: "1px solid var(--border-dark)", position: "relative", zIndex: 1 }}>Air-Gapped Claim Verification</span>
               <RefreshCcw size={16} />
+              <motion.div style={{ position: "absolute", top: 0, bottom: 0, width: 2, background: "linear-gradient(to bottom, transparent, var(--aura-cyan), transparent)", left: "50%", marginLeft: -1 }} animate={{ y: ["-100%", "100%"] }} transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 1 }} />
             </div>
 
             <div className="arch-node" style={{ borderTopColor: "var(--aura-orange)" }}>
               <Cpu size={20} style={{ margin: "0 auto 8px", color: "var(--aura-orange)" }} />
-              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)" }}>llama.cpp Engine</strong><br/>
+              <strong style={{ color: "var(--ink-inverse)", fontFamily: "var(--font-primary)" }}>llama.cpp Engine</strong><br />
               <span style={{ color: "var(--ink-inverse-muted)", fontSize: 11 }}>Gemma 26B (MXFP4 / RotorQuant)</span>
             </div>
           </div>

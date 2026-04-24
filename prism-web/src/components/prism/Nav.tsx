@@ -1,12 +1,11 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home" },
   { to: "/how-it-works", label: "How It Works" },
-  { to: "/demo", label: "Demo" },
-  { to: "/audit", label: "Glass Box" },
+  { to: "/audit", label: "Audit" },
 ];
 
 export default function Nav() {
@@ -43,8 +42,8 @@ export default function Nav() {
             </NavLink>
           ))}
         </div>
-        <Link to="/audit" className="pill pill--solid nav-cta">
-          Launch Glass Box →
+        <Link to="/demo" className="pill pill--solid nav-cta">
+          <Sparkles size={14} /> Launch Glass Box
         </Link>
         <button
           className="nav-mobile-toggle"
@@ -71,8 +70,8 @@ export default function Nav() {
                 {l.label}
               </NavLink>
             ))}
-            <Link to="/audit" className="pill pill--solid">
-              Launch Glass Box →
+            <Link to="/demo" className="pill pill--solid">
+              <Sparkles size={14} /> Launch Glass Box
             </Link>
           </aside>
         </>
