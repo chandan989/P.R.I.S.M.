@@ -1,0 +1,24 @@
+# P.R.I.S.M. Knowledge Base Requirements
+
+# Core dependencies
+numpy>=1.24.0
+sentence-transformers>=2.2.0
+
+# Vector search
+faiss-cpu>=1.7.4
+
+# Cryptography for delta updates
+cryptography>=41.0.0
+
+# HTTP requests for delta pulls
+requests>=2.31.0
+
+# Configuration
+pyyaml>=6.0
+
+# Logging
+python-json-logger>=2.0.0
+
+# Optional: GPU acceleration (uncomment if using CUDA)
+# faiss-gpu>=1.7.4
+# torch>=2.0.0

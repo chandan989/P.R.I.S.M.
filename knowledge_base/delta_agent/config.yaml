@@ -1,0 +1,86 @@
+# P.R.I.S.M. Knowledge Base Delta Update Agent Configuration
+
+# Knowledge Base Settings
+knowledge_base:
+  root_path: "./knowledge_base"
+  max_staleness_days: 7  # Warning if not updated in 7+ days
+
+# Upstream Server Settings
+upstream:
+  url: "https://upstream.example.com/delta"
+  verify_ssl: true
+  timeout: 300  # seconds
+
+# Update Schedule
+update_schedule:
+  enabled: true
+  time: "02:00"  # 2 AM local time
+  timezone: "UTC"
+
+# Key Paths
+keys:
+  public_key_path: "keys/public_key.pem"
+  decryption_key_path: "keys/decryption_key.bin"
+
+# Index Settings
+index:
+  type: "faiss"  # or "chromadb"
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  embedding_device: "cpu"  # or "cuda"
+  dimension: 384
+
+# Backup Settings
+backup:
+  enabled: true
+  keep_count: 5  # Number of backups to retain
+  path: "./knowledge_base/backups"
+
+# Logging
+logging:
+  level: "INFO"
+  file: "delta_update.log"
+  max_size_mb: 10
+  backup_count: 5
+
+# Audit Trail
+audit:
+  enabled: true
+  path: "./knowledge_base/audit/updates.log"
+  format: "json"
+
+# Source Categories
+sources:
+  fda:
+    enabled: true
+    categories:
+      - "drug_labels"
+      - "safety_communications"
+      - "medwatch"
+
+  drugbank:
+    enabled: true
+    categories:
+      - "interaction_profiles"
+      - "enzyme_data"
+      - "pharmacokinetics"
+
+  pubmed:
+    enabled: true
+    categories:
+      - "pharmacovigilance"
+      - "clinical_trials"
+      - "case_reports"
+
+  mimic:
+    enabled: true
+    categories:
+      - "clinical_notes"
+      - "medication_records"
+      - "lab_results"
+
+  formulary:
+    enabled: true
+    categories:
+      - "institutional_drugs"
+      - "dosage_guidelines"
+      - "contraindications"

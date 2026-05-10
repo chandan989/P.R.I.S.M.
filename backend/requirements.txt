@@ -1,0 +1,35 @@
+# P.R.I.S.M. Backend Requirements
+
+# FastAPI and server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# HTTP client
+httpx>=0.25.0
+aiohttp>=3.9.0
+
+# Ollama client
+ollama>=0.1.0
+
+# llama.cpp (for direct model inference)
+llama-cpp-python>=0.2.0
+
+# Knowledge base
+numpy>=1.24.0
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+
+# Cryptography
+cryptography>=41.0.0
+
+# Configuration
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Logging
+python-json-logger>=2.0.0
+
+# Utilities
+tenacity>=8.2.0

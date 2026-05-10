@@ -535,44 +535,45 @@ This combination of extractive rolling and RAM offloading ensures 100% fidelity 
 
 > **Special Track: Unsloth** — *Best fine-tuned Gemma 4 model optimized for a specific, impactful task.*
 
-P.R.I.S.M. fine-tunes Gemma 4 A4B for **structured deliberation output** and **confidence calibration** — teaching the model to produce well-formatted reasoning traces with calibrated probability scores.
+P.R.I.S.M. fine-tunes Gemma 4 A4B using a **Gemma-Native Reserved Token** strategy. Instead of forcing the model to learn noisy, multi-token XML strings (like `<|think|>`), we map the P.R.I.S.M. architecture's structural boundaries to the model's pre-allocated reserved tokens (`<unused0>` through `<unused9>`).
 
-### What We Fine-Tune
+### 🧩 The Reserved Token Strategy
 
-| Adapter | Purpose |
-|---|---|
-| **Deliberation Format Adapter** | Structured `<\|think\|>` output with enumerated hypotheses, probability estimates, and supporting/weakening evidence |
-| **Temperature Scaling Layer** | Post-hoc logprob calibration — single learned scalar validated against Brier/ECE metrics |
+Standard fine-tuning often fails because the tokenizer breaks custom tags into multiple sub-tokens (e.g., `<|think|>` becomes `[<, |, think, |, >]`). This triggers "catastrophic forgetting" as the model exhausts its capacity learning to spell syntax rather than performing clinical reasoning. 
 
-### Training Pipeline
+By using reserved tokens, each P.R.I.S.M. marker becomes a **single atomic integer** in the model's vocabulary.
 
-```python
-from unsloth import FastModel
-from trl import SFTTrainer
+#### **Technical Benefits:**
+*   **MoE Routing Efficiency:** In the 26B MoE architecture, the router can more easily activate "reasoning-specialized" experts when triggered by a single atomic token.
+*   **Reduced Fragmentation:** Eliminates the "syntax barrier," allowing the model's latent clinical knowledge to flow directly into the structured output.
+*   **100% Structural Compliance:** The model cannot misspell or partially generate an atomic token, ensuring the "Glass Box" interface never breaks.
 
-model, tokenizer = FastModel.from_pretrained(
-    model_name="google/gemma-4-a4b",
-    max_seq_length=8192,
-    load_in_4bit=True,
-)
+### 🗺️ The P.R.I.S.M. Token Map
 
-model = FastModel.get_peft_model(
-    model, r=16,
-    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-    lora_alpha=16, lora_dropout=0,
-)
+<div align="center">
 
-trainer = SFTTrainer(
-    model=model,
-    dataset=deliberation_dataset,  # Structured reasoning traces
-    max_seq_length=8192,
-)
-trainer.train()
+| Marker | Category | Purpose | Gemma Token |
+| :--- | :--- | :--- | :--- |
+| **🏷️ `<|think|>`** | **Tag** | Start Deliberation | ` <unused0> ` |
+| **🧠 `<|channel>thought`** | **Tag** | Latent Reasoning Start | ` <unused1> ` |
+| **🏁 `<|channel>`** | **Tag** | Thought Process End | ` <unused2> ` |
+| **🛠️ `<|tool_call>`** | **Tag** | Tool Execution Trigger | ` <unused3> ` |
+| **📦 `<|"|>`** | **Tag** | Parameter Boundary | ` <unused4> ` |
+| **⛓️ `[Logical Chain]`** | **Header** | Core Reasoning Logic | ` <unused5> ` |
+| **⚖️ `[Competing Hypotheses]`** | **Header** | Probability Evaluation | ` <unused6> ` |
+| **🗑️ `[Discarded Paths]`** | **Header** | Counter-factual Analysis | ` <unused7> ` |
+| **🎯 `▶ Selected:`** | **Header** | Final Path Selection | ` <unused8> ` |
+| **❌ `✗ Discarded:`** | **Header** | Rejected Reasoning | ` <unused9> ` |
 
-# Export adapter to HuggingFace Hub
-model.save_pretrained_merged("prism-a4b-deliberation", tokenizer)
-model.push_to_hub("chandan989/prism-a4b-deliberation")
-```
+</div>
+
+<br/>
+
+> **Implementation Note:** The conversion of these markers to atomic tokens happens during the dataset preprocessing phase. This ensures that the model's self-attention mechanism sees a single high-fidelity signal for each structural boundary rather than a sequence of ambiguous punctuation characters.
+
+### ⚙️ Training Configuration
+
+We employ a **Regularized SFT** pipeline (3–5 epochs, 5e-5 LR) with **Completion-only Masking**. This ensures the model only calculates gradients for its reasoning and answers, preserving the foundational pre-trained clinical weights while mastering the P.R.I.S.M. structural output.
 
 ### Deployment After Fine-Tuning
 
