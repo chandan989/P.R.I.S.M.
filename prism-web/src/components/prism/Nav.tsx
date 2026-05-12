@@ -1,6 +1,7 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
+import BackendSettings from "./BackendSettings";
 
 const links = [
   { to: "/", label: "Home" },
@@ -42,6 +43,7 @@ export default function Nav() {
             </NavLink>
           ))}
         </div>
+        <BackendSettings />
         <Link to="/demo" className="pill pill--solid nav-cta">
           <Sparkles size={14} /> Launch Glass Box
         </Link>

@@ -397,7 +397,7 @@ Users who want the detail can get it. Users who just want the answer aren't over
 │                       P.R.I.S.M. ARCHITECTURE                    │
 ├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│   FRONTEND (Next.js)                                             │
+│   FRONTEND (Vite + React)                                        │
 │   ┌──────────────────────────────────────────────────────┐       │
 │   │  Default View:  Answer + badges + source dots        │       │
 │   │  Expert View:   Deliberation tree + calibration      │       │
@@ -440,7 +440,7 @@ Users who want the detail can get it. Users who just want the answer aren't over
 | **Fine-Tuning** | Unsloth | Deliberation format adapter via QLoRA (~16 GB VRAM, 2× faster) + temperature scaling |
 | **Local Hosting** | Ollama / llama.cpp | Base 26B MoE tensor execution, RotorQuant KV cache compression, and containerization |
 | **Backend** | Python (FastAPI) | Local thought block parsing, selective verification, logprob extraction |
-| **Frontend** | Next.js / React Native | Progressive disclosure UI rendering streaming response, deliberation, sources |
+| **Frontend** | Vite + React | Progressive disclosure UI with SSE streaming, deliberation panel, source dots, and configurable backend URL |
 
 ### True Local Privacy: Zero-Data-Egress
 
@@ -624,7 +624,7 @@ The Glass Box MVP is optimized specifically for **polypharmacy contraindication 
 
 - Python 3.10+
 - Node.js 18+
-- Ollama installed natively on your workstation.
+- Ollama installed natively on your workstation (or a cloud notebook running the backend).
 
 **Consumer-grade hardware is fully supported.**
 
@@ -638,7 +638,7 @@ To eliminate the friction of downloading a 16GB 26B parameter model natively for
 2. **Screencast Video:** A comprehensive, unedited video demonstrating the complete local Ollama 26B execution from cold boot to polypharmacy contraindication audit completion.
    - 📺 **[Watch YouTube Walkthrough](#)** *(Replace with your Video URL)*
 
-### Quick Start (Local Production)
+### Quick Start (Local)
 
 ```bash
 git clone https://github.com/chandan989/P.R.I.S.M..git
@@ -647,19 +647,32 @@ cd P.R.I.S.M.
 # Pull the optimized P.R.I.S.M. Gemma 26B MoE Model locally
 ollama pull hf.co/chandan989/gemma-4-26B-A4B-it-MXFP4_MOE.gguf
 
-# Set up backend execution 
+# Set up backend
 cd backend
 pip install -r requirements.txt
-cp .env.example .env
-# Direct your endpoint to localhost:11434 (Local Ollama Engine)
-
-python server.py --port 8000
+cp .env.example .env          # configure MODEL_NAME, ports, CORS, etc.
+python server.py               # starts FastAPI on 0.0.0.0:8000
 
 # In a new terminal — set up frontend
-cd frontend && npm install && npm run dev
+cd prism-web
+npm install
+npm run dev                    # starts Vite dev server on localhost:5173
 ```
 
-Open **<http://localhost:3000>** → ask anything → see the Glass Box locally in action.
+Open **<http://localhost:5173>** → see the Glass Box in action.
+
+### Quick Start (Cloud / Notebook Backend)
+
+If your backend is running in a cloud notebook (Kaggle, Colab, etc.) with an externally exposed URL:
+
+1. Start the frontend locally: `cd prism-web && npm install && npm run dev`
+2. Open **<http://localhost:5173>**
+3. Click the **⚙️ gear icon** in the navigation bar to open **Backend Connection** settings
+4. Paste your notebook's external URL (e.g., `https://xxxx.ngrok-free.app`) and click **Save**
+5. Click **Test** to verify connectivity — a green "✓ Connected" status confirms the link
+6. Navigate to **/audit** or **/demo** and run your first query
+
+> **Automatic fallback:** If the backend is unreachable (no response within 1.5 seconds), the frontend transparently switches to realistic mock data so the UI always works — no blank screens or error walls.
 
 ### Local-First Architecture
 
@@ -677,37 +690,69 @@ Open **<http://localhost:3000>** → ask anything → see the Glass Box locally 
 P.R.I.S.M./
 ├── README.md                    # You are here
 ├── LICENSE                      # MIT License
+├── setup.py                     # System setup (venv, deps, key generation)
 │
 ├── backend/
-│   ├── server.py                # FastAPI server
-│   ├── config.py                # Model endpoint config (.env)
+│   ├── server.py                # FastAPI server (endpoints: /health, /query, /api/audit)
+│   ├── config.py                # Pydantic settings (.env config)
+│   ├── prism_inference.py       # Standalone inference engine (llama.cpp)
+│   ├── .env                     # Environment config (model, ports, CORS)
+│   ├── requirements.txt         # Python dependencies
 │   ├── client/
-│   │   └── gemma_client.py      # Gemma 4 API client (streaming + logprobs)
+│   │   ├── __init__.py
+│   │   └── gemma_client.py      # Gemma 4 API client (Ollama + llama.cpp, streaming)
 │   ├── parsers/
-│   │   ├── deliberation.py      # Thought block parser
-│   │   ├── claim_extractor.py   # Factual claim extraction for selective verification
-│   │   └── logprobs.py          # Logprobs → confidence scores
+│   │   ├── __init__.py
+│   │   ├── deliberation.py      # Thought block parser → Interpretation trees
+│   │   ├── claim_extractor.py   # Pharmacological claim extraction
+│   │   └── logprobs.py          # Logprobs → uncertainty detection
 │   ├── grounding/
-│   │   ├── verifier.py          # Selective claim verification
-│   │   └── knowledge_base.py    # Vector search over curated sources
+│   │   ├── __init__.py
+│   │   └── verifier.py          # Claim verification (🟢🟡🔴⚪ signals)
 │   └── calibration/
-│       ├── temperature.py       # Temperature scaling layer
-│       ├── brier.py             # Brier Score (validation)
-│       └── ece.py               # Expected Calibration Error (validation)
+│       ├── __init__.py
+│       └── conformal.py         # Conformal prediction + temperature scaling
 │
-├── frontend/
+├── prism-web/                   # Frontend (Vite + React + TypeScript)
 │   ├── package.json
-│   ├── app/
-│   │   ├── page.tsx             # Main Glass Box interface
-│   │   ├── layout.tsx           # App layout
-│   │   └── components/
-│   │       ├── DefaultView.tsx        # Answer + badges + dots
-│   │       ├── ExpertView.tsx         # Full deliberation tree
-│   │       ├── ConfidenceBadge.tsx    # ✅ ⚠️ ❓ indicators
-│   │       ├── ConfidenceBar.tsx      # Progress bar
-│   │       ├── SourceDot.tsx          # 🟢🟡🔴 inline badges
-│   │       └── StreamHandler.tsx      # API stream handler
+│   ├── index.html
+│   ├── src/
+│   │   ├── App.tsx              # Router: /, /audit, /how-it-works, /demo
+│   │   ├── lib/
+│   │   │   ├── api.ts           # SSE stream client (configurable backend URL)
+│   │   │   ├── types.ts         # AuditResult, AuditStreamEvent, Signal, Confidence
+│   │   │   └── mock-data.ts     # Realistic mock data (fallback when backend offline)
+│   │   ├── components/prism/
+│   │   │   ├── Nav.tsx               # Navigation bar
+│   │   │   ├── BackendSettings.tsx   # ⚙️ Backend URL configuration popover
+│   │   │   ├── PatientRegimenForm.tsx # Structured patient + drug input form
+│   │   │   ├── CommandCenter.tsx      # Demo scenario textarea + quick actions
+│   │   │   ├── StreamingText.tsx      # Token-by-token answer renderer
+│   │   │   ├── SourceDot.tsx          # 🟢🟡🔴⚪ inline verification dots
+│   │   │   ├── DeliberationTree.tsx   # Expert View reasoning tree
+│   │   │   ├── ConfidenceBadge.tsx    # ✅ ⚠️ ❓ confidence indicators
+│   │   │   ├── SkeletonLoader.tsx     # Loading shimmer
+│   │   │   └── StalenessWarning.tsx   # Knowledge base age warning
+│   │   ├── pages/prism/
+│   │   │   ├── Landing.tsx      # Home page
+│   │   │   ├── Audit.tsx        # Glass Box audit interface
+│   │   │   ├── Demo.tsx         # Pre-built demo scenarios
+│   │   │   └── HowItWorks.tsx   # Architecture explainer
+│   │   └── styles/
+│   │       └── prism.css        # Complete design system
 │   └── public/
+│       └── Logo.svg
+│
+├── knowledge_base/              # Curated source documents for verification
+│   ├── knowledge_base.py        # KnowledgeBase class (FAISS + MiniLM-L6 embeddings)
+│   ├── sources/                 # FDA Drug Labels, DrugBank, PubMed, MIMIC-IV
+│   ├── index/                   # FAISS vector index + metadata.json
+│   └── delta_agent/             # Nightly delta update agent
+│       ├── pull_delta.py        # Encrypted delta bundle puller
+│       ├── verify_manifest.py   # Ed25519 signature + hash chain verification
+│       ├── apply_delta.py       # Atomic index update with rollback
+│       ├── keys/                # Ed25519 + AES-256-GCM keys (generated by setup.py)
+│       └── config.yaml          # Update schedule, upstream URL, key paths
 │
 ├── training/
 │   ├── finetune.py              # Unsloth fine-tuning (deliberation adapter)
@@ -716,15 +761,6 @@ P.R.I.S.M./
 │   │   ├── brier_eval.py        # Brier Score evaluation
 │   │   └── ece_eval.py          # ECE evaluation
 │   └── adapters/                # Exported LoRA adapters
-│
-├── knowledge_base/              # Curated source documents for verification
-│   ├── sources/                 # FDA Drug Labels, DrugBank, PubMed, MIMIC-IV
-│   ├── index/                   # FAISS/ChromaDB vector index (auto-updated)
-│   └── delta_agent/             # Nightly delta update agent
-│       ├── pull_delta.py        # Encrypted delta bundle puller
-│       ├── verify_manifest.py   # Ed25519 signature + hash chain verification
-│       ├── apply_delta.py       # Atomic index update with rollback
-│       └── config.yaml          # Update schedule, upstream URL, key paths
 │
 ├── scripts/
 │   ├── deploy_model.py          # Upload fine-tuned model to hosting
@@ -763,7 +799,7 @@ Rather than pitching an unfinished super-architecture, we've tightly scoped the 
 ### Hackathon MVP Deliverable (Completed)
 
 - [x] **Architecture Design:** Zero-Data-Egress Offline Pipeline established.
-- [x] **UI/UX Prototype:** Next.js Progressive Disclosure frontend actively running.
+- [x] **UI/UX Prototype:** Vite + React Progressive Disclosure frontend with SSE streaming, configurable backend URL, and automatic mock fallback.
 - [x] **Unsloth Fine-Tuning:** Executed the MXFP4 structured deliberation QLoRA training over broad clinical datasets.
 - [x] **Live Verification Engine:** The MVP executes incredibly fast local **ultra-lightweight CPU dense embeddings (ONNX-optimized MiniLM-L6)** against an index of **FDA Drug Labels**, **DrugBank**, **PubMed**, and **MIMIC-IV**.
 - [x] **Knowledge Base Update Protocol:** Secure nightly encrypted delta-pull pipeline with Ed25519 signing, AES-256-GCM encryption, atomic application, and staleness safeguards.

@@ -1,7 +1,31 @@
 import type { AuditResult, AuditStreamEvent } from "./types";
 import { pickMockForQuery } from "./mock-data";
 
-const API_BASE = "http://localhost:8000";
+const STORAGE_KEY = "prism_api_url";
+const DEFAULT_BASE = "http://localhost:8000";
+
+/** Get the current backend URL. Priority: localStorage → env → fallback. */
+export function getApiBase(): string {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && stored.trim()) return stored.trim().replace(/\/+$/, "");
+  } catch { /* SSR-safe */ }
+  if (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_BASE) {
+    return ((import.meta as any).env.VITE_API_BASE as string).replace(/\/+$/, "");
+  }
+  return DEFAULT_BASE;
+}
+
+/** Persist a new backend URL (or clear it to revert to default). */
+export function setApiBase(url: string | null): void {
+  try {
+    if (url && url.trim()) {
+      localStorage.setItem(STORAGE_KEY, url.trim());
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch { /* SSR-safe */ }
+}
 
 export type StreamHandler = (event: AuditStreamEvent) => void;
 
@@ -19,7 +43,7 @@ export async function streamAudit(
     if (signal) signal.addEventListener("abort", () => ctrl.abort());
     const t = setTimeout(() => ctrl.abort(), 1500);
 
-    const res = await fetch(`${API_BASE}/api/audit`, {
+    const res = await fetch(`${getApiBase()}/api/audit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, session_id: cryptoRandom() }),

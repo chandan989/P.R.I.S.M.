@@ -1707,3 +1707,187 @@ p {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
+
+/* ── Backend Settings Popover ──────────────────────────────────── */
+
+.backend-settings-wrap {
+  position: relative;
+}
+
+.nav-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--canvas-base);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.nav-icon-btn:hover {
+  color: var(--ink-primary);
+  border-color: var(--border-strong);
+  background: var(--canvas-surface);
+}
+
+.backend-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 380px;
+  background: var(--canvas-dark);
+  color: var(--ink-inverse);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-float);
+  z-index: 60;
+  animation: fadeIn 0.2s ease;
+  border: 1px solid var(--border-dark);
+}
+
+.backend-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: var(--space-4);
+}
+
+.backend-popover-close {
+  background: none;
+  border: none;
+  color: var(--ink-inverse-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backend-popover-close:hover {
+  color: var(--ink-inverse);
+  background: rgba(255,255,255,0.08);
+}
+
+.backend-popover-label {
+  font-size: var(--text-caption);
+  color: var(--ink-inverse-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+  display: block;
+}
+
+.backend-popover-row {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.backend-popover-input {
+  flex: 1;
+  background: var(--canvas-dark-pill);
+  border: 1px solid var(--border-dark);
+  color: var(--ink-inverse);
+  font-family: var(--font-mono);
+  font-size: var(--text-ui);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.backend-popover-input:focus {
+  border-color: var(--aura-cyan);
+}
+
+.backend-popover-input::placeholder {
+  color: var(--ink-inverse-muted);
+  opacity: 0.5;
+}
+
+.backend-popover-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.backend-popover-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--canvas-dark-pill);
+  border: 1px solid var(--border-dark);
+  color: var(--ink-inverse);
+  font-size: var(--text-ui);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.backend-popover-btn:hover {
+  background: var(--canvas-dark-hover);
+  border-color: #555;
+}
+
+.backend-popover-btn--primary {
+  background: linear-gradient(135deg, #FF2E93, #FF8008);
+  border: none;
+  color: white;
+}
+
+.backend-popover-btn--primary:hover {
+  opacity: 0.9;
+}
+
+.backend-popover-status {
+  font-size: var(--text-ui);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+  min-height: 20px;
+}
+
+.backend-popover-hint {
+  font-size: var(--text-caption);
+  color: var(--ink-inverse-muted);
+  word-break: break-all;
+}
+
+.backend-popover-hint code {
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.backend-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--ink-inverse-muted);
+  border-top-color: var(--aura-cyan);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .backend-settings-wrap {
+    display: none;
+  }
+}
