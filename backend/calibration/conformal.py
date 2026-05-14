@@ -198,13 +198,10 @@ class TemperatureScaler:
         """Compute gradient for temperature optimization."""
         n = len(labels)
 
-        # Get predicted probabilities for correct class
-        correct_probs = probs[np.arange(n), labels]
-
-        # Compute gradient
-        grad = np.sum(
-            (logits / self.temperature**2) * (correct_probs - 1.0)
-        ) / n
+        # d(NLL)/dT = (z_y - sum_j p_j z_j) / T^2, averaged over samples.
+        correct_logits = logits[np.arange(n), labels]
+        expected_logits = np.sum(probs * logits, axis=1)
+        grad = np.mean((correct_logits - expected_logits) / (self.temperature ** 2))
 
         return grad
 

@@ -1,0 +1,11 @@
+{
+  "doc_id": "dosage_guidelines_001",
+  "content": "Standard dosage guidelines for common medications: Warfarin 2-10 mg daily, titrated to INR 2-3 for most indications. Metformin 500-2000 mg daily in divided doses. Lisinopril 10-40 mg daily for hypertension. Atorvastatin 10-80 mg daily for hyperlipidemia. Amlodipine 5-10 mg daily for hypertension. Levothyroxine 25-200 mcg daily based on TSH. Omeprazole 20-40 mg daily for GERD. Sertraline 25-200 mg daily for depression. Gabapentin 300-3600 mg daily in divided doses. Prednisone 5-60 mg daily depending on condition. Furosemide 20-80 mg daily for edema. Allopurinol 100-300 mg daily for gout. Doses should be individualized based on patient factors.",
+  "metadata": {
+    "source": "Formulary",
+    "category": "dosage",
+    "last_updated": "2024-01-15"
+  },
+  "added_at": "2026-05-13T17:12:47.587206",
+  "content_hash": "fb5a7a056759b8a6c0d469900aa6cd9b12a72c05043c1bec2124157cddf797eb"
+}

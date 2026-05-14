@@ -74,7 +74,9 @@ class GemmaClient:
         n_ctx: int = 4096,
         n_gpu_layers: int = 28,
         n_threads: int = 4,
-        verbose: bool = False
+        verbose: bool = False,
+        model_name: Optional[str] = None,
+        backend_type: Optional[Union[str, BackendType]] = None
     ):
         """
         Initialize the Gemma client.
@@ -91,10 +93,17 @@ class GemmaClient:
             n_threads: Number of CPU threads (for llama.cpp backend)
             verbose: Enable verbose logging (for llama.cpp backend)
         """
+        if backend_type is not None:
+            backend = backend_type
+        if model_name is not None:
+            model = model_name
+
         self.backend = BackendType(backend) if isinstance(backend, str) else backend
         self.host = host
         self.port = port
         self.model = model
+        self.model_name = model
+        self.backend_type = self.backend
         self.model_path = model_path
         self.timeout = timeout
         self.n_ctx = n_ctx
@@ -115,6 +124,10 @@ class GemmaClient:
             self._init_llama_cpp()
         else:
             raise ValueError(f"Unsupported backend: {backend}")
+
+    def _generate_prompt(self, prompt: str) -> str:
+        """Wrap a raw prompt in the simple user/assistant format used by tests."""
+        return self._messages_to_prompt([{"role": "user", "content": prompt}])
 
     def _init_llama_cpp(self):
         """Initialize llama.cpp model."""
@@ -390,13 +403,46 @@ class GemmaClient:
         """
         logprobs = []
 
-        # Ollama may provide logprobs in different formats
-        if "prompt_eval_count" in chunk_data:
-            # This is a completion chunk, not token-level
-            pass
+        # Ollama provides logprobs in the "logprobs" field
+        # Format: {"logprobs": {"tokens": [...], "values": [...]}}
+        if "logprobs" in chunk_data:
+            logprobs_data = chunk_data["logprobs"]
 
-        # TODO: Parse actual logprobs when available from Ollama
-        # The format depends on Ollama's implementation
+            # Handle different Ollama logprobs formats
+            if isinstance(logprobs_data, dict):
+                tokens = logprobs_data.get("tokens", [])
+                values = logprobs_data.get("values", [])
+
+                # Create TokenLogprob objects
+                for i, (token, logprob) in enumerate(zip(tokens, values)):
+                    logprobs.append(TokenLogprob(
+                        token=token,
+                        logprob=float(logprob),
+                        token_id=i  # Ollama doesn't provide token IDs
+                    ))
+
+            elif isinstance(logprobs_data, list):
+                # Alternative format: list of logprob objects
+                for i, lp in enumerate(logprobs_data):
+                    if isinstance(lp, dict):
+                        logprobs.append(TokenLogprob(
+                            token=lp.get("token", ""),
+                            logprob=float(lp.get("logprob", 0.0)),
+                            token_id=lp.get("token_id", i)
+                        ))
+
+        # Check for top_k logprobs (alternative format)
+        if "top_logprobs" in chunk_data:
+            top_logprobs = chunk_data["top_logprobs"]
+            if isinstance(top_logprobs, list) and len(top_logprobs) > 0:
+                # Use the first (selected) token's logprob
+                first_token = top_logprobs[0]
+                if isinstance(first_token, dict):
+                    logprobs.append(TokenLogprob(
+                        token=first_token.get("token", ""),
+                        logprob=float(first_token.get("logprob", 0.0)),
+                        token_id=first_token.get("token_id", 0)
+                    ))
 
         return logprobs
 

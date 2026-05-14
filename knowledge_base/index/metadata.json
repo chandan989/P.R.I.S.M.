@@ -1,0 +1,14 @@
+{
+  "warfarin_interactions_001": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "../knowledge_base/sources/fda/interactions/warfarin_interactions_001.json",
+    "added_at": "2026-05-13T17:12:47.584521"
+  },
+  "dosage_guidelines_001": {
+    "source": "Formulary",
+    "category": "dosage",
+    "path": "../knowledge_base/sources/formulary/dosage/dosage_guidelines_001.json",
+    "added_at": "2026-05-13T17:12:47.587206"
+  }
+}

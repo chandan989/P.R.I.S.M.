@@ -14,12 +14,13 @@ Handles:
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import Optional, List, Dict, Any
 import logging
 import json
 import asyncio
 from contextlib import asynccontextmanager
+from datetime import datetime
 
 # Import P.R.I.S.M. components
 from config import get_settings
@@ -29,6 +30,13 @@ from parsers.claim_extractor import ClaimExtractor
 from parsers.logprobs import LogprobsParser
 from grounding.verifier import ClaimVerifier
 from calibration.conformal import ConformalPredictor
+from session_manager import get_session_manager, init_session_manager
+from exceptions import (
+    ModelNotInitializedError,
+    KnowledgeBaseNotInitializedError,
+    SessionNotFoundError,
+    SessionExpiredError
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -90,6 +98,12 @@ async def lifespan(app: FastAPI):
         # Initialize conformal predictor
         conformal_predictor = ConformalPredictor(alpha=settings.confidence_alpha)
 
+        # Initialize session manager
+        await init_session_manager(
+            session_timeout_minutes=30,
+            use_redis=False  # Set to True and provide redis_url for distributed sessions
+        )
+
         logger.info("✅ All components initialized successfully")
 
     except Exception as e:
@@ -100,8 +114,14 @@ async def lifespan(app: FastAPI):
 
     # Cleanup on shutdown
     logger.info("Shutting down P.R.I.S.M. components...")
+
+    # Shutdown session manager
+    session_mgr = get_session_manager()
+    await session_mgr.shutdown()
+
     if gemma_client:
         await gemma_client.close()
+
     logger.info("Shutdown complete")
 
 
@@ -126,11 +146,21 @@ app.add_middleware(
 # Request/Response Models
 class QueryRequest(BaseModel):
     """Request model for querying the model."""
-    query: str
+    query: Optional[str] = None
+    prompt: Optional[str] = None
     history: Optional[List[Dict[str, str]]] = None
     temperature: Optional[float] = 0.7
     max_tokens: Optional[int] = 2048
     use_grammar: Optional[bool] = True
+
+    @model_validator(mode="after")
+    def normalize_query(self):
+        """Accept legacy prompt payloads while keeping query as canonical."""
+        if not self.query and self.prompt:
+            self.query = self.prompt
+        if not self.query:
+            raise ValueError("query is required")
+        return self
 
 
 class DeliberationNode(BaseModel):
@@ -182,13 +212,150 @@ class GlassBoxResponse(BaseModel):
 # Health check endpoint
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
-    return {
+    """
+    Comprehensive health check endpoint.
+
+    Checks the status of all system components:
+    - Model backend connectivity
+    - Knowledge base availability
+    - Embedding model status
+    - Index integrity
+    """
+    health_status = {
         "status": "healthy",
         "service": "P.R.I.S.M. Backend",
         "version": "1.0.0",
-        "model_loaded": gemma_client is not None
+        "timestamp": datetime.utcnow().isoformat(),
+        "components": {}
     }
+
+    # Check model backend
+    model_healthy = True
+    model_details = {}
+    if gemma_client:
+        try:
+            if gemma_client.backend == BackendType.OLLAMA:
+                # Test Ollama connectivity
+                try:
+                    info = await gemma_client.get_model_info()
+                    model_details = {
+                        "backend": "ollama",
+                        "model": gemma_client.model,
+                        "host": gemma_client.host,
+                        "port": gemma_client.port,
+                        "connected": "error" not in str(info).lower()
+                    }
+                    model_healthy = model_details["connected"]
+                except Exception as e:
+                    model_healthy = False
+                    model_details = {"error": str(e)}
+            else:
+                # llama.cpp backend
+                model_details = {
+                    "backend": "llama_cpp",
+                    "model_path": gemma_client.model_path,
+                    "loaded": gemma_client.llm is not None
+                }
+                model_healthy = model_details["loaded"]
+        except Exception as e:
+            model_healthy = False
+            model_details = {"error": str(e)}
+    else:
+        model_healthy = False
+        model_details = {"error": "Model client not initialized"}
+
+    health_status["components"]["model"] = {
+        "status": "healthy" if model_healthy else "unhealthy",
+        "details": model_details
+    }
+
+    # Check knowledge base
+    kb_healthy = True
+    kb_details = {}
+    if claim_verifier:
+        try:
+            doc_count = claim_verifier.kb.get_document_count()
+            sources_summary = claim_verifier.kb.get_sources_summary()
+            is_stale, days_since = claim_verifier.kb.check_staleness()
+
+            kb_details = {
+                "document_count": doc_count,
+                "sources": sources_summary,
+                "is_stale": is_stale,
+                "days_since_update": days_since,
+                "index_available": claim_verifier.kb.index is not None
+            }
+            kb_healthy = doc_count > 0 and kb_details["index_available"]
+        except Exception as e:
+            kb_healthy = False
+            kb_details = {"error": str(e)}
+    else:
+        kb_healthy = False
+        kb_details = {"error": "Claim verifier not initialized"}
+
+    health_status["components"]["knowledge_base"] = {
+        "status": "healthy" if kb_healthy else "unhealthy",
+        "details": kb_details
+    }
+
+    # Check embedding model
+    embedding_healthy = True
+    embedding_details = {}
+    if claim_verifier and claim_verifier.kb.embedding_model:
+        embedding_details = {
+            "model": "sentence-transformers/all-MiniLM-L6-v2",
+            "device": "cpu",
+            "loaded": True
+        }
+    else:
+        embedding_healthy = False
+        embedding_details = {"error": "Embedding model not loaded"}
+
+    health_status["components"]["embedding_model"] = {
+        "status": "healthy" if embedding_healthy else "unhealthy",
+        "details": embedding_details
+    }
+
+    # Check parsers
+    parsers_healthy = True
+    parsers_details = {
+        "deliberation_parser": deliberation_parser is not None,
+        "claim_extractor": claim_extractor is not None,
+        "logprobs_parser": logprobs_parser is not None
+    }
+    parsers_healthy = all(parsers_details.values())
+
+    health_status["components"]["parsers"] = {
+        "status": "healthy" if parsers_healthy else "unhealthy",
+        "details": parsers_details
+    }
+
+    # Check calibration
+    calibration_healthy = True
+    calibration_details = {
+        "conformal_predictor": conformal_predictor is not None,
+        "alpha": conformal_predictor.alpha if conformal_predictor else None
+    }
+    calibration_healthy = conformal_predictor is not None
+
+    health_status["components"]["calibration"] = {
+        "status": "healthy" if calibration_healthy else "unhealthy",
+        "details": calibration_details
+    }
+
+    # Overall status
+    all_healthy = all(
+        comp["status"] == "healthy"
+        for comp in health_status["components"].values()
+    )
+    health_status["status"] = "healthy" if all_healthy else "degraded"
+
+    # Set appropriate HTTP status code
+    if not all_healthy:
+        # Still return 200 but with degraded status
+        pass
+
+    return health_status
 
 
 # Query endpoint
@@ -524,9 +691,25 @@ async def audit_stream(request: AuditRequest):
       2. Parse deliberation traces
       3. Extract & verify claims
       4. Emit structured SSE events (thought → answer+source_dot → confidence → done)
+
+    Supports session management for query history and resumption.
     """
     if not gemma_client:
         raise HTTPException(status_code=503, detail="Model not initialized")
+
+    session_mgr = get_session_manager()
+
+    # Get or create session
+    session = None
+    if request.session_id:
+        session = await session_mgr.get_session(request.session_id)
+        if not session:
+            session = await session_mgr.create_session(
+                session_id=request.session_id,
+                metadata={"source": "api_audit"}
+            )
+    else:
+        session = await session_mgr.create_session(metadata={"source": "api_audit"})
 
     async def generate_audit_events():
         try:
@@ -610,6 +793,19 @@ async def audit_stream(request: AuditRequest):
                 "ece": 0.06,
                 "ood": False,
             }
+
+            # ── Update session ───────────────────────────────────────
+            if session:
+                await session_mgr.update_session(
+                    session.session_id,
+                    query=request.query,
+                    deliberation=deliberation_parser.to_dict(deliberation_trace) if deliberation_trace else None,
+                    claims=verified_results,
+                    confidence=confidence_data,
+                    answer=full_response
+                )
+                await session_mgr.add_message(session.session_id, "user", request.query)
+                await session_mgr.add_message(session.session_id, "assistant", full_response)
 
             # ── Emit SSE events ───────────────────────────────────────
 

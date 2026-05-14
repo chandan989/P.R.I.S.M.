@@ -1,0 +1,12 @@
+{
+  "doc_id": "warfarin_interactions_001",
+  "content": "Warfarin has numerous significant drug interactions. Strong CYP3A4 inhibitors including clarithromycin, erythromycin, azole antifungals, and protease inhibitors can increase warfarin levels and bleeding risk. CYP2C9 inhibitors such as fluconazole and amiodarone also increase warfarin effect. Antibiotics that alter gut flora may enhance warfarin effect. NSAIDs and antiplatelet agents increase bleeding risk when combined with warfarin. Certain herbal supplements including St. John's wort decrease warfarin effect. Patients should be monitored closely when starting or stopping interacting medications.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "warfarin",
+    "last_updated": "2024-01-15"
+  },
+  "added_at": "2026-05-13T17:12:47.584521",
+  "content_hash": "0ef772aa312d2efbedfdddcb7d52cfa6e074475bf9e19b5f35167a55a51d4bb0"
+}

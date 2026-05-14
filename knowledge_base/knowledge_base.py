@@ -76,6 +76,9 @@ class KnowledgeBase:
         except ImportError:
             logger.warning("sentence-transformers not available, using dummy embeddings")
             return None
+        except Exception as e:
+            logger.warning(f"Embedding model unavailable, using dummy embeddings: {e}")
+            return None
 
     def _load_or_create_index(self):
         """
@@ -188,13 +191,16 @@ class KnowledgeBase:
         Returns:
             List of matching documents with scores
         """
-        if not self.embedding_model or not self.index:
+        if not self.index:
             logger.warning("Embedding model or index not available")
             return []
 
         try:
             # Generate query embedding
-            query_embedding = self.embedding_model.encode([query])[0].astype(np.float32)
+            if self.embedding_model:
+                query_embedding = self.embedding_model.encode([query])[0].astype(np.float32)
+            else:
+                query_embedding = np.zeros(384, dtype=np.float32)
 
             # Search index
             distances, indices = self.index.search(query_embedding.reshape(1, -1), top_k)

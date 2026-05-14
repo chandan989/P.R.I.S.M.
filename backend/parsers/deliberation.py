@@ -189,38 +189,37 @@ class DeliberationParser:
         if not hypothesis_section:
             return hypotheses
 
-        # Parse each hypothesis
-        for match in self.hypothesis_pattern.finditer(hypothesis_section):
-            interpretation = match.group(1).strip()
-            probability_str = match.group(2)
+        current = None
+        for line in hypothesis_section.splitlines():
+            stripped = line.strip()
+            if not stripped:
+                continue
 
-            # Parse probability
-            try:
-                probability = float(probability_str) / 100.0
-            except ValueError:
-                probability = 0.0
+            match = self.hypothesis_pattern.match(stripped)
+            if match:
+                if current:
+                    hypotheses.append(current)
 
-            # Extract supporting/weakening evidence
-            supporting = []
-            weakening = []
+                try:
+                    probability = float(match.group(2)) / 100.0
+                except ValueError:
+                    probability = 0.0
 
-            # Look for evidence after this hypothesis
-            evidence_text = hypothesis_section[match.end():]
-            for ev_match in self.evidence_pattern.finditer(evidence_text):
-                evidence_type = ev_match.group(1).lower()
-                evidence_content = ev_match.group(2).strip()
+                current = Hypothesis(
+                    interpretation=match.group(1).strip(),
+                    probability=probability,
+                    supporting_evidence=[],
+                    weakening_evidence=[]
+                )
+                continue
 
-                if evidence_type == "supporting":
-                    supporting.append(evidence_content)
-                elif evidence_type == "weakening":
-                    weakening.append(evidence_content)
+            if current and stripped.lower().startswith("supporting:"):
+                current.supporting_evidence.append(stripped.split(":", 1)[1].strip())
+            elif current and stripped.lower().startswith("weakening:"):
+                current.weakening_evidence.append(stripped.split(":", 1)[1].strip())
 
-            hypotheses.append(Hypothesis(
-                interpretation=interpretation,
-                probability=probability,
-                supporting_evidence=supporting,
-                weakening_evidence=weakening
-            ))
+        if current:
+            hypotheses.append(current)
 
         return hypotheses
 
@@ -282,8 +281,13 @@ class DeliberationParser:
         if not chain_section:
             return steps
 
-        # Parse each step
-        for match in self.step_pattern.finditer(chain_section):
+        # Parse each step line by line so single-line numbered steps do not
+        # consume the remainder of the section.
+        for line in chain_section.splitlines():
+            match = re.match(r"^\s*(\d+)\.\s*(.+?)\s*$", line)
+            if not match:
+                continue
+
             step_num = int(match.group(1))
             description = match.group(2).strip()
 

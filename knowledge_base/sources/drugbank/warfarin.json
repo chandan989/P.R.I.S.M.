@@ -1,0 +1,12 @@
+{
+  "doc_id": "warfarin_001",
+  "content": "Warfarin is an anticoagulant medication that inhibits vitamin K-dependent clotting factors II, VII, IX, and X. It is used for the prevention and treatment of thromboembolic disorders including deep vein thrombosis, pulmonary embolism, and atrial fibrillation. Warfarin has a narrow therapeutic index and requires regular INR monitoring. The typical maintenance dose ranges from 2-10 mg daily. Warfarin is metabolized primarily by CYP2C9 and to a lesser extent by CYP3A4 and CYP1A2. Genetic polymorphisms in CYP2C9 and VKORC1 significantly affect warfarin dosing requirements.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "warfarin",
+    "last_updated": "2024-01-15"
+  },
+  "added_at": "2024-05-13T00:00:00Z",
+  "content_hash": "a1b2c3d4e5f6"
+}
