@@ -72,8 +72,10 @@ class GemmaClient:
         model_path: Optional[str] = None,
         timeout: int = 300,
         n_ctx: int = 4096,
-        n_gpu_layers: int = 28,
+        n_gpu_layers: int = -1,  # Default to all layers
         n_threads: int = 4,
+        n_batch: int = 1024,      # Faster prefill
+        tensor_split: Optional[List[float]] = [0.5, 0.5], # Dual T4 split
         verbose: bool = False,
         model_name: Optional[str] = None,
         backend_type: Optional[Union[str, BackendType]] = None
@@ -91,6 +93,8 @@ class GemmaClient:
             n_ctx: Context window size (for llama.cpp backend)
             n_gpu_layers: Number of layers to offload to GPU (for llama.cpp backend)
             n_threads: Number of CPU threads (for llama.cpp backend)
+            n_batch: Batch size for prompt processing
+            tensor_split: Split ratio for multi-GPU setups
             verbose: Enable verbose logging (for llama.cpp backend)
         """
         if backend_type is not None:
@@ -109,6 +113,8 @@ class GemmaClient:
         self.n_ctx = n_ctx
         self.n_gpu_layers = n_gpu_layers
         self.n_threads = n_threads
+        self.n_batch = n_batch
+        self.tensor_split = tensor_split
         self.verbose = verbose
         self.base_url = f"http://{host}:{port}"
 
@@ -151,6 +157,9 @@ class GemmaClient:
                 n_ctx=self.n_ctx,
                 n_gpu_layers=self.n_gpu_layers,
                 n_threads=self.n_threads,
+                n_batch=self.n_batch,
+                tensor_split=self.tensor_split,
+                offload_kqv=True,
                 type_k=llama_cpp.GGML_TYPE_Q8_0,
                 type_v=llama_cpp.GGML_TYPE_Q8_0,
                 flash_attn=True,
@@ -355,16 +364,23 @@ class GemmaClient:
         """
         thought_blocks = []
 
-        # Look for thought channel markers
-        # Gemma 4 uses <|channel>thought\n ... <|channel>|
-        thought_start = "<|channel>thought\n"
-        thought_end = "<|channel>|"
+        # Look for thought markers
+        # Gemma 4 uses <unused0> for deliberation start and <unused1> for end
+        thought_start = "<unused0>"
+        thought_end = "<unused1>"
 
         start_pos = 0
         while True:
             start_idx = text.find(thought_start, start_pos)
             if start_idx == -1:
-                break
+                # Try legacy markers as fallback
+                thought_start_legacy = "<|channel>thought\n"
+                thought_end_legacy = "<|channel>|"
+                start_idx = text.find(thought_start_legacy, start_pos)
+                if start_idx == -1:
+                    break
+                thought_start = thought_start_legacy
+                thought_end = thought_end_legacy
 
             end_idx = text.find(thought_end, start_idx)
             if end_idx == -1:

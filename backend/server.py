@@ -82,8 +82,10 @@ async def lifespan(app: FastAPI):
             model=settings.model_name,
             model_path=settings.model_path,
             n_ctx=settings.n_ctx,
-            n_gpu_layers=settings.n_gpu_layers,
+            n_gpu_layers=-1,  # Offload all layers to GPU
             n_threads=settings.n_threads,
+            n_batch=1024,      # Faster prefill on dual T4
+            tensor_split=[0.5, 0.5], # Split workload 50/50 across dual T4s
             verbose=settings.verbose
         )
 
