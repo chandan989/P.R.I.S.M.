@@ -4,14 +4,18 @@ import { pickMockForQuery } from "./mock-data";
 const STORAGE_KEY = "prism_api_url";
 const DEFAULT_BASE = "http://localhost:8000";
 
+export function normalizeApiBase(url: string): string {
+  return url.trim().replace(/\/+$/, "");
+}
+
 /** Get the current backend URL. Priority: localStorage → env → fallback. */
 export function getApiBase(): string {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && stored.trim()) return stored.trim().replace(/\/+$/, "");
+    if (stored && stored.trim()) return normalizeApiBase(stored);
   } catch { /* SSR-safe */ }
-  if (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_BASE) {
-    return ((import.meta as any).env.VITE_API_BASE as string).replace(/\/+$/, "");
+  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) {
+    return normalizeApiBase(import.meta.env.VITE_API_BASE);
   }
   return DEFAULT_BASE;
 }
@@ -20,7 +24,7 @@ export function getApiBase(): string {
 export function setApiBase(url: string | null): void {
   try {
     if (url && url.trim()) {
-      localStorage.setItem(STORAGE_KEY, url.trim());
+      localStorage.setItem(STORAGE_KEY, normalizeApiBase(url));
     } else {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -41,7 +45,7 @@ export async function streamAudit(
   try {
     const ctrl = new AbortController();
     if (signal) signal.addEventListener("abort", () => ctrl.abort());
-    const t = setTimeout(() => ctrl.abort(), 1500);
+    const t = setTimeout(() => ctrl.abort(), 20000);
 
     const res = await fetch(`${getApiBase()}/api/audit`, {
       method: "POST",
@@ -64,12 +68,17 @@ export async function streamAudit(
       for (const part of parts) {
         const line = part.trim();
         if (!line.startsWith("data:")) continue;
+        let json: unknown;
         try {
-          const json = JSON.parse(line.slice(5).trim());
-          onEvent(json as AuditStreamEvent);
+          json = JSON.parse(line.slice(5).trim());
         } catch {
           /* ignore malformed */
+          continue;
         }
+        if ((json as AuditStreamEvent)?.type === "error") {
+          throw new Error((json as AuditStreamEvent).content ?? "Backend error");
+        }
+        onEvent(json as AuditStreamEvent);
       }
     }
     onEvent({ type: "done" });

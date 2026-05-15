@@ -273,16 +273,9 @@ class GemmaClient:
         try:
             import llama_cpp
 
-            # Tokenize prompt
-            prompt_tokens = self.llm.tokenize(
-                prompt.encode("utf-8"),
-                add_bos=False,
-                special=True
-            )
-
             # Prepare generation parameters
             gen_params = {
-                "tokens": prompt_tokens,
+                "prompt": prompt,
                 "max_tokens": max_tokens,
                 "temperature": temperature,
                 "top_p": 0.85,
@@ -297,7 +290,7 @@ class GemmaClient:
 
             if stream:
                 # Stream generation
-                for chunk in self.llm(**gen_params, stream=True):
+                for chunk in self.llm.create_completion(**gen_params, stream=True):
                     text = chunk["choices"][0]["text"]
                     if text:
                         yield GenerationChunk(
@@ -308,7 +301,7 @@ class GemmaClient:
                         )
             else:
                 # Non-streaming generation
-                output = self.llm(**gen_params)
+                output = self.llm.create_completion(**gen_params)
                 text = output["choices"][0]["text"]
 
                 yield GenerationChunk(

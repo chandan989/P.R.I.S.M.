@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Settings, X, Check, RotateCcw, Wifi, WifiOff } from "lucide-react";
-import { getApiBase, setApiBase } from "@/lib/api";
+import { getApiBase, normalizeApiBase, setApiBase } from "@/lib/api";
 
 interface Props {
   className?: string;
@@ -29,7 +29,7 @@ export default function BackendSettings({ className }: Props) {
 
   const save = () => {
     setApiBase(url.trim() || null);
-    checkConnection(url.trim() || getApiBase());
+    checkConnection(getApiBase());
   };
 
   const reset = () => {
@@ -39,11 +39,11 @@ export default function BackendSettings({ className }: Props) {
   };
 
   const checkConnection = async (target?: string) => {
-    const base = target || getApiBase();
+    const base = normalizeApiBase(target || getApiBase());
     setStatus("checking");
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 3000);
+      const t = setTimeout(() => ctrl.abort(), 15000);
       const res = await fetch(`${base}/health`, { signal: ctrl.signal });
       clearTimeout(t);
       setStatus(res.ok ? "ok" : "fail");
