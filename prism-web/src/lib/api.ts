@@ -45,7 +45,7 @@ export async function streamAudit(
   try {
     const ctrl = new AbortController();
     if (signal) signal.addEventListener("abort", () => ctrl.abort());
-    const t = setTimeout(() => ctrl.abort(), 20000);
+    const t = setTimeout(() => ctrl.abort(), 90000);
 
     const res = await fetch(`${getApiBase()}/api/audit`, {
       method: "POST",
