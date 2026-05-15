@@ -45,7 +45,7 @@ export async function streamAudit(
   try {
     const ctrl = new AbortController();
     if (signal) signal.addEventListener("abort", () => ctrl.abort());
-    const t = setTimeout(() => ctrl.abort(), 180000);
+    // No hardcoded timeout — let the slow dual-T4 Kaggle backend take as long as it needs
 
     const res = await fetch(`${getApiBase()}/api/audit`, {
       method: "POST",
