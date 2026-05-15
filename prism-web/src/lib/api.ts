@@ -53,7 +53,6 @@ export async function streamAudit(
       body: JSON.stringify({ query, session_id: cryptoRandom() }),
       signal: ctrl.signal,
     });
-    clearTimeout(t);
     if (!res.ok || !res.body) throw new Error("Backend not OK");
 
     const reader = res.body.getReader();
@@ -84,63 +83,13 @@ export async function streamAudit(
     onEvent({ type: "done" });
   } catch (err) {
     console.error("PRISM Backend Error:", err);
-    // Fallback: simulate stream from mock data
-    await simulateStream(query, onEvent, signal);
+    // Rethrow instead of falling back to mock data
+    throw err;
   }
 }
 
 function cryptoRandom() {
   return Math.random().toString(36).slice(2);
-}
-
-async function simulateStream(
-  query: string,
-  onEvent: StreamHandler,
-  signal?: AbortSignal,
-): Promise<void> {
-  const result: AuditResult = pickMockForQuery(query);
-
-  // 1. Emit thought (deliberation) immediately
-  onEvent({ type: "thought", content: JSON.stringify({
-    interpretations: result.interpretations,
-    discarded: result.discarded,
-    selected: result.selected,
-  }) });
-
-  // 2. Stream the answer roughly 50ms per token, replacing markers with source dots
-  const tokens = result.answer.split(/(\s+)/);
-  let sourceIdx = 0;
-  for (const tok of tokens) {
-    if (signal?.aborted) return;
-    // Detect SOURCED markers within token
-    const markerRegex = /\[SOURCED:(green|yellow|red|grey)\]/;
-    const match = tok.match(markerRegex);
-    if (match) {
-      const before = tok.slice(0, match.index!);
-      if (before) onEvent({ type: "answer", content: before });
-      const ref = result.sources[sourceIdx++];
-      onEvent({
-        type: "source_dot",
-        signal: match[1] as AuditStreamEvent["signal"],
-        source: ref?.source,
-        snippet: ref?.snippet,
-      });
-      const after = tok.slice(match.index! + match[0].length);
-      if (after) onEvent({ type: "answer", content: after });
-    } else {
-      onEvent({ type: "answer", content: tok });
-    }
-    await sleep(45);
-  }
-
-  // 3. Confidence
-  await sleep(200);
-  onEvent({ type: "confidence", confidence: result.confidence });
-  onEvent({ type: "done" });
-}
-
-function sleep(ms: number) {
-  return new Promise((res) => setTimeout(res, ms));
 }
 
 export function getMockResultSync(query: string): AuditResult {

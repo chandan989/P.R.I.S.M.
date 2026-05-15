@@ -27,11 +27,12 @@ export default function Demo() {
   const [discarded, setDiscarded] = useState<string[]>([]);
   const [selected, setSelected] = useState(0);
   const [confidence, setConfidence] = useState<Confidence | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => { document.title = "Demo · P.R.I.S.M."; }, []);
 
-  const reset = () => { setTokens([]); setInterps([]); setDiscarded([]); setSelected(0); setConfidence(null); };
+  const reset = () => { setTokens([]); setInterps([]); setDiscarded([]); setSelected(0); setConfidence(null); setError(null); };
 
   const run = async (q?: string) => {
     const text = q ?? query;
@@ -42,22 +43,28 @@ export default function Demo() {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    await streamAudit(text, (e: AuditStreamEvent) => {
-      if (e.type === "thought" && e.content) {
-        try {
-          const p = JSON.parse(e.content);
-          setInterps(p.interpretations ?? []); setDiscarded(p.discarded ?? []); setSelected(p.selected ?? 0);
-        } catch { /* */ }
-      } else if (e.type === "answer" && e.content !== undefined) {
-        setTokens((prev) => [...prev, { type: "text", text: e.content! }]);
-      } else if (e.type === "source_dot") {
-        setTokens((prev) => [...prev, { type: "dot", ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "" } }]);
-      } else if (e.type === "confidence" && e.confidence) {
-        setConfidence(e.confidence);
-      }
-    }, ctrl.signal);
-    setBusy(false);
+    try {
+      await streamAudit(text, (e: AuditStreamEvent) => {
+        if (e.type === "thought" && e.content) {
+          try {
+            const p = JSON.parse(e.content);
+            setInterps(p.interpretations ?? []); setDiscarded(p.discarded ?? []); setSelected(p.selected ?? 0);
+          } catch { /* */ }
+        } else if (e.type === "answer" && e.content !== undefined) {
+          setTokens((prev) => [...prev, { type: "text", text: e.content! }]);
+        } else if (e.type === "source_dot") {
+          setTokens((prev) => [...prev, { type: "dot", ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "" } }]);
+        } else if (e.type === "confidence" && e.confidence) {
+          setConfidence(e.confidence);
+        }
+      }, ctrl.signal);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
+
 
   const scenarios = [
     { label: "💊 Polypharmacy Audit", desc: "72yo female on 15-drug regimen — enumerate all pairwise and multi-way interactions, verify against FDA Drug Labels and DrugBank.", onClick: () => { setQuery(demoQueries.polypharmacy); run(demoQueries.polypharmacy); } },
@@ -88,6 +95,7 @@ export default function Demo() {
 
       <motion.section className="output-panel" style={{ maxWidth: 820, margin: "0 auto" }} aria-label="Demo output" variants={itemVariants}>
         <div className="output-body">
+          {error && <div className="error-card">⚠ {error}</div>}
           {busy && tokens.length === 0 && <SkeletonLoader rows={4} />}
           {tokens.length > 0 && <StreamingText tokens={tokens} isStreaming={busy} />}
           {confidence && <ConfidenceBadge level={confidence.level} score={confidence.score} />}

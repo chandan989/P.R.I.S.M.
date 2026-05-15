@@ -72,9 +72,9 @@ class GemmaClient:
         model_path: Optional[str] = None,
         timeout: int = 300,
         n_ctx: int = 4096,
-        n_gpu_layers: int = -1,  # Default to all layers
-        n_threads: int = 4,
-        n_batch: int = 1024,      # Faster prefill
+        n_gpu_layers: int = 100,  # Force all layers to GPU
+        n_threads: int = 1,      # Minimal CPU overhead
+        n_batch: int = 512,       # More stable batch size for T4 bandwidth
         tensor_split: Optional[List[float]] = [0.5, 0.5], # Dual T4 split
         verbose: bool = False,
         model_name: Optional[str] = None,
