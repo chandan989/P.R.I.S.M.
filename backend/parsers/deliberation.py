@@ -241,20 +241,42 @@ class DeliberationParser:
 
         current = None
         
-        # Try finding numbered list formats like "1. High risk... (85%)"
-        numbered_pattern = re.compile(r"(\d+)\.\s*(.+?)\s*\((\d+(?:\.\d+)?)%\)")
+        # Try finding numbered list formats like "1. **Major Interaction...** ... (Probability: 98%)"
+        numbered_pattern = re.compile(r"(\d+)\.\s*(?:\*\*)?(.+?)(?:\*\*|:)?\s*(.*?)\s*\(\s*Probability:\s*(\d+(?:\.\d+)?)%\s*\)", re.IGNORECASE)
         for match in numbered_pattern.finditer(hypothesis_section):
             try:
-                probability = float(match.group(3)) / 100.0
+                probability = float(match.group(4)) / 100.0
             except ValueError:
                 probability = 0.0
                 
+            # Combine the label and description
+            label = match.group(2).strip()
+            desc = match.group(3).strip()
+            if desc and not label.endswith(desc):
+                 label = f"{label} {desc}"
+                 
             hypotheses.append(Hypothesis(
-                interpretation=match.group(2).strip(),
+                interpretation=label,
                 probability=probability,
                 supporting_evidence=[],
                 weakening_evidence=[]
             ))
+            
+        # Try the original simpler numbered format "1. High risk... (85%)" if the above didn't match
+        if not hypotheses:
+            numbered_pattern_alt = re.compile(r"(\d+)\.\s*(.+?)\s*\((\d+(?:\.\d+)?)%\)")
+            for match in numbered_pattern_alt.finditer(hypothesis_section):
+                try:
+                    probability = float(match.group(3)) / 100.0
+                except ValueError:
+                    probability = 0.0
+                    
+                hypotheses.append(Hypothesis(
+                    interpretation=match.group(2).strip(),
+                    probability=probability,
+                    supporting_evidence=[],
+                    weakening_evidence=[]
+                ))
             
         if hypotheses:
             return hypotheses
