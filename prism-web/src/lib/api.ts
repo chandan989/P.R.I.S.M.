@@ -45,7 +45,7 @@ export async function streamAudit(
   try {
     const ctrl = new AbortController();
     if (signal) signal.addEventListener("abort", () => ctrl.abort());
-    const t = setTimeout(() => ctrl.abort(), 90000);
+    const t = setTimeout(() => ctrl.abort(), 180000);
 
     const res = await fetch(`${getApiBase()}/api/audit`, {
       method: "POST",
@@ -82,7 +82,8 @@ export async function streamAudit(
       }
     }
     onEvent({ type: "done" });
-  } catch {
+  } catch (err) {
+    console.error("PRISM Backend Error:", err);
     // Fallback: simulate stream from mock data
     await simulateStream(query, onEvent, signal);
   }
