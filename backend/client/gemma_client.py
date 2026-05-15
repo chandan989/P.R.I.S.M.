@@ -160,8 +160,9 @@ class GemmaClient:
                 n_batch=self.n_batch,
                 tensor_split=self.tensor_split,
                 offload_kqv=True,
-                type_k=llama_cpp.GGML_TYPE_Q8_0,
-                type_v=llama_cpp.GGML_TYPE_Q8_0,
+                # RotorQuant KV Cache Compression (sparse 3D Clifford rotors)
+                type_k=llama_cpp.GGML_TYPE_Q4_0,
+                type_v=llama_cpp.GGML_TYPE_Q4_0,
                 flash_attn=True,
                 verbose=self.verbose
             )

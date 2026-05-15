@@ -61,8 +61,17 @@ class DeliberationParser:
     THOUGHT_START = "<|channel>thought\n"
     THOUGHT_END = "<|channel>|"
 
-    # Structured headers (using reserved tokens)
+    # Structured headers (using reserved tokens from README)
     HEADERS = {
+        "logical_chain": "<unused5>",
+        "competing_hypotheses": "<unused6>",
+        "discarded_paths": "<unused7>",
+        "selected": "<unused8>",
+        "discarded": "<unused9>"
+    }
+    
+    # Legacy headers for backward compatibility
+    LEGACY_HEADERS = {
         "logical_chain": "[Logical Chain]",
         "competing_hypotheses": "[Competing Hypotheses]",
         "discarded_paths": "[Discarded Paths]",
@@ -149,21 +158,47 @@ class DeliberationParser:
         """
         blocks = []
 
+        # Standard extraction with markers
         start_pos = 0
         while True:
             start_idx = text.find(self.THOUGHT_START, start_pos)
+            if start_idx == -1:
+                start_idx = text.find("<unused0>", start_pos)
+            
             if start_idx == -1:
                 break
 
             end_idx = text.find(self.THOUGHT_END, start_idx)
             if end_idx == -1:
+                end_idx = text.find("<unused1>", start_idx)
+                
+            if end_idx == -1:
+                end_idx = text.find("Clinical Output:", start_idx)
+                
+            if end_idx == -1:
                 break
 
             # Extract content between markers
-            content = text[start_idx + len(self.THOUGHT_START):end_idx]
+            # If using <unused0>, start_idx + len
+            if text[start_idx:start_idx+9] == "<unused0>":
+                start_offset = 9
+            else:
+                start_offset = len(self.THOUGHT_START)
+                
+            content = text[start_idx + start_offset:end_idx]
             blocks.append(content.strip())
 
-            start_pos = end_idx + len(self.THOUGHT_END)
+            start_pos = end_idx + (9 if text[end_idx:end_idx+9] == "<unused1>" else 0)
+
+        # Fallback: if the prompt injected <unused0>, the generated text might just start with the thought block
+        # and end with <unused1> or 'Clinical Output:'
+        if not blocks:
+            end_idx = text.find("<unused1>")
+            if end_idx == -1:
+                end_idx = text.find("Clinical Output:")
+            
+            if end_idx != -1 and end_idx > 0:
+                blocks.append(text[:end_idx].strip())
 
         return blocks
 
@@ -183,13 +218,47 @@ class DeliberationParser:
         hypothesis_section = self._extract_section(
             text,
             self.HEADERS["competing_hypotheses"],
-            [self.HEADERS["discarded_paths"], self.HEADERS["selected"]]
+            self.LEGACY_HEADERS["competing_hypotheses"],
+            [self.HEADERS["discarded_paths"], self.LEGACY_HEADERS["discarded_paths"], self.HEADERS["selected"], self.LEGACY_HEADERS["selected"]]
         )
+
+        # Fallback for "Competing Interpretations:" format
+        if not hypothesis_section:
+            hypothesis_section = self._extract_section(
+                text,
+                "Competing Interpretations:",
+                "Competing Interpretations:",
+                ["Clinical Output:", "Logical Chain", "<unused"]
+            )
+            # If it's just the entire text before clinical output
+            if not hypothesis_section and "Competing Interpretations:" in text:
+                parts = text.split("Competing Interpretations:")
+                if len(parts) > 1:
+                    hypothesis_section = parts[1].split("Clinical Output:")[0].strip()
 
         if not hypothesis_section:
             return hypotheses
 
         current = None
+        
+        # Try finding numbered list formats like "1. High risk... (85%)"
+        numbered_pattern = re.compile(r"(\d+)\.\s*(.+?)\s*\((\d+(?:\.\d+)?)%\)")
+        for match in numbered_pattern.finditer(hypothesis_section):
+            try:
+                probability = float(match.group(3)) / 100.0
+            except ValueError:
+                probability = 0.0
+                
+            hypotheses.append(Hypothesis(
+                interpretation=match.group(2).strip(),
+                probability=probability,
+                supporting_evidence=[],
+                weakening_evidence=[]
+            ))
+            
+        if hypotheses:
+            return hypotheses
+
         for line in hypothesis_section.splitlines():
             stripped = line.strip()
             if not stripped:
@@ -239,15 +308,16 @@ class DeliberationParser:
         discarded_section = self._extract_section(
             text,
             self.HEADERS["discarded_paths"],
-            [self.HEADERS["selected"]]
+            self.LEGACY_HEADERS["discarded_paths"],
+            [self.HEADERS["selected"], self.LEGACY_HEADERS["selected"]]
         )
 
         if not discarded_section:
             return discarded
 
         # Parse each discarded path
-        # Format: "✗ Discarded: [hypothesis] - [reason]"
-        pattern = re.compile(r"✗\s*Discarded:\s*(.+?)\s*-\s*(.+)")
+        # Format: "✗ Discarded: [hypothesis] - [reason]" or "<unused9> [hypothesis] - [reason]"
+        pattern = re.compile(r"(?:✗\s*Discarded:|<unused9>)\s*(.+?)\s*-\s*(.+)")
         for match in pattern.finditer(discarded_section):
             hypothesis = match.group(1).strip()
             reason = match.group(2).strip()
@@ -275,7 +345,8 @@ class DeliberationParser:
         chain_section = self._extract_section(
             text,
             self.HEADERS["logical_chain"],
-            [self.HEADERS["competing_hypotheses"]]
+            self.LEGACY_HEADERS["logical_chain"],
+            [self.HEADERS["competing_hypotheses"], self.LEGACY_HEADERS["competing_hypotheses"]]
         )
 
         if not chain_section:
@@ -334,7 +405,7 @@ class DeliberationParser:
         """
         # Look for selected marker
         selected_pattern = re.compile(
-            r"▶\s*Selected:\s*(.+?)(?:$|\n)"
+            r"(?:▶\s*Selected:|<unused8>)\s*(.+?)(?:$|\n)"
         )
         match = selected_pattern.search(text)
 
@@ -347,6 +418,7 @@ class DeliberationParser:
         self,
         text: str,
         header: str,
+        legacy_header: str,
         stop_at: Optional[List[str]] = None
     ) -> Optional[str]:
         """
@@ -355,6 +427,7 @@ class DeliberationParser:
         Args:
             text: Full text
             header: Section header to find
+            legacy_header: Fallback legacy header
             stop_at: List of headers that end this section
 
         Returns:
@@ -362,11 +435,16 @@ class DeliberationParser:
         """
         # Find header
         header_idx = text.find(header)
+        active_header = header
+        if header_idx == -1:
+            header_idx = text.find(legacy_header)
+            active_header = legacy_header
+            
         if header_idx == -1:
             return None
 
         # Find end of section
-        start_pos = header_idx + len(header)
+        start_pos = header_idx + len(active_header)
         end_pos = len(text)
 
         if stop_at:

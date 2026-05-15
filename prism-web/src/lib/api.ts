@@ -42,50 +42,62 @@ export async function streamAudit(
   onEvent: StreamHandler,
   signal?: AbortSignal,
 ): Promise<void> {
-  try {
-    const ctrl = new AbortController();
-    if (signal) signal.addEventListener("abort", () => ctrl.abort());
-    // No hardcoded timeout — let the slow dual-T4 Kaggle backend take as long as it needs
+  return new Promise((resolve, reject) => {
+    try {
+      let wsBase = getApiBase().replace(/^http/, "ws");
+      const ws = new WebSocket(`${wsBase}/api/audit/ws`);
 
-    const res = await fetch(`${getApiBase()}/api/audit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, session_id: cryptoRandom() }),
-      signal: ctrl.signal,
-    });
-    if (!res.ok || !res.body) throw new Error("Backend not OK");
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const parts = buffer.split("\n\n");
-      buffer = parts.pop() ?? "";
-      for (const part of parts) {
-        const line = part.trim();
-        if (!line.startsWith("data:")) continue;
-        let json: unknown;
-        try {
-          json = JSON.parse(line.slice(5).trim());
-        } catch {
-          /* ignore malformed */
-          continue;
-        }
-        if ((json as AuditStreamEvent)?.type === "error") {
-          throw new Error((json as AuditStreamEvent).content ?? "Backend error");
-        }
-        onEvent(json as AuditStreamEvent);
+      if (signal) {
+        signal.addEventListener("abort", () => {
+          ws.close();
+          reject(new Error("The operation was aborted"));
+        });
       }
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ query, session_id: cryptoRandom() }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const json = JSON.parse(event.data);
+
+          if (json.type === "ping") {
+            return; // Ignore keep-alive pings
+          }
+
+          if (json.type === "error") {
+            ws.close();
+            reject(new Error(json.content ?? "Backend error"));
+            return;
+          }
+
+          onEvent(json as AuditStreamEvent);
+
+          if (json.type === "done") {
+            ws.close();
+            resolve();
+          }
+        } catch (e) {
+          // ignore malformed JSON
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error("WebSocket Error:", error);
+        reject(new Error("WebSocket connection failed"));
+      };
+
+      ws.onclose = () => {
+        // Just resolve if not already resolved, though 'done' event should handle it
+        resolve();
+      };
+
+    } catch (err) {
+      console.error("PRISM Backend Error:", err);
+      reject(err);
     }
-    onEvent({ type: "done" });
-  } catch (err) {
-    console.error("PRISM Backend Error:", err);
-    // Rethrow instead of falling back to mock data
-    throw err;
-  }
+  });
 }
 
 function cryptoRandom() {
