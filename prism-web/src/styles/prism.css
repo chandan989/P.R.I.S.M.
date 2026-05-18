@@ -752,6 +752,74 @@ p {
   line-height: 1.6;
 }
 
+.delib-section-header {
+  margin: var(--space-4) 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-dark);
+  color: var(--ink-inverse);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.clinical-audit-section {
+  margin: var(--space-4) 0;
+}
+
+.clinical-audit-item {
+  margin-bottom: var(--space-4);
+}
+
+.clinical-audit-title {
+  font-weight: 600;
+  color: var(--aura-cyan);
+  margin-bottom: var(--space-2);
+  padding: var(--space-2) 0;
+}
+
+.clinical-audit-content {
+  border-left: 2px solid var(--border-dark);
+  padding-left: var(--space-3);
+  margin-left: var(--space-2);
+}
+
+.clinical-audit-entry {
+  margin: var(--space-2) 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.clinical-audit-entry-header {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.clinical-audit-entry-content {
+  margin-bottom: 4px;
+  color: var(--ink-inverse-muted);
+}
+
+.clinical-audit-recommendation {
+  font-size: var(--text-caption);
+  color: var(--aura-yellow);
+}
+
+.clinical-audit-entry--high {
+  border-left: 3px solid #DC2626;
+}
+
+.clinical-audit-entry--moderate {
+  border-left: 3px solid var(--aura-orange);
+}
+
+.clinical-audit-entry--low {
+  border-left: 3px solid #94A3B8;
+}
+
+.clinical-audit-entry--minor {
+  border-left: 3px solid #999;
+}
+
 .delib-item {
   padding: var(--space-3);
   margin: var(--space-2) 0;
@@ -778,7 +846,7 @@ p {
 
 .delib-bullet {
   padding-left: var(--space-4);
-  color: var(--ink-inverse-muted);
+  color: var(--ink-inverse-muted;
 }
 
 .delib-bullet--pos::before {
@@ -800,6 +868,11 @@ p {
   flex-wrap: wrap;
   font-size: var(--text-caption);
   color: var(--ink-inverse-muted);
+}
+
+.calibration-header {
+  display: flex;
+  gap: var(--space-4);
 }
 
 .delib-calib span strong {

@@ -279,7 +279,13 @@ class GemmaClient:
         grammar: Optional[Any],
         stop: Optional[List[str]]
     ) -> AsyncGenerator[GenerationChunk, None]:
-        """Generate using llama.cpp backend."""
+        """Generate using llama.cpp backend.
+
+        Runs the synchronous llama.cpp calls in a thread pool executor to
+        prevent blocking the asyncio event loop. Without this, all other
+        endpoints (health, WebSocket keep-alive, etc.) freeze during
+        model inference.
+        """
         try:
             import llama_cpp
 
@@ -298,9 +304,43 @@ class GemmaClient:
             if stop:
                 gen_params["stop"] = stop
 
+            loop = asyncio.get_event_loop()
+
             if stream:
-                # Stream generation
-                for chunk in self.llm.create_completion(**gen_params, stream=True):
+                # Run streaming generation in a thread executor so the
+                # event loop stays responsive (keep-alive pings, health
+                # checks, etc.)
+                queue: asyncio.Queue = asyncio.Queue()
+
+                def producer():
+                    """Run llama.cpp generation and push chunks to the queue."""
+                    try:
+                        for chunk in self.llm.create_completion(**gen_params, stream=True):
+                            loop.call_soon_threadsafe(
+                                queue.put_nowait, chunk
+                            )
+                    except Exception as e:
+                        loop.call_soon_threadsafe(
+                            queue.put_nowait, e
+                        )
+                    finally:
+                        # Sentinel to signal completion
+                        loop.call_soon_threadsafe(
+                            queue.put_nowait, None
+                        )
+
+                # Start the producer in a thread
+                producer_task = asyncio.create_task(
+                    asyncio.to_thread(producer)
+                )
+
+                while True:
+                    item = await queue.get()
+                    if item is None:
+                        break
+                    if isinstance(item, Exception):
+                        raise item
+                    chunk = item
                     text = chunk["choices"][0]["text"]
                     if text:
                         yield GenerationChunk(
@@ -309,9 +349,14 @@ class GemmaClient:
                             logprobs=[],
                             is_complete=chunk.get("finish_reason") is not None
                         )
+
+                await producer_task
             else:
-                # Non-streaming generation
-                output = self.llm.create_completion(**gen_params)
+                # Run non-streaming generation in a thread executor
+                output = await loop.run_in_executor(
+                    None,
+                    lambda: self.llm.create_completion(**gen_params)
+                )
                 text = output["choices"][0]["text"]
 
                 yield GenerationChunk(
@@ -516,30 +561,6 @@ class GemmaClient:
 
         return "\n".join(prompt_parts)
 
-    async def get_model_info(self) -> Dict[str, Any]:
-        """
-        Get information about the loaded model.
-
-        Returns:
-            Model information dictionary
-        """
-        try:
-            response = await self.client.get(f"{self.base_url}/api/tags")
-            response.raise_for_status()
-            data = response.json()
-
-            # Find our model
-            models = data.get("models", [])
-            for model in models:
-                if model.get("name") == self.model:
-                    return model
-
-            return {"error": "Model not found"}
-
-        except httpx.HTTPError as e:
-            logger.error(f"HTTP error getting model info: {e}")
-            raise
-
     async def close(self):
         """Close resources."""
         if self.client:
@@ -616,9 +637,9 @@ class GemmaClient:
             Grammar object for P.R.I.S.M. structured output
         """
         grammar_text = r'''
-root ::= thought-process channel-output
-thought-process ::= "<unused1>" [^\x00]* "<unused2>"
-channel-output ::= [^\x00]* "Confidence: " [0-9.]+ "%" [^\x00]* ("🟢" | "🟡" | "🔴") [^\x00]*
+root ::= reasoning-body clinical-output
+reasoning-body ::= [^\x00]* "<unused1>"
+clinical-output ::= [^\x00]* ("🟢" | "🟡" | "🔴") [^\x00]* "Confidence: " [^\x00]*
 '''
         return self.create_grammar(grammar_text)
 

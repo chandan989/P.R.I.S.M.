@@ -404,7 +404,9 @@ async def query(request: QueryRequest):
         if request.use_grammar and gemma_client.backend == BackendType.LLAMA_CPP:
             grammar = gemma_client.get_prism_grammar()
 
-        # Generate response
+        # Generate response (non-streaming is fine here — Ollama's
+        # await yields to the event loop, and llama.cpp uses
+        # run_in_executor to avoid blocking)
         full_response = ""
         async for chunk in gemma_client.generate(
             prompt=prompt,
@@ -665,6 +667,35 @@ class AuditRequest(BaseModel):
     max_tokens: Optional[int] = 2048
 
 
+def _strip_thought_blocks(text: str) -> str:
+    """Remove thought blocks and markers from generated text.
+
+    Strips <unused0>...<unused1> blocks (and legacy <|channel>thought markers)
+    so only the final clinical output is streamed to the frontend.
+    Handles cases where the start marker was in the prompt and multiple/unclosed blocks.
+    """
+    # 1. Handle case where generation starts with thought (prompt had <unused0>)
+    first_u1 = text.find('<unused1>')
+    if first_u1 != -1:
+        first_u0 = text.find('<unused0>')
+        if first_u0 == -1 or first_u1 < first_u0:
+            text = text[first_u1 + 9:] # len('<unused1>') == 9
+
+    # 2. Strip complete blocks (non-greedy to handle multiple blocks)
+    text = re.sub(r'<unused0>.*?<unused1>', '', text, flags=re.DOTALL)
+    text = re.sub(r'<\|channel>thought\n.*?<\|channel>\|', '', text, flags=re.DOTALL)
+    
+    # 3. Strip any trailing open blocks (unclosed tags)
+    text = re.sub(r'<unused0>.*$', '', text, flags=re.DOTALL)
+    text = re.sub(r'<\|channel>thought\n.*$', '', text, flags=re.DOTALL)
+    
+    # 4. Remove stray markers
+    text = text.replace('<unused0>', '').replace('<unused1>', '')
+    text = text.replace('<|channel>thought\n', '').replace('<|channel>|', '')
+    
+    return text
+
+
 def _map_verification_to_signal(status_value: str) -> str:
     """Map a VerificationStatus value to a frontend signal color."""
     mapping = {
@@ -748,17 +779,43 @@ async def audit_stream(request: AuditRequest):
             if gemma_client.backend == BackendType.LLAMA_CPP:
                 grammar = gemma_client.get_prism_grammar()
 
-            # ── Step 1: Generate full response ────────────────────────
+            # ── Step 1: Generate & stream response ─────────────────
             full_response = ""
+            thought_block_closed = False
+            sent_clean_len = 0
             async for chunk in gemma_client.generate(
                 prompt=prompt,
                 temperature=request.temperature,
                 max_tokens=request.max_tokens,
-                stream=False,
+                stream=True,
                 grammar=grammar,
                 stop=["<eos>", "<end_of_turn>"]
             ):
                 full_response += chunk.text
+
+                if not thought_block_closed:
+                    thought_block_closed = "<unused1>" in full_response
+
+                if thought_block_closed:
+                    clean = _strip_thought_blocks(full_response)
+                    if len(clean) > sent_clean_len:
+                        new_text = clean[sent_clean_len:]
+                        sent_clean_len = len(clean)
+                        if new_text:
+                            yield "data: " + json.dumps({
+                                "type": "answer",
+                                "content": new_text,
+                            }) + "\n\n"
+
+            # Safety fallback: if thought block never closed, send the
+            # stripped text anyway so the user sees something.
+            if not thought_block_closed and full_response.strip():
+                clean = _strip_thought_blocks(full_response)
+                if clean:
+                    yield "data: " + json.dumps({
+                        "type": "answer",
+                        "content": clean,
+                    }) + "\n\n"
 
             # ── Step 2: Parse deliberation ────────────────────────────
             deliberation_trace = deliberation_parser.parse(full_response)
@@ -863,53 +920,17 @@ async def audit_stream(request: AuditRequest):
                 "content": json.dumps(thought_payload),
             }) + "\n\n"
 
-            # Small delay for visual effect
             await asyncio.sleep(0.1)
 
-            # 2. Answer + source_dot events
-            # Strip thought blocks from the answer
-            answer = full_response
-            if deliberation_trace and deliberation_trace.raw_thought_blocks:
-                for thought_block in deliberation_trace.raw_thought_blocks:
-                    answer = answer.replace(thought_block, "")
-            # Also strip thought channel markers
-            answer = answer.replace("<|channel>thought\n", "").replace("<|channel>|", "")
-            answer = answer.strip()
-
-            # Split answer into sentences for interleaving source dots
-            import re
-            sentences = re.split(r'(?<=[.!?])\s+', answer)
-            sentences = [s.strip() for s in sentences if s.strip()]
-
-            source_idx = 0
-            for i, sentence in enumerate(sentences):
-                # Emit answer tokens (word by word for streaming feel)
-                words = sentence.split()
-                for j, word in enumerate(words):
-                    separator = " " if j < len(words) - 1 else ""
-                    yield "data: " + json.dumps({
-                        "type": "answer",
-                        "content": word + separator,
-                    }) + "\n\n"
-                    await asyncio.sleep(0.03)  # 30ms per word
-
-                # After each sentence, emit a source dot if we have a matching verified claim
-                if source_idx < len(verified_results):
-                    vr = verified_results[source_idx]
-                    yield "data: " + json.dumps({
-                        "type": "source_dot",
-                        "signal": vr["signal"],
-                        "source": vr["source"],
-                        "snippet": vr["snippet"],
-                    }) + "\n\n"
-                    source_idx += 1
-
-                # Add space between sentences
-                if i < len(sentences) - 1:
-                    yield "data: " + json.dumps({
-                        "type": "answer",
-                        "content": " ",
-                    }) + "\n\n"
+            # 2. Source dots — verification summary shown after the
+            # streamed text (answer tokens were already sent in real-time)
+            for vr in verified_results:
+                yield "data: " + json.dumps({
+                    "type": "source_dot",
+                    "signal": vr["signal"],
+                    "source": vr["source"],
+                    "snippet": vr["snippet"],
+                }) + "\n\n"
 
             # 3. Confidence event
             await asyncio.sleep(0.15)
@@ -1001,21 +1022,46 @@ async def audit_websocket(websocket: WebSocket):
         if gemma_client.backend == BackendType.LLAMA_CPP:
             grammar = gemma_client.get_prism_grammar()
 
-        # ── Step 1: Generate full response ────────────────────────
+        # ── Step 1: Generate & stream response ─────────────────
         full_response = ""
-        # Send a ping every 10 seconds to keep connection alive during slow prefill
         keep_alive_task = asyncio.create_task(_ws_keep_alive(websocket))
-        
+        thought_block_closed = False
+        sent_clean_len = 0
+
         try:
+            # Stream tokens to the frontend in real-time, stripping
+            # thought blocks as they arrive so the user sees clinical
+            # output immediately rather than waiting for full response.
+            # We buffer output until the first thought block closes
+            # (<unused1>) to avoid leaking deliberation text.
             async for chunk in gemma_client.generate(
                 prompt=prompt,
                 temperature=request.temperature,
                 max_tokens=request.max_tokens,
-                stream=False,
+                stream=True,
                 grammar=grammar,
                 stop=["<eos>", "<end_of_turn>"]
             ):
                 full_response += chunk.text
+
+                if not thought_block_closed:
+                    thought_block_closed = "<unused1>" in full_response
+
+                if thought_block_closed:
+                    clean = _strip_thought_blocks(full_response)
+                    if len(clean) > sent_clean_len:
+                        new_text = clean[sent_clean_len:]
+                        sent_clean_len = len(clean)
+                        if new_text:
+                            await websocket.send_json({"type": "answer", "content": new_text})
+
+            # Safety fallback: if thought block never closed (model format
+            # unexpected), send the stripped text anyway so the user sees
+            # something.
+            if not thought_block_closed and full_response.strip():
+                clean = _strip_thought_blocks(full_response)
+                if clean:
+                    await websocket.send_json({"type": "answer", "content": clean})
         finally:
             keep_alive_task.cancel()
 
@@ -1118,44 +1164,15 @@ async def audit_websocket(websocket: WebSocket):
 
         await asyncio.sleep(0.1)
 
-        # 2. Answer + source_dot events
-        answer = full_response
-        if deliberation_trace and deliberation_trace.raw_thought_blocks:
-            for thought_block in deliberation_trace.raw_thought_blocks:
-                answer = answer.replace(thought_block, "")
-        answer = answer.replace("<|channel>thought\n", "").replace("<|channel>|", "")
-        # Remove <unused0> and <unused1> if they leaked through
-        answer = answer.replace("<unused0>", "").replace("<unused1>", "").strip()
-
-        sentences = re.split(r'(?<=[.!?])\s+', answer)
-        sentences = [s.strip() for s in sentences if s.strip()]
-
-        source_idx = 0
-        for i, sentence in enumerate(sentences):
-            words = sentence.split()
-            for j, word in enumerate(words):
-                separator = " " if j < len(words) - 1 else ""
-                await websocket.send_json({
-                    "type": "answer",
-                    "content": word + separator,
-                })
-                await asyncio.sleep(0.03)
-
-            if source_idx < len(verified_results):
-                vr = verified_results[source_idx]
-                await websocket.send_json({
-                    "type": "source_dot",
-                    "signal": vr["signal"],
-                    "source": vr["source"],
-                    "snippet": vr["snippet"],
-                })
-                source_idx += 1
-
-            if i < len(sentences) - 1:
-                await websocket.send_json({
-                    "type": "answer",
-                    "content": " ",
-                })
+        # 2. Source dots — verification summary shown after the
+        # streamed text (answer tokens were already sent in real-time)
+        for vr in verified_results:
+            await websocket.send_json({
+                "type": "source_dot",
+                "signal": vr["signal"],
+                "source": vr["source"],
+                "snippet": vr["snippet"],
+            })
 
         # 3. Confidence event
         await asyncio.sleep(0.15)
