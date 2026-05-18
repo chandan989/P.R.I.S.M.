@@ -22,6 +22,13 @@ export default function BackendSettings({ className }: Props) {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  // Listen for open-backend-settings event
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    document.addEventListener("open-backend-settings", handleOpen);
+    return () => document.removeEventListener("open-backend-settings", handleOpen);
+  }, []);
+
   // Re-sync URL from storage when opening
   useEffect(() => {
     if (open) setUrl(getApiBase());
@@ -117,7 +124,7 @@ export default function BackendSettings({ className }: Props) {
 
           <div className="backend-popover-status" style={{ color: statusColor }}>
             {status === "ok" && "✓ Connected to backend"}
-            {status === "fail" && "✗ Cannot reach backend — mock mode active"}
+            {status === "fail" && "✗ Cannot reach backend"}
             {status === "checking" && "Checking…"}
             {status === "idle" && "Paste your notebook URL and click Save"}
           </div>

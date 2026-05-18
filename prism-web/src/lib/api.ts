@@ -1,5 +1,4 @@
 import type { AuditResult, AuditStreamEvent } from "./types";
-import { pickMockForQuery } from "./mock-data";
 
 const STORAGE_KEY = "prism_api_url";
 const DEFAULT_BASE = "http://localhost:8000";
@@ -34,8 +33,7 @@ export function setApiBase(url: string | null): void {
 export type StreamHandler = (event: AuditStreamEvent) => void;
 
 /**
- * Try to stream from FastAPI backend. If unreachable or non-OK, transparently
- * fall back to a simulated stream from realistic mock data.
+ * Try to stream from FastAPI backend.
  */
 export async function streamAudit(
   query: string,
@@ -104,6 +102,3 @@ function cryptoRandom() {
   return Math.random().toString(36).slice(2);
 }
 
-export function getMockResultSync(query: string): AuditResult {
-  return pickMockForQuery(query);
-}

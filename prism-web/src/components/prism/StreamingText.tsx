@@ -85,8 +85,8 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
 
         els.push(
           <div key={bIdx} className={`my-4 p-5 rounded-2xl border shadow-sm ${colorClass} backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2`}>
-            <div className="flex items-center gap-2.5 mb-3 font-semibold text-lg tracking-tight">
-              <Icon size={22} className="shrink-0" />
+            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
+              <Icon size={22} className="shrink-0 mr-1" />
               <span>{level} RISK: {renderInline(title)}</span>
             </div>
             <div className="space-y-2.5 text-[15px] leading-relaxed text-foreground/90">
@@ -112,8 +112,8 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
       } else if (isOtherObs) {
         els.push(
           <div key={bIdx} className="my-4 p-5 rounded-2xl border bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-300 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div className="flex items-center gap-2.5 mb-3 font-semibold text-lg tracking-tight">
-              <Info size={22} className="shrink-0" />
+            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
+              <Info size={22} className="shrink-0 mr-1" />
               <span>Other Observations</span>
             </div>
             <ul className="space-y-2.5 text-[15px] ml-5 list-disc text-foreground/80">
@@ -126,8 +126,8 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
       } else if (isRecs) {
         els.push(
           <div key={bIdx} className="my-4 p-5 rounded-2xl border bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-300 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div className="flex items-center gap-2.5 mb-3 font-semibold text-lg tracking-tight">
-              <CheckCircle2 size={22} className="shrink-0" />
+            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
+              <CheckCircle2 size={22} className="shrink-0 mr-1" />
               <span>Recommendations</span>
             </div>
             <div className="space-y-3 text-[15px] text-foreground/80">
