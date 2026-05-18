@@ -948,19 +948,30 @@ async def audit_stream(request: AuditRequest):
             # Dynamic adjustment based on verifier
             if verified_results:
                 confirmed = sum(1 for v in verified_results if v["status"] == "confirmed")
+                inferred = sum(1 for v in verified_results if v["status"] == "inferred")
                 contradicted = sum(1 for v in verified_results if v["status"] == "contradicted")
+                out_of_scope = sum(1 for v in verified_results if v["status"] == "out_of_scope")
                 total = len(verified_results)
                 if total > 0:
-                    ratio = confirmed / total
-                    if contradicted > 0:
+                    # Confirmed = full evidence, inferred = partial evidence
+                    evidence_score = (confirmed + inferred * 0.5) / total
+                    contradiction_ratio = contradicted / total
+
+                    if contradiction_ratio > 0.5:
+                        # Majority contradicted → genuinely low confidence
                         confidence_level = "LOW"
-                        confidence_score = max(20, int(ratio * 50))
-                    elif ratio >= 0.7:
-                        confidence_level = "HIGH"
-                        confidence_score = max(70, int(ratio * 100))
-                    elif ratio >= 0.3:
+                        confidence_score = max(25, int(evidence_score * 40))
+                    elif contradicted > 0:
+                        # Some contradictions → moderate at best, reduce score
                         confidence_level = "MODERATE"
-                        confidence_score = int(ratio * 100)
+                        confidence_score = max(35, int(evidence_score * 60))
+                    elif evidence_score >= 0.6:
+                        confidence_level = "HIGH"
+                        confidence_score = max(70, int(evidence_score * 100))
+                    elif evidence_score >= 0.3:
+                        confidence_level = "MODERATE"
+                        confidence_score = max(45, int(evidence_score * 100))
+                    # else: keep text-parsed defaults
 
             # In a full implementation, Brier and ECE would come from the conformal predictor
             # based on the semantic distance of the query.
@@ -1186,19 +1197,26 @@ async def audit_websocket(websocket: WebSocket):
 
         if verified_results:
             confirmed = sum(1 for v in verified_results if v["status"] == "confirmed")
+            inferred = sum(1 for v in verified_results if v["status"] == "inferred")
             contradicted = sum(1 for v in verified_results if v["status"] == "contradicted")
+            out_of_scope = sum(1 for v in verified_results if v["status"] == "out_of_scope")
             total = len(verified_results)
             if total > 0:
-                ratio = confirmed / total
-                if contradicted > 0:
+                evidence_score = (confirmed + inferred * 0.5) / total
+                contradiction_ratio = contradicted / total
+
+                if contradiction_ratio > 0.5:
                     confidence_level = "LOW"
-                    confidence_score = max(20, int(ratio * 50))
-                elif ratio >= 0.7:
-                    confidence_level = "HIGH"
-                    confidence_score = max(70, int(ratio * 100))
-                elif ratio >= 0.3:
+                    confidence_score = max(25, int(evidence_score * 40))
+                elif contradicted > 0:
                     confidence_level = "MODERATE"
-                    confidence_score = int(ratio * 100)
+                    confidence_score = max(35, int(evidence_score * 60))
+                elif evidence_score >= 0.6:
+                    confidence_level = "HIGH"
+                    confidence_score = max(70, int(evidence_score * 100))
+                elif evidence_score >= 0.3:
+                    confidence_level = "MODERATE"
+                    confidence_score = max(45, int(evidence_score * 100))
 
         confidence_data = {
             "level": confidence_level,

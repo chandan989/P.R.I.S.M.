@@ -188,7 +188,12 @@ class ClaimVerifier:
 
     def _has_contradiction(self, claim: str, source: str) -> bool:
         """
-        Check if claim contradicts source using simple patterns.
+        Check if claim contradicts source using conservative pattern matching.
+
+        Only returns True when there is a clear factual disagreement, not
+        merely the presence of negation words in the source text (which
+        caused widespread false positives — every FDA label contains "not",
+        "no", etc. in prescribing guidance).
 
         Args:
             claim: Claim text (lowercase)
@@ -197,15 +202,22 @@ class ClaimVerifier:
         Returns:
             True if contradiction detected
         """
-        # Negation indicators
-        negation_words = ['not', 'never', 'no', 'cannot', 'unable', 'unlikely']
+        # Pattern 1: Claim says "safe" but source says "contraindicated" / "avoid"
+        safety_claim = any(w in claim for w in ["safe to", "safe for", "no risk", "no interaction"])
+        danger_source = any(w in source for w in ["contraindicated", "avoid", "black box warning", "fatal"])
+        if safety_claim and danger_source:
+            return True
 
-        # Check if claim has positive assertion but source has negation
-        for word in negation_words:
-            if word in source and word not in claim:
-                # This is a very basic heuristic
-                # In production, use proper NLI
-                return True
+        # Pattern 2: Claim says drug doesn't interact but source says it does
+        no_interaction_claim = "no interaction" in claim or "does not interact" in claim or "no significant" in claim
+        has_interaction_source = any(w in source for w in [
+            "significantly increases", "significantly decreases",
+            "is contraindicated", "should not be used",
+            "risk of rhabdomyolysis", "risk of bleeding",
+            "may cause death", "fatal",
+        ])
+        if no_interaction_claim and has_interaction_source:
+            return True
 
         return False
 
