@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_32286940",
+  "content": "Title: Clinical Pharmacokinetics of Propranolol Hydrochloride: A Review.. Journal: Current drug metabolism. PMID: 32286940. Year: 2020. Abstract: BACKGROUND: Nobel laureate Sir James Black's molecule, propranolol, still has broad potential in cardiovascular diseases, infantile haemangiomas and anxiety. A comprehensive and systematic review of the literature for the summarization of pharmacokinetic parameters would be effective to explore the new safe uses of propranolol in different scenarios, without exposing humans and using virtual-human modeling approaches. OBJECTIVE: This review encompasses physicochemical properties, pharmacokinetics and drug-drug interaction data of propranolol collected from various studies. METHODS: Clinical pharmacokinetic studies on propranolol were screened using Medline and Google Scholar databases. Eighty-three clinical trials, in which pharmacokinetic profiles and plasma time concentration were available after oral or IV administration, were included in the review. RESULTS: The study depicts that propranolol is well absorbed after oral administration. It has dose-dependent bioavailability, and a 2-fold increase in dose results in a 2.5-fold increase in the area under the curve, a 1.3-fold increase in the time to reach maximum plasma concentration and finally, 2.2 and 1.8-fold increase in maximum plasma concentration in both immediate and long-acting formulations, respectively. Propranolol is a substrate of CYP2D6, CYP1A2 and CYP2C19, retaining potential pharmacokinetic interactions with co-administered drugs. Age, gender, race and ethnicity do not alter its pharmacokinetics. However, in renal and hepatic impairment, it needs a dose adjustment. CONCLUSION: Physiochemical and pooled pharmacokinetic parameters of propranolol are beneficial to establish physiologically based pharmacokinetic modeling among the diseased population.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "32286940",
+    "journal": "Current drug metabolism",
+    "year": 2020,
+    "title": "Clinical Pharmacokinetics of Propranolol Hydrochloride: A Review.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:15:04.216719",
+  "content_hash": "598ce86efffc4f1554c3f776e9406e25a07e76a97d87ff890c56aa30cd8b3791"
+}

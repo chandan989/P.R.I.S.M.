@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_metformin_interactions",
+  "content": "ZITUVIMET (metformin) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS Table 4 presents clinically significant drug interactions with ZITUVIMET: Table 4: Clinically Significant Drug Interactions with ZITUVIMET Carbonic Anhydrase Inhibitors Clinical Impact: Carbonic anhydrase inhibitors frequently cause a decrease in serum bicarbonate and induce non-anion gap, hyperchloremic metabolic acidosis. Concomitant use of these drugs with ZITUVIMET may increase the risk for lactic acidosis. Intervention: Consider more frequent monitoring of these patients. Examples: Topiramate, zonisamide, acetazolamide or dichlorphenamide. Drugs that Reduce Metformin Clearance Clinical Impact: Concomitant use of drugs that interfere with common renal tubular transport systems involved in the renal elimination of metformin (e.g., organic cationic transporter-2 [OCT 2 ] / multidrug and toxin extrusion [MATE] inhibitors) could increase systemic exposure to metformin and may increase the risk for lactic acidosis [see Clinical Pharmacology ( 12.3 )]. Intervention: Consider the benefits and risks of concomitant use with ZITUVIMET. Examples: Ranolazine, vandetanib, dolutegravir, and cimetidine. Alcohol Clinical Impact: Alcohol is known to potentiate the effect of metformin on lactate metabolism. Intervention: Warn patients against alcohol intake while receiving ZITUVIMET. Insulin Secretagogues or Insulin Clinical Impact: Coadministration of ZITUVIMET with an insulin secretagogue (e.g., sulfonylurea) or insulin may increase the risk of hypoglycemia. Intervention: Patients receiving an insulin secretagogue or insulin may require lower doses of the insulin secretagogue or insulin. Drugs Affecting Glycemic Control Clinical Impact: Certain drugs tend to produce hyperglycemia and may lead to loss of glycemic control. Intervention: When such drugs are administered to a patient receiving ZITUVIMET, observe the patient closely for loss of blood glucose control. When such drugs are withdrawn from a patient receiving ZITUVIMET, observe the patient closely for",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "metformin",
+    "brand_name": "ZITUVIMET",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:15:46.176308",
+  "content_hash": "acd7104c55efd1e8abfa4d556d85fbb1b45816c929b01737d0319bf0bc5a73dc"
+}

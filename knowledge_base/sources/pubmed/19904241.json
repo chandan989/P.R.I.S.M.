@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_19904241",
+  "content": "Title: Proton pump inhibitor and clopidogrel interaction: fact or fiction?. Journal: The American journal of gastroenterology. PMID: 19904241. Year: 2010. Abstract: Current consensus recommendations state that patients prescribed clopidogrel plus aspirin should receive a proton pump inhibitor (PPI) to reduce gastrointestinal bleeding. Clopidogrel is converted to its active metabolite by cytochrome P450 (CYP) enzymes. Clopidogrel users with decreased CYP2C19 function have less inhibition of platelet aggregation and increased cardiovascular (CV) events. As PPI metabolism also involves CYP2C19, it was hypothesized that competition by PPIs might interfere with clopidogrel's action. Omeprazole, but not other PPIs, worsens surrogate markers of clopidogrel efficacy. Some (but not all) observational studies show that clopidogrel users prescribed PPIs have increased risks of CV events (hazard/odds ratios=1.25-1.5). When effect sizes are small to moderate (relative risks<1.5-2.0), however, it is only possible to conclude whether statistical associations are valid in randomized trials. A randomized trial of omeprazole vs. placebo in clopidogrel users showed no difference in CV events (hazard ratio=1.02,0.70-1.51). Thus, current evidence does not justify a conclusion that PPIs are associated with CV events among clopidogrel users, let alone a judgment of causality. Nonetheless, positive results from some observational studies and biological plausibility have led some health-care providers to accept that PPIs reduce clopidogrel's efficacy. The US Food and Drug Administration (FDA) recommends that \"concomitant use of drugs that inhibit CYP2C19 (e.g., omeprazole) should be discouraged.\" As the presence of PPIs and clopidogrel in plasma is short lived, separation by 12-20 h should in theory prevent competitive inhibition of CYP metabolism and minimize any potential, though unproven, clinical interaction. PPI may be given before breakfast and clopidogrel at bedtime, or PPI may be taken before dinner and clopidogrel at lunchtime.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "19904241",
+    "journal": "The American journal of gastroenterology",
+    "year": 2010,
+    "title": "Proton pump inhibitor and clopidogrel interaction: fact or fiction?",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:15:01.377079",
+  "content_hash": "1cdc1ec0beba2163cabe872231da22fab21e34c6b6311b7cbad02e109e931bea"
+}

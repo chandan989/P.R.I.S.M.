@@ -91,7 +91,7 @@ export default function Landing() {
         <div className="problem-card">
           <h3><AlertCircle size={20} color="#F87171" /> What Users Get Today</h3>
           <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>A confident-sounding answer without reasoning, sources, or certainty metrics.</p>
-          <div className="mock-llm-response bad">
+          <div className="clinical-output-block bad">
             <div style={{ fontWeight: 600, marginBottom: 8 }}>LLM Output</div>
             "Do not co-administer Warfarin and Omeprazole. It will cause bleeding."
             <div className="missing-label">No reasoning shown</div>
@@ -100,7 +100,7 @@ export default function Landing() {
         <div className="problem-card" style={{ borderColor: "var(--aura-cyan)" }}>
           <h3><CheckCircle2 size={20} color="var(--aura-cyan)" /> The P.R.I.S.M. Glass Box</h3>
           <p style={{ color: "var(--ink-secondary)", fontSize: "var(--text-ui)" }}>Authentic deliberation, verified claims, and calibrated confidence.</p>
-          <div className="mock-llm-response good">
+          <div className="clinical-output-block good">
             <div style={{ color: "var(--ink-tertiary)", fontFamily: "var(--font-mono)", fontSize: 11, marginBottom: 8 }}>{"<|think|> Omeprazole is a CYP2C19 inhibitor. Warfarin is metabolized by CYP2C9. However, minor pathway overlap exists. Moderate risk."}</div>
             <span className="source-dot source-dot--yellow" /> "Omeprazole may alter Warfarin metabolism."
             <div style={{ marginTop: 8, fontSize: 11, fontWeight: 600, color: "#9A3412", background: "#FFEDD5", display: "inline-block", padding: "2px 6px", borderRadius: 4 }}>⚠️ MODERATE CONFIDENCE</div>

@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_clarithromycin_interactions",
+  "content": "Clarithromycin is a potent inhibitor of CYP3A4 and is contraindicated with drugs primarily metabolized by CYP3A4 that have a narrow therapeutic index. Co-administration of clarithromycin with HMG-CoA reductase inhibitors (statins) metabolized by CYP3A4 (lovastatin, simvastatin) is contraindicated due to increased risk of myopathy including rhabdomyolysis. Atorvastatin and other CYP3A4-metabolized statins should be used at the lowest dose or alternative statin considered. Clarithromycin increases plasma concentrations of warfarin, leading to elevated INR and increased bleeding risk. Dose adjustment and INR monitoring are recommended. Clarithromycin inhibits the metabolism of colchicine, particularly in patients with renal or hepatic impairment, leading to colchicine toxicity. Fatal cases have been reported. QT prolongation and cardiac arrhythmias including ventricular tachycardia and torsades de pointes have been reported with clarithromycin co-administration with cisapride, pimozide, astemizole, and terfenadine.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "clarithromycin",
+    "label_ndc": "0074-3368",
+    "last_updated": "2024-03-15"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_clari_interactions_v1"
+}

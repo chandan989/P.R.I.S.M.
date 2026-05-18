@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_ssri_interactions",
+  "content": "Selective serotonin reuptake inhibitors (SSRIs) including sertraline, fluoxetine, paroxetine, citalopram, and escitalopram carry significant drug interaction risks. Co-administration with monoamine oxidase inhibitors (MAOIs) is contraindicated due to risk of serotonin syndrome, a potentially fatal condition characterized by agitation, hyperthermia, diaphoresis, tachycardia, and neuromuscular abnormalities. A minimum 14-day washout period is required between MAOI discontinuation and SSRI initiation. SSRIs inhibit CYP2D6 to varying degrees: fluoxetine and paroxetine are strong inhibitors, sertraline is a moderate inhibitor. This affects metabolism of codeine, tamoxifen, metoprolol, and other CYP2D6 substrates. SSRIs increase bleeding risk when combined with anticoagulants (warfarin), antiplatelet agents (aspirin, clopidogrel), or NSAIDs through inhibition of serotonin uptake by platelets. INR monitoring is recommended when SSRIs are co-prescribed with warfarin.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "sertraline",
+    "label_ndc": "0049-4900",
+    "last_updated": "2024-01-10"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_ssri_interactions_v1"
+}

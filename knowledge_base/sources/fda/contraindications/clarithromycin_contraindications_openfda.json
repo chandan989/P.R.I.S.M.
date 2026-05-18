@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_clarithromycin_contraindications",
+  "content": "Clarithromycin (clarithromycin) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Hypersensitivity to clarithromycin or any macrolide drug ( 4.1 ) Cisapride and pimozide ( 4.2 ) History of cholestatic jaundice/hepatic dysfunction with use of clarithromycin ( 4.3 ) Colchicine in renal or hepatic impairment ( 4.4 ) Lomitapide, lovastatin, and simvastatin ( 4.5 ) Ergot alkaloids (ergotamine or dihydroergotamine) ( 4.6 ) Lurasidone ( 4.7 ) 4.1 Hypersensitivity Clarithromycin tablets are contraindicated in patients with a known hypersensitivity to clarithromycin, erythromycin, or any of the macrolide antibacterial drugs [see Warnings and Precautions ( 5.1 )] . 4.2 Cisapride and Pimozide Concomitant administration of clarithromycin tablets with cisapride and pimozide is contraindicated [see Drug Interactions ( 7 )] . There have been postmarketing reports of drug interactions when clarithromycin is co\u2011administered with cisapride or pimozide, resulting in cardiac arrhythmias (QT prolongation, ventricular tachycardia, ventricular fibrillation, and torsades de pointes ) most likely due to inhibition of metabolism of these drugs by clarithromycin tablets. Fatalities have been reported. 4.3 Cholestatic Jaundice/Hepatic Dysfunction Clarithromycin tablets are contraindicated in patients with a history of cholestatic jaundice or hepatic dysfunction associated with prior use of clarithromycin. 4.4 Colchicine Concomitant administration of clarithromycin tablets and colchicine is contraindicated in patients with renal or hepatic impairment. 4.5 Lomitapide, Lovastatin, and Simvastatin Concomitant administration of clarithromycin tablets with lomitapide is contraindicated due to potential for markedly increased transaminases [see Warnings and Precautions ( 5.4 ) and Drug Interactions ( 7 )]. Concomitant administration of clarithromycin tablets with HMG-CoA reductase inhibitors (statins) that are extensively metabolized by CYP3A4 (lovastatin or simvastatin) is contraindicated, due to the increased risk of myopathy, including rhabdomyolysis [see Wa",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "clarithromycin",
+    "brand_name": "Clarithromycin",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:15:21.223678",
+  "content_hash": "4badc445ca4e8fbd4500bdaa4392e734907d5a7de6bc1d093dc36f6bf9b55074"
+}

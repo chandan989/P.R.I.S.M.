@@ -1,0 +1,12 @@
+{
+  "doc_id": "mimic_polypharmacy_case_001",
+  "content": "De-identified Clinical Note (MIMIC-style synthetic). Patient: 72-year-old female with atrial fibrillation, type 2 diabetes, hypertension, hyperlipidemia, GERD, and osteoarthritis. Current medications: warfarin 5mg daily (INR target 2.0-3.0), metformin 1000mg BID, lisinopril 20mg daily, atorvastatin 40mg daily, omeprazole 20mg daily, metoprolol succinate 50mg daily, amlodipine 5mg daily. Presenting complaint: prescribed clarithromycin 500mg BID for community-acquired pneumonia. Risk assessment: HIGH risk regimen. Critical interaction: clarithromycin (strong CYP3A4 inhibitor) will increase atorvastatin exposure 4-fold, risk of rhabdomyolysis. Clarithromycin also increases warfarin levels via CYP3A4 inhibition, risk of bleeding. Omeprazole has minor effect on warfarin R-enantiomer metabolism. Recommendation: Switch to azithromycin (no CYP3A4 inhibition), or reduce atorvastatin to 10mg and increase INR monitoring frequency to every 2-3 days during antibiotic course.",
+  "metadata": {
+    "source": "MIMIC",
+    "category": "clinical_notes",
+    "note_type": "polypharmacy_audit",
+    "last_updated": "2024-01-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "mimic_case_001_v1"
+}

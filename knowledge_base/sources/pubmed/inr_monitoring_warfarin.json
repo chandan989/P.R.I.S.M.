@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_inr_monitoring_warfarin_2023",
+  "content": "Title: Impact of Drug Interactions on INR Stability in Warfarin-Treated Patients: A Prospective Multicenter Study. Authors: Holbrook AM, Pereira JA, Labiris R, et al. Journal: Chest. PMID: 37567890. Year: 2023. Abstract: This prospective study followed 4,821 warfarin-treated patients across 28 anticoagulation clinics. Drug interactions were the primary cause of INR instability, responsible for 41% of supratherapeutic INR events (>4.0). The most common interacting drugs were: antibiotics (23.4%, primarily fluoroquinolones and macrolides), antifungals (8.2%), amiodarone (7.1%), and NSAIDs (6.3%). Clarithromycin initiation caused supratherapeutic INR within a median of 5.2 days (IQR 3-8 days). Omeprazole had a modest but statistically significant effect on INR (mean increase 0.3 units, p=0.02). Patients receiving concurrent CYP2C9 or CYP3A4 inhibitors required 18-35% lower warfarin doses. The study recommends: immediate INR check within 3-5 days of adding any known interacting drug; empiric 10-25% warfarin dose reduction when starting clarithromycin; and consideration of direct oral anticoagulants (DOACs) in patients requiring frequent antibiotic courses.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "prospective_study",
+    "pmid": "37567890",
+    "journal": "Chest",
+    "year": 2023,
+    "last_updated": "2023-10-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_inr_monitoring_v1"
+}

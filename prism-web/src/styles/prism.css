@@ -1208,7 +1208,7 @@ p {
   gap: 8px;
 }
 
-.mock-llm-response {
+.clinical-output-block {
   background: var(--canvas-base);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -1218,11 +1218,11 @@ p {
   position: relative;
 }
 
-.mock-llm-response.bad {
+.clinical-output-block.bad {
   border-left: 3px solid #F87171;
 }
 
-.mock-llm-response.good {
+.clinical-output-block.good {
   border-left: 3px solid var(--aura-cyan);
 }
 

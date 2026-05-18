@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_levothyroxine_contraindications",
+  "content": "Levothyroxine sodium (levothyroxine) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Levothyroxine sodium tablets are contraindicated in patients with uncorrected adrenal insufficiency [see Warnings and Precautions (5.4) ]. Uncorrected adrenal insufficiency. (4)",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "levothyroxine",
+    "brand_name": "Levothyroxine sodium",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:17:29.955982",
+  "content_hash": "bfe49252d271eb51829e2ff96f294400f424f8ccae96b74571872451dc8021a7"
+}

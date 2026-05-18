@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_ace_inhibitor_interactions",
+  "content": "ACE inhibitors (lisinopril, enalapril, ramipril, captopril) have clinically significant interactions. Concurrent use with potassium-sparing diuretics (spironolactone, eplerenone, triamterene, amiloride), potassium supplements, or potassium-containing salt substitutes may lead to significant increases in serum potassium and risk of hyperkalemia. The combination of ACE inhibitors with ARBs (dual RAAS blockade) is generally not recommended due to increased risk of hypotension, hyperkalemia, and renal impairment. NSAIDs including selective COX-2 inhibitors may diminish the antihypertensive effect of ACE inhibitors and increase the risk of renal impairment, particularly in volume-depleted patients. Lithium toxicity has been reported with concurrent ACE inhibitor use due to reduced lithium clearance. ACE inhibitors are contraindicated in patients with bilateral renal artery stenosis.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "lisinopril",
+    "label_ndc": "0006-0207",
+    "last_updated": "2024-02-28"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_ace_interactions_v1"
+}

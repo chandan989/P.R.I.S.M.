@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_atorvastatin",
+  "content": "Atorvastatin (DrugBank DB01076) is an HMG-CoA reductase inhibitor (statin) used for the treatment of hyperlipidemia and prevention of cardiovascular disease. It is metabolized primarily by CYP3A4 to active ortho- and para-hydroxylated metabolites. The drug has 278 known drug interactions. Co-administration with strong CYP3A4 inhibitors (clarithromycin, itraconazole, HIV protease inhibitors) significantly increases atorvastatin plasma levels. Maximum recommended dose with clarithromycin is 20 mg daily. Atorvastatin increases the risk of myopathy and rhabdomyolysis, particularly when combined with fibrates, niacin, cyclosporine, or CYP3A4 inhibitors. Atorvastatin may increase digoxin levels by approximately 20%. Oral contraceptive levels (norethindrone, ethinyl estradiol) are increased by atorvastatin. Rifampin significantly decreases atorvastatin levels through CYP3A4 induction.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "atorvastatin",
+    "drugbank_id": "DB01076",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_atorvastatin_v1"
+}

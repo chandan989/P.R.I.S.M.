@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_31742659",
+  "content": "Title: Clinical relevance of St. John's wort drug interactions revisited.. Journal: British journal of pharmacology. PMID: 31742659. Year: 2020. Abstract: The first clinically relevant reports of preparations of St. John's wort (SJW), a herbal medicine with anti-depressant effects, interacting with other drugs, altering their bioavailability and efficacy, were published about 20 years ago. In 2000, a pharmacokinetic interaction between SJW and cyclosporine caused acute rejection in two heart transplant patients. Since then, subsequent research has shown that SJW altered the pharmacokinetics of drugs such as digoxin, tacrolimus, indinavir, warfarin, alprazolam, simvastatin, or oral contraceptives. These interactions were caused by pregnane-X-receptor (PXR) activation. Preparations of SJW are potent activators of PXR and hence inducers of cytochrome P450 enzymes (most importantly CYP3A4) and P-glycoprotein. The degree of CYP3A4 induction correlates significantly with the hyperforin content in the preparation. Twenty years after the first occurrence of clinically relevant pharmacokinetic drug interactions with SJW, this review revisits the current knowledge of the mechanisms of action and on how pharmacokinetic drug interactions with SJW could be avoided. LINKED ARTICLES: This article is part of a themed section on The Pharmacology of Nutraceuticals. To view the other articles in this section visit http://onlinelibrary.wiley.com/doi/10.1111/bph.v177.6/issuetoc.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "31742659",
+    "journal": "British journal of pharmacology",
+    "year": 2020,
+    "title": "Clinical relevance of St. John's wort drug interactions revisited.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:14:41.034280",
+  "content_hash": "09e714f01a9913f489e182bc7aa32d4fe5b2b0ff3bbd357dda44bebca6f97a6a"
+}

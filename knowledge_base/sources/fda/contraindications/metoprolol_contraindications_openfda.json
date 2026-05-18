@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_metoprolol_contraindications",
+  "content": "Metoprolol Tartrate (metoprolol) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Metoprolol tartrate tablets are contraindicated in severe bradycardia, second- or third-degree heart block, cardiogenic shock, systolic blood pressure <100, decompensated heart failure, sick sinus syndrome (unless a permanent pacemaker is in place), and in patients who are hypersensitive to any component of this product. Known hypersensitivity to product components. ( 4 ) Severe bradycardia: Greater than first degree heart block, or sick sinus syndrome without a pacemaker. ( 4 ) Cardiogenic shock or decompensated heart failure. ( 4 )",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "metoprolol",
+    "brand_name": "Metoprolol Tartrate",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:16:05.865948",
+  "content_hash": "5b7b54e57e95a0fd2315f2d08a372e68d74f8fc9449c28df6da61b4bd3256e51"
+}

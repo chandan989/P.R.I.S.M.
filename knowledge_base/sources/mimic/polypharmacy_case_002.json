@@ -1,0 +1,12 @@
+{
+  "doc_id": "mimic_polypharmacy_case_002",
+  "content": "De-identified Clinical Note (MIMIC-style synthetic). Patient: 68-year-old male with heart failure (EF 35%), chronic kidney disease stage 3b (eGFR 38), type 2 diabetes, and depression. Current medications: metoprolol succinate 100mg daily, lisinopril 10mg daily, furosemide 40mg daily, spironolactone 25mg daily, metformin 500mg BID, sertraline 100mg daily, aspirin 81mg daily, atorvastatin 20mg daily. Risk assessment: MODERATE risk. Key interactions: Spironolactone + lisinopril: dual RAAS blockade increases hyperkalemia risk, especially with CKD stage 3b. Monitor potassium every 2-4 weeks. Sertraline (SSRI) + aspirin: increased bleeding risk through platelet serotonin depletion. Consider gastroprotection. Metformin with eGFR 38: at lower boundary of acceptable use. Dose should not exceed 1000mg/day. Monitor renal function every 3 months. Metoprolol with sertraline: sertraline moderately inhibits CYP2D6, may increase metoprolol levels. Monitor heart rate and blood pressure.",
+  "metadata": {
+    "source": "MIMIC",
+    "category": "clinical_notes",
+    "note_type": "polypharmacy_audit",
+    "last_updated": "2024-01-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "mimic_case_002_v1"
+}

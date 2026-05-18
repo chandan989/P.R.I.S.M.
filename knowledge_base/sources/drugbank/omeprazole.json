@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_omeprazole",
+  "content": "Omeprazole (DrugBank DB00338) is a proton pump inhibitor that irreversibly inhibits the H+/K+ ATPase enzyme system in gastric parietal cells. It is metabolized primarily by CYP2C19 and to a lesser extent by CYP3A4. Omeprazole is a moderate inhibitor of CYP2C19 and an inducer of CYP1A2. It has 196 known drug interactions. The most clinically significant interaction is with clopidogrel: omeprazole reduces the antiplatelet effect of clopidogrel by inhibiting CYP2C19-mediated bioactivation, potentially increasing cardiovascular event risk. Pantoprazole is preferred when a PPI is needed with clopidogrel. Omeprazole increases methotrexate levels, particularly at high doses. It reduces absorption of iron, vitamin B12, calcium, and magnesium with long-term use. Omeprazole may increase tacrolimus trough levels via CYP2C19 inhibition. It also interacts with St. John's wort (CYP inducer decreasing omeprazole levels) and rifampin.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "omeprazole",
+    "drugbank_id": "DB00338",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_omeprazole_v1"
+}

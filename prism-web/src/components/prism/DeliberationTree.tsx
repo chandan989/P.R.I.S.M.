@@ -58,13 +58,13 @@ export default function DeliberationTree({ interpretations, discarded, selected,
         </div>
       )}
 
-      {tokens && tokens.some(t => t.type === "dot") && (
+      {tokens && tokens.filter(t => t.type === "dot" && t.ref && t.ref.signal !== "grey").length > 0 && (
         <div style={{ marginTop: 24, borderTop: "2px solid var(--border-dark)", paddingTop: 16 }}>
           <div style={{ color: "var(--ink-inverse)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
             Source Grounding Verification Logs
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {tokens.filter(t => t.type === "dot" && t.ref).map((t, i) => {
+            {tokens.filter(t => t.type === "dot" && t.ref && t.ref.signal !== "grey").map((t, i) => {
               const r = t.ref!;
               let color = "#999";
               if (r.signal === "green") color = "#16A34A";

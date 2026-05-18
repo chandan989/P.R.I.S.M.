@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_metformin_interactions",
+  "content": "Metformin is primarily eliminated unchanged by the kidneys through tubular secretion. Drugs that interfere with common renal tubular transport systems involved in metformin elimination (e.g., ranolazine, vandetanib, dolutegravir, cimetidine) may increase metformin systemic exposure and increase the risk of lactic acidosis. Concomitant use of carbonic anhydrase inhibitors (topiramate, zonisamide, acetazolamide) may increase the risk of lactic acidosis and should be used with caution. Iodinated contrast agents used in radiologic procedures can lead to acute kidney injury and metformin-associated lactic acidosis; metformin should be discontinued at or before the procedure and withheld for 48 hours. Alcohol potentiates the effect of metformin on lactate metabolism and increases lactic acidosis risk. Metformin is contraindicated in patients with eGFR below 30 mL/min/1.73m2 and should be used with caution when eGFR is 30-45.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "metformin",
+    "label_ndc": "0087-6060",
+    "last_updated": "2024-04-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_metformin_interactions_v1"
+}

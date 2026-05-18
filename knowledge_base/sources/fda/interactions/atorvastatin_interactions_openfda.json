@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_atorvastatin_interactions",
+  "content": "Atorvastatin calcium (atorvastatin) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS See full prescribing information for details regarding concomitant use of atorvastatin calcium with other drugs or grapefruit juice that increase the risk of myopathy and rhabdomyolysis ( 2.5 , 7.1 ). Rifampin: May reduce atorvastatin plasma concentrations. Administer simultaneously with atorvastatin calcium ( 7.2 ). Oral Contraceptives: May increase plasma levels of norethindrone and ethinyl estradiol; consider this effect when selecting an oral contraceptive (7.3 ). Digoxin: May increase digoxin plasma levels; monitor patients appropriately ( 7.3 ). 7.1 Drug Interactions that may Increase the Risk of Myopathy and Rhabdomyolysis with Atorvastatin Calcium Atorvastatin is a substrate of CYP3A4 and transporters (e.g., OATP1B1/1B3, P-gp, or BCRP). Atorvastatin plasma levels can be significantly increased with concomitant administration of inhibitors of CYP3A4 and transporters. Table 2 includes a list of drugs that may increase exposure to atorvastatin and may increase the risk of myopathy and rhabdomyolysis when used concomitantly and instructions for preventing or managing them [see Warnings and Precautions (5.1) and Clinical Pharmacology (12.3) ]. Table 2: Drug Interactions that may Increase the Risk of Myopathy and Rhabdomyolysis with Atorvastatin Cyclosporine or Gemfibrozil Clinical Impact: Atorvastatin plasma levels were significantly increased with concomitant administration of atorvastatin and cyclosporine, an inhibitor of CYP3A4 and OATP1B1 [see Clinical Pharmacology (12.3) ]. Gemfibrozil may cause myopathy when given alone. The risk of myopathy and rhabdomyolysis is increased with concomitant use of cyclosporine or gemfibrozil with atorvastatin. Intervention: Concomitant use of cyclosporine or gemfibrozil with atorvastatin is not recommended. Anti-Viral Medications Clinical Impact: Atorvastatin plasma levels were significantly increased with concomitant administration of atorvastatin with many anti-viral medications, which are inhibitors of",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "atorvastatin",
+    "brand_name": "Atorvastatin calcium",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:15:39.072672",
+  "content_hash": "c5e9a5c16ee6cc1a227d92bca8818ab5a4097fbc8bfc79adc97e98d57f04ccfe"
+}

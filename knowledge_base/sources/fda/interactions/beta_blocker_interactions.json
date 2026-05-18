@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_beta_blocker_interactions",
+  "content": "Beta-adrenergic blockers including metoprolol, atenolol, propranolol, and carvedilol interact with multiple drug classes. Metoprolol is metabolized by CYP2D6. Strong CYP2D6 inhibitors (fluoxetine, paroxetine, quinidine, bupropion) significantly increase metoprolol plasma levels, potentially causing bradycardia, hypotension, and heart block. Non-dihydropyridine calcium channel blockers (verapamil, diltiazem) combined with beta-blockers may produce additive negative effects on heart rate, AV conduction, and cardiac contractility. Beta-blockers may mask the symptoms of hypoglycemia in diabetic patients, particularly tachycardia. Abrupt discontinuation of beta-blockers can cause rebound hypertension and exacerbation of angina. Clonidine withdrawal with concurrent beta-blocker use may produce paradoxical hypertension. Beta-blockers are contraindicated in patients with severe bradycardia, greater than first-degree heart block, cardiogenic shock, or decompensated heart failure.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "metoprolol",
+    "label_ndc": "0028-0051",
+    "last_updated": "2024-01-20"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_beta_blocker_interactions_v1"
+}

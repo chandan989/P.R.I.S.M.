@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_polypharmacy_elderly_2023",
+  "content": "Title: Prevalence and Clinical Impact of Potentially Inappropriate Prescribing in Elderly Patients with Polypharmacy: Analysis of 1.2 Million Primary Care Records. Authors: Moriarty F, Hardy C, Bennett K, Smith SM, Fahey T. Journal: British Journal of Clinical Pharmacology. PMID: 37234567. Year: 2023. Abstract: Among 1,247,832 patients aged 65 and older, 42.3% were prescribed five or more medications concurrently (polypharmacy) and 11.2% received ten or more (excessive polypharmacy). Using Beers criteria and STOPP/START criteria, 58.7% of polypharmacy patients had at least one potentially inappropriate prescription. The most common inappropriate combinations were: long-term NSAIDs with ACE inhibitors or diuretics (triple whammy, 8.4%); duplicate therapeutic class prescribing (7.1%); benzodiazepines in patients over 65 (6.8%); anticholinergic burden exceeding safe thresholds (5.2%); and concurrent serotonergic drugs (3.9%). Patients with potentially inappropriate prescribing had a 1.4-fold increased risk of hospitalization (95% CI 1.31-1.52) and a 1.2-fold increased 30-day mortality risk. Automated AI-assisted polypharmacy screening reduced inappropriate prescribing by 23% in a subset of 12 intervention practices.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "population_study",
+    "pmid": "37234567",
+    "journal": "British Journal of Clinical Pharmacology",
+    "year": 2023,
+    "last_updated": "2023-08-20"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_polypharmacy_elderly_v1"
+}

@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_lisinopril",
+  "content": "Lisinopril (DrugBank DB00722) is an angiotensin-converting enzyme (ACE) inhibitor used for the treatment of hypertension, heart failure, and post-myocardial infarction. Unlike most ACE inhibitors, lisinopril is not a prodrug and is not hepatically metabolized. It is eliminated unchanged by the kidneys with a half-life of approximately 12 hours. It has 167 known drug interactions. Lisinopril increases serum potassium levels; concurrent use with potassium-sparing diuretics, potassium supplements, or other RAAS inhibitors significantly increases hyperkalemia risk. NSAIDs reduce the antihypertensive effect and increase renal toxicity risk. Lithium levels are increased by ACE inhibitors through reduced renal clearance. ACE inhibitors potentiate the hypoglycemic effect of insulin and oral antidiabetics. Allopurinol combined with ACE inhibitors increases the risk of hypersensitivity reactions. ACE inhibitors are contraindicated in pregnancy due to fetal toxicity.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "lisinopril",
+    "drugbank_id": "DB00722",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_lisinopril_v1"
+}

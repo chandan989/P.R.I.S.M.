@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_metformin_contraindications",
+  "content": "ZITUVIMET (metformin) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Severe renal impairment: (eGFR below 30 mL/min/1.73 m 2 ) ( 4) Metabolic acidosis, including diabetic ketoacidosis. ( 4 ) History of a serious hypersensitivity reaction to ZITUVIMET, sitagliptin, or metformin, such as anaphylaxis or angioedema. (4) ZITUVIMET is contraindicated in patients with: Severe renal impairment (eGFR below 30 mL/min/1.73 m 2 ) [see Warnings and Precautions ( 5.1 )]. Acute or chronic metabolic acidosis, including diabetic ketoacidosis. History of a serious hypersensitivity reaction to sitagliptin, metformin, or any of the excipients in ZITUVIMET. Serious hypersensitivity reactions including anaphylaxis or angioedema have been reported. [see Warnings and Precautions ( 5.7 ) and Adverse Reactions ( 6.2 )].",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "metformin",
+    "brand_name": "ZITUVIMET",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:15:46.177329",
+  "content_hash": "2f6af705e8f296014a61271e301e1421c09f513a142a6afad9b77d302104d919"
+}

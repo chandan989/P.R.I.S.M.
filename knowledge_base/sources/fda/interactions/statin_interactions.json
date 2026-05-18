@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_statin_interactions",
+  "content": "Atorvastatin is metabolized by CYP3A4. Co-administration with strong CYP3A4 inhibitors (itraconazole, ketoconazole, clarithromycin, HIV protease inhibitors, boceprevir, telaprevir, nefazodone, cobicistat) increases the risk of myopathy and rhabdomyolysis. The dose of atorvastatin should not exceed 20 mg daily when used with clarithromycin. Simvastatin and lovastatin are contraindicated with strong CYP3A4 inhibitors. Rosuvastatin is not significantly metabolized by CYP3A4 and may be a safer alternative. Grapefruit juice in large quantities (more than 1.2 liters daily) increases atorvastatin AUC by 2.5-fold. Cyclosporine, gemfibrozil, niacin, and fenofibrate also increase statin-associated myopathy risk. Patients should be monitored for muscle pain, tenderness, and elevated CK levels.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "atorvastatin",
+    "label_ndc": "0071-0155",
+    "last_updated": "2024-02-20"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_statin_interactions_v1"
+}

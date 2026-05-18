@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_allopurinol_interactions",
+  "content": "Allopurinol (allopurinol) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS The following drugs may increase the risk of serious skin reactions: bendamustine, thiazide diuretics, ampicillin and amoxicillin. ( 7.1 ) Capecitabine: Avoid concomitant use. ( 7.2 ) Mercaptopurine or Azathioprine: Reduce mercaptopurine or azathioprine dose as recommended in the respective prescribing information. ( 7.2 ) Pegloticase: Discontinue and refrain from initiating treatment with allopurinol tablets. ( 7.2 ) See FPI for complete list of significant drug interactions. ( 7.2 ) 7.1 Drugs Known to Affect the Occurrence of Skin Rash and Hypersensitivity Concomitant use of the following drugs may increase the risk of skin rash, which may be severe: bendamustine, thiazide diuretics, ampicillin and amoxicillin. Renal impairment may further increase risk with concomitant use of thiazide diuretics [see Warnings and Precautions ( 5.1 , 5.2 ) and Clinical Pharmacology ( 12.2 )] . Monitor kidney function and reduce the dose of allopurinol tablets in patients with concomitant thiazide diuretic use and impaired renal function [see Dosage and Administration ( 2.6 ), Warnings and Precautions ( 5.1 )]. Discontinue allopurinol tablets at the first appearance of skin rash or other signs which may indicate a hypersensitivity reaction when use concomitantly with these drugs [see Warnings and Precautions ( 5.1 )] . 7.2 Drugs Known to Have Clinically Important Drug Interactions with Allopurinol Tablets Table 3: Interventions for Clinically Important Drug Interactions with Allopurinol Tablets Capecitabine Clinical Impact Concomitant use with allopurinol may decrease concentration of capecitabine\u2019s active metabolites, which may decrease capecitabine efficacy. Intervention Avoid the use of allopurinol tablets during treatment with capecitabine. Chlorpropamide Clinical Impact Allopurinol tablets prolong the half-life of chlorpropamide as both compete for renal tubular excretion. In patients with renal insufficiency, the risk of hypoglycemia may be increased due to",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "allopurinol",
+    "brand_name": "Allopurinol",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:18:08.201505",
+  "content_hash": "a9ebd44e5fbf87626b89445328c2ecfa68c73fe2cbb9dc44dfd96d10076d9126"
+}

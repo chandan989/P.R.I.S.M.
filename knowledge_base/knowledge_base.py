@@ -98,8 +98,8 @@ class KnowledgeBase:
                 return index
             else:
                 logger.info("Creating new FAISS index")
-                # Create index with 384 dimensions (MiniLM-L6)
-                index = faiss.IndexFlatL2(384)
+                # Create index with 384 dimensions (MiniLM-L6), inner product for cosine sim
+                index = faiss.IndexFlatIP(384)
                 return index
 
         except ImportError:
@@ -179,7 +179,7 @@ class KnowledgeBase:
         """Get the file path for a document."""
         return self.sources_path / source.lower() / category / f"{doc_id}.json"
 
-    def search(self, query: str, top_k: int = 5, threshold: float = 0.7) -> List[Dict[str, Any]]:
+    def search(self, query: str, top_k: int = 5, threshold: float = 0.3) -> List[Dict[str, Any]]:
         """
         Search for documents similar to the query.
 
@@ -196,20 +196,20 @@ class KnowledgeBase:
             return []
 
         try:
-            # Generate query embedding
+            # Generate query embedding (normalize for cosine similarity)
             if self.embedding_model:
-                query_embedding = self.embedding_model.encode([query])[0].astype(np.float32)
+                query_embedding = self.embedding_model.encode([query], normalize_embeddings=True)[0].astype(np.float32)
             else:
                 query_embedding = np.zeros(384, dtype=np.float32)
 
             # Search index
             distances, indices = self.index.search(query_embedding.reshape(1, -1), top_k)
 
-            # Convert distances to similarity scores
+            # Inner product scores are already cosine similarity (since vectors are normalized)
             results = []
-            for i, (dist, idx) in enumerate(zip(distances[0], indices[0])):
+            for i, (score, idx) in enumerate(zip(distances[0], indices[0])):
                 if idx >= 0:  # Valid index
-                    similarity = 1.0 / (1.0 + dist)  # Convert distance to similarity
+                    similarity = float(score)  # Already cosine similarity
 
                     if similarity >= threshold:
                         doc_id = list(self.doc_metadata.keys())[idx] if idx < len(self.doc_metadata) else None
@@ -372,7 +372,7 @@ class KnowledgeBase:
         # Clear existing index
         if self.index:
             import faiss
-            self.index = faiss.IndexFlatL2(384)
+            self.index = faiss.IndexFlatIP(384)
 
         self.doc_metadata = {}
 

@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_fluoxetine_interactions",
+  "content": "Fluoxetine (fluoxetine) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS As with all drugs, the potential for interaction by a variety of mechanisms (e.g., pharmacodynamic, pharmacokinetic drug inhibition or enhancement, etc.) is a possibility. Monoamine Oxidase Inhibitors (MAOIs): ( 2.9 , 2.10 , 4.1 , 5.2 ) Drugs Metabolized by CYP2D6: Fluoxetine is a potent inhibitor of CYP2D6 enzyme pathway ( 7.7 ) Tricyclic Antidepressants (TCAs): Monitor TCA levels during coadministration with fluoxetine or when fluoxetine has been recently discontinued ( 5.2 , 7.7 ) CNS Acting Drugs: Caution should be used when taken in combination with other centrally acting drugs ( 7.2 ) Benzodiazepines: Diazepam \u2013 increased t\u00bd, alprazolam - further psychomotor performance decrement due to increased levels ( 7.7 ) Antipsychotics: Potential for elevation of haloperidol and clozapine levels ( 7.7 ) Anticonvulsants: Potential for elevated phenytoin and carbamazepine levels and clinical anticonvulsant toxicity ( 7.7 ) Serotonergic Drugs: ( 2.9 , 2.10 , 4.1 , 5.2 ) Drugs that Interfere with Hemostasis (e.g. NSAIDs, Aspirin, Warfarin): May potentiate the risk of bleeding ( 7.4 ) Drugs Tightly Bound to Plasma Proteins: May cause a shift in plasma concentrations ( 7.6 , 7.7 ) Olanzapine: When used in combination with fluoxetine, also refer to the Drug Interactions section of the package insert for Symbyax ( 7.7 ) Drugs that Prolong the QT Interval: Do not use fluoxetine with thioridazine or pimozide. Use with caution in combination with other drugs that prolong the QT interval ( 4.2 , 5.11 , 7.7 , 7.8 ) 7.1 Monoamine Oxidase Inhibitors (MAOI) [see Dosage and Administration (2.9, 2.10) , Contraindications (4.1) , and Warnings and Precautions (5.2) ]. 7.2 CNS Acting Drugs Caution is advised if the concomitant administration of fluoxetine and such drugs is required. In evaluating individual cases, consideration should be given to using lower initial doses of the concomitantly administered drugs, using conservative titration schedules, and monitoring of c",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "fluoxetine",
+    "brand_name": "Fluoxetine",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:16:28.640368",
+  "content_hash": "e62858df124244869f2a03d63c7bad9752cad3c8656a657c0592b02fc4921d7f"
+}

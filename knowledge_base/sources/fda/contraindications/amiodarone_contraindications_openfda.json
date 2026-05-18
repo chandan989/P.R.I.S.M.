@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_amiodarone_contraindications",
+  "content": "Pacerone (amiodarone) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Cardiogenic shock. Sick sinus syndrome, second- or third-degree atrioventricular block, bradycardia leading to syncope without a functioning pacemaker. Known hypersensitivity to the drug or to any of its components, including iodine. Pacerone is contraindicated in patients with ( 4 ): Cardiogenic shock. Sick sinus syndrome, second- or third-degree AV block, bradycardia leading to syncope without a functioning pacemaker. Known hypersensitivity to the drug or any of its components.",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "amiodarone",
+    "brand_name": "Pacerone",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:17:08.703525",
+  "content_hash": "98e3b6be0bb5b90cd99797661f0ca8e23f3859f63e96a501ffce2b3480f7e449"
+}

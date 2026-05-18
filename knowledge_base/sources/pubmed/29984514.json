@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_29984514",
+  "content": "Title: Flucloxacillin-warfarin interaction: an under-appreciated phenomenon.. Journal: Internal medicine journal. PMID: 29984514. Year: 2018. Abstract: Current drug databases do not acknowledge an interaction between warfarin and flucloxacillin although case reports have indicated that flucloxacillin may increase warfarin requirement to maintain therapeutic international normalised ratio (INR). To assess whether flucloxacillin therapy leads to a significant increase in warfarin dose, we conducted a retrospective, observational, cohort study of hospital-in-the-home patients previously stable on warfarin; who were treated with flucloxacillin or other antibiotics for at least 2 weeks between June 2015 and December 2016. The outcome measured was change in average warfarin dose at two time periods: 1 week prior to antibiotic treatment and the final week of antibiotic treatment. Four cases with flucloxacillin and four comparators treated with other antibiotics met inclusion criteria. All cases treated with flucloxacillin had a clinically and statistically significant increase in warfarin dose in the final week of antibiotic treatment compared with pre-antibiotics. The warfarin dose increased by a range of 57-130% (P < 0.05). There was no significant change in warfarin dose for patients on vancomycin, benzylpenicillin or piperacillin-tazobactam. One comparator on cephazolin had a statistically significant change in warfarin dose; however, they had a sub-therapeutic INR on admission which warranted a dose increase. Due to the high risk of sequelae with sub-therapeutic anticoagulation, close INR monitoring is essential for patients on a prolonged course of flucloxacillin.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "29984514",
+    "journal": "Internal medicine journal",
+    "year": 2018,
+    "title": "Flucloxacillin-warfarin interaction: an under-appreciated phenomenon.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:15:07.665703",
+  "content_hash": "ce94fe48ef9559edd12c0ffbaf1821a883694676e0f2848d5974f4caccbac54f"
+}

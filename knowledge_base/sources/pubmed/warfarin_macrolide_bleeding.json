@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_warfarin_macrolide_2022",
+  "content": "Title: Risk of Major Bleeding Events Associated with Concomitant Warfarin and Macrolide Antibiotic Use: A Population-Based Cohort Study. Authors: Fischer MA, Stedman MR, Lii J, et al. Journal: Annals of Internal Medicine. PMID: 35789456. Year: 2022. Abstract: This population-based cohort study examined 38,762 warfarin-treated patients who received macrolide antibiotics. Co-prescription of clarithromycin with warfarin was associated with a 2.7-fold increased risk of hospitalization for upper gastrointestinal bleeding (adjusted HR 2.71, 95% CI 2.04-3.60) and a 1.8-fold increased risk of INR above 4.0 within the first 14 days of concurrent therapy. Erythromycin showed a similar but less pronounced effect (adjusted HR 1.82). Azithromycin had no significant effect on bleeding risk (adjusted HR 1.09, 95% CI 0.82-1.44) and is preferred when a macrolide is clinically necessary in warfarin-treated patients. The absolute risk increase for major bleeding was 12.5 additional events per 1000 patient-years of clarithromycin exposure.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "cohort_study",
+    "pmid": "35789456",
+    "journal": "Annals of Internal Medicine",
+    "year": 2022,
+    "last_updated": "2022-09-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_warfarin_macrolide_v1"
+}

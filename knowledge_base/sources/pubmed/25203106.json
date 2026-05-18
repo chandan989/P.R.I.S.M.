@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_25203106",
+  "content": "Title: Improving warfarin safety in long-term care.. Journal: The Consultant pharmacist : the journal of the American Society of Consultant Pharmacists. PMID: 25203106. Year: 2014. Abstract: OBJECTIVE: To assess the impact of a multidisciplinary warfarin safety intervention on objective quality measurements. DESIGN: A pre-post comparison of aggregate performance following 12 months of intervention activities. SETTING: Long-term care facilities. PATIENTS, PARTICIPANTS: Twelve long-term care facilities in New York state. INTERVENTIONS: Interventions included serial data reports, pharmacy alerts, quality improvement meetings, and Webinars. MAIN OUTCOME MEASURES: The primary outcome was the proportion of residents receiving anticoagulation therapy and who were receiving timely International Normalized Ratio (INR) testing following initiation of an interacting antibiotic. Secondary outcomes included: time in therapeutic range (TTR), mean INR, mean time between INRs, proportion of INR values between 2.3 and 2.7, and the frequency of INR \"excursions.\" RESULTS: Baseline analysis of the three-month preintervention period identified 207 warfarin-antibiotic coprescribing events, with only 70% being followed by a timely INR test. The baseline TTR was 45.49%, and the mean INR was 2.32. Baseline evaluations of facility policies and procedures identified process gaps in dosing and monitoring of warfarin. Intervention significantly improved the timeliness of INR monitoring (79.6%; P=0.03), but secondary measures were not measurably improved. Facility adherence to intervention implementation was poor, diminishing study impact. CONCLUSION: Anticoagulation management was suboptimal at baseline, and improvements were not seen despite repeated attempts to implement a structured, sequential intervention. Long-term care facilities may be unwilling or unable to voluntarily implement known best practices for anticoagulation management, suggesting that changes to regulations and reimbursement systems may be warranted.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "25203106",
+    "journal": "The Consultant pharmacist : the journal of the American Society of Consultant Pharmacists",
+    "year": 2014,
+    "title": "Improving warfarin safety in long-term care.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:15:07.667113",
+  "content_hash": "b459e9046a58972126ca79b8a2a500027a4ddbaf5fa6892f4668b8c3abd8dade"
+}

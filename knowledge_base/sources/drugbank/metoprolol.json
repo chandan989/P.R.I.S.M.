@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_metoprolol",
+  "content": "Metoprolol (DrugBank DB00264) is a cardioselective beta-1 adrenergic blocker used for hypertension, angina pectoris, heart failure, and post-myocardial infarction. Metoprolol is extensively metabolized by CYP2D6 in the liver with significant first-pass metabolism. Poor CYP2D6 metabolizers have approximately 5-fold higher plasma levels compared to extensive metabolizers. It has 221 known drug interactions. Strong CYP2D6 inhibitors (fluoxetine, paroxetine, quinidine, bupropion, terbinafine) significantly increase metoprolol exposure, potentially causing symptomatic bradycardia and hypotension. Verapamil and diltiazem combined with metoprolol can produce severe bradycardia and AV block. Metoprolol may mask hypoglycemia symptoms in diabetic patients. Catecholamine-depleting drugs (reserpine, guanethidine) have additive effects. Abrupt withdrawal may exacerbate angina and precipitate myocardial infarction. CYP2D6 genotype-guided dosing may improve safety.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "metoprolol",
+    "drugbank_id": "DB00264",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_metoprolol_v1"
+}

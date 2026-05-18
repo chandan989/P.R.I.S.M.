@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_statin_rhabdomyolysis_2022",
+  "content": "Title: Statin-Associated Rhabdomyolysis: Risk Factors, Drug Interactions, and Prevention Strategies. Authors: Thompson PD, Panza G, Zaleski A, Taylor B. Journal: JAMA Internal Medicine. PMID: 35123456. Year: 2022. Abstract: Statin-associated rhabdomyolysis occurs at an estimated rate of 3.4 per 100,000 patient-years but increases dramatically with CYP3A4 inhibitor co-administration. This review identified the following risk factors for statin myopathy: advanced age (>70 years, OR 2.3), female sex (OR 1.5), renal impairment (eGFR <60, OR 3.1), hypothyroidism (OR 1.9), and concurrent CYP3A4 inhibitor use (OR 5.8). The highest-risk combinations were simvastatin or lovastatin with strong CYP3A4 inhibitors (case fatality rate 0.15%). Atorvastatin with clarithromycin showed a 4.4-fold increase in AUC and a 12-fold increase in Cmax of the active hydroxy acid metabolite. Risk mitigation strategies include: using hydrophilic statins (rosuvastatin, pravastatin) which are not CYP3A4 substrates; limiting atorvastatin to 20 mg daily with moderate CYP3A4 inhibitors; and avoiding simvastatin/lovastatin entirely with strong inhibitors.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "review",
+    "pmid": "35123456",
+    "journal": "JAMA Internal Medicine",
+    "year": 2022,
+    "last_updated": "2022-04-15"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_statin_rhabdo_v1"
+}

@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_40288362",
+  "content": "Title: Selective Serotonin Reuptake Inhibitors and Risk of Serotonin Syndrome as Consequence of Drug-Drug Interactions: Analysis of the FDA Adverse Event Reporting System.. Journal: Medical principles and practice : international journal of the Kuwait University, Health Science Centre. PMID: 40288362. Year: 2025. Abstract: UNLABELLED: <p>Background: Medications exhibiting serotonergic properties, such as selective serotonin reuptake inhibitors (SSRIs) antidepressants, opioids, and other antidepressants can induce serotonin syndrome, a rare but potentially life-threatening adverse event. AIM: This study aims to investigate the risks of serotonin syndrome among different SSRIs and assess the influence of drug-drug interactions with other medications. METHODS: We analyzed the suspected adverse events in the US Food and Drug Administration Adverse Event Reporting System (FAERS) database. RESULTS: We identified 13,312 reports of serotonin syndrome, 52% of which involved SSRIs (n = 6,921), with reporting odds ratios (RORs) of 24.19. Among the safety reports involving SSRIs, 4,851 cases reported at least one severe outcome. All active substances of the SSRI group were associated with serotonin syndrome, sertraline, and fluoxetine had the most reports, while fluvoxamine had the highest ROR and risk compared to all other SSRIs (ROR: 2.66, 95% confidence interval: 2.33-3.05). The combinations of SSRIs with other drugs with the most reported cases were SSRIs-antidepressants (n = 2,395) and SSRIs-opioids (n = 2,252). The combinations of SSRIs with serotonin-norepinephrine reuptake inhibitors (ROR 25.42) and \"other antidepressants\" (ROR 22.74) were associated with a signal for serotonin syndrome. The combination SSRIs-opioids was associated with a safety signal, particularly those with higher risk for serotonin syndrome, like tramadol and fentanyl (ROR 41.95). CONCLUSION: Close monitoring for symptoms of serotonin syndrome should be considered in patients with depression with a combination of antidepressants, and in those on SSRIs who also require linezolid, monoamine oxidase inhibitors or high-risk opioids, like tramadol, or fentanyl. </p>.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "40288362",
+    "journal": "Medical principles and practice : international journal of the Kuwait University, Health Science Centre",
+    "year": 2025,
+    "title": "Selective Serotonin Reuptake Inhibitors and Risk of Serotonin Syndrome as Consequence of Drug-Drug Interactions: Analysis of the FDA Adverse Event Reporting System.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:14:51.733563",
+  "content_hash": "f8277fc7cd9d550708b444dd6d8f9960dc382fb4030b62043eebd3ebd74f1307"
+}

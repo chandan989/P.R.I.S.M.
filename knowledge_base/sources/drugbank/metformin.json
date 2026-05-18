@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_metformin",
+  "content": "Metformin (DrugBank DB00331) is a biguanide oral antihyperglycemic agent used as first-line therapy for type 2 diabetes mellitus. Metformin decreases hepatic glucose production, decreases intestinal absorption of glucose, and improves insulin sensitivity. Metformin is not metabolized and is eliminated unchanged by the kidneys via tubular secretion and glomerular filtration. It has 143 known drug interactions. Metformin carries a black box warning for lactic acidosis, particularly in patients with renal impairment, hepatic dysfunction, or conditions predisposing to tissue hypoperfusion. Contraindicated with eGFR below 30 mL/min/1.73m2. Alcohol increases lactic acidosis risk. Iodinated contrast media require temporary discontinuation. Carbonic anhydrase inhibitors (topiramate) may increase lactic acidosis risk. Cimetidine increases metformin levels by 60% through inhibition of renal tubular secretion.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "metformin",
+    "drugbank_id": "DB00331",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_metformin_v1"
+}

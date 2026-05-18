@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_40685887",
+  "content": "Title: Efficacy and Safety of Clopidogrel With and Without a Proton Pump Inhibitor: A Systematic Review and Meta-Analysis.. Journal: Basic & clinical pharmacology & toxicology. PMID: 40685887. Year: 2025. Abstract: Classifications of drug interaction alerts regarding clopidogrel and a proton pump inhibitor (PPI) differ between knowledge resources. In this systematic review, Medline, Embase, and the Cochrane Library were searched for randomized controlled trials (RCTs) applying PICO criteria: P\u2009=\u2009patients on clopidogrel; I\u2009=\u2009intervention: PPI (subgroup: [es]omeprazole); C\u2009=\u2009comparison: no PPI (C1) or a PPI other than (es)omeprazole (C2); O\u2009=\u2009outcomes, main: a composite of cardiovascular events (efficacy); also: overt gastrointestinal bleeding (safety). Fourteen RCTs fulfilled the PICO criteria, five without high risk of bias and with at least one clinical event per study arm. Regarding efficacy with or without a PPI, the pooled risk ratio (RR) and risk difference (RD) were 1.08 (95% confidence interval (CI) 0.78; 1.50) and 0.2 percentage points (95% CI -0.9; 1.2), respectively (four RCTs; 4341 patients [96% also used aspirin, 98% receiving I used (es)omeprazole]; moderate certainty evidence). Regarding safety, the RR and RD were 0.13 (95% CI 0.03; 0.59) and -0.7 percentage points (95% CI -1.1; -0.3), respectively (one RCT; 3761 patients; moderate certainty evidence). The available evidence did not allow conclusions regarding omeprazole versus pantoprazole. In conclusion, concurrent use of a PPI probably does not largely affect clopidogrel efficacy, but probably reduces the risk of overt gastrointestinal bleeding.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "40685887",
+    "journal": "Basic & clinical pharmacology & toxicology",
+    "year": 2025,
+    "title": "Efficacy and Safety of Clopidogrel With and Without a Proton Pump Inhibitor: A Systematic Review and Meta-Analysis.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:15:01.376054",
+  "content_hash": "93965ba1f0e6ea26eef56130b350b4dbd7c3ce7acf77508959fd5af66db5ad10"
+}

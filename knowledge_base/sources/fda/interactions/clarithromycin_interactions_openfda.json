@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_clarithromycin_interactions",
+  "content": "Clarithromycin (clarithromycin) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS Co-administration of clarithromycin tablets is known to inhibit CYP3A, and a drug primarily metabolized by CYP3A may be associated with elevations in drug concentrations that could increase or prolong both therapeutic and adverse effects of the concomitant drug. Clarithromycin tablets should be used with caution in patients receiving treatment with other drugs known to be CYP3A enzyme substrates, especially if the CYP3A substrate has a narrow safety margin (e.g., carbamazepine) and/or the substrate is extensively metabolized by this enzyme. Adjust dosage when appropriate and monitor serum concentrations of drugs primarily metabolized by CYP3A closely in patients concurrently receiving clarithromycin. Table 8. Clinically Significant Drug Interactions with Clarithromycin Tablets Drugs That Are Affected By Clarithromycin Tablets Drug(s) with Pharmacokinetics Affected by Clarithromycin Tablets Recommendation Comments Antiarrhythmics: Disopyramide Quinidine Dofetilide Amiodarone Sotalol Procainamide Not Recommended Disopyramide, Quinidine: There have been postmarketing reports of torsades de pointes occurring with concurrent use of clarithromycin and quinidine or disopyramide. Electrocardiograms should be monitored for QTc prolongation during coadministration of clarithromycin with these drugs [see Warnings and Precautions ( 5.2 )] . Serum concentrations of these medications should also be monitored. There have been spontaneous or published reports of CYP3A based interactions of clarithromycin with disopyramide and quinidine. There have been postmarketing reports of hypoglycemia with the concomitant administration of clarithromycin and disopyramide. Therefore, blood glucose levels should be monitored during concomitant administration of clarithromycin and disopyramide. Digoxin Use With Caution Digoxin: Digoxin is a substrate for P-glycoprotein (Pgp) and clarithromycin is known to inhibit Pgp. When clarithromycin and digoxin are co\u2011administered, inhibi",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "clarithromycin",
+    "brand_name": "Clarithromycin",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:15:21.222650",
+  "content_hash": "d2633f2f25d66e3ca7fc959265a1187319e63778a4746abfd4d62a03afd668cc"
+}

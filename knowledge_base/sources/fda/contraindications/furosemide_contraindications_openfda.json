@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_furosemide_contraindications",
+  "content": "Furosemide (furosemide) \u2014 FDA Contraindications: CONTRAINDICATIONS Furosemide tablets are contraindicated in patients with anuria and in patients with a history of hypersensitivity to furosemide.",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "furosemide",
+    "brand_name": "Furosemide",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:17:32.170534",
+  "content_hash": "0b8fe09edf61cf45a6121ab136f504f826b77ac47ef74545f47aeeee26314f78"
+}

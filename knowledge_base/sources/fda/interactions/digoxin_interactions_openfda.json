@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_digoxin_interactions",
+  "content": "Digoxin (digoxin) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS Digoxin has a narrow therapeutic index, increased monitoring of serum digoxin concentrations and for potential signs and symptoms of clinical toxicity is necessary when initiating, adjusting, or discontinuing drugs that may interact with digoxin. Prescribers should consult the prescribing information of any drug which is co-prescribed with digoxin for potential drug interaction information. PGP Inducers/Inhibitors: Drugs that induce or inhibit PGP have the potential to alter digoxin pharmacokinetics. ( 7.1 ) The potential for drug-drug interactions must be considered prior to and during drug therapy. See full prescribing information. ( 7.2 , 7.3 , 12.3 ) 7.1 P-Glycoprotein (PGP) Inducers/Inhibitors Digoxin is a substrate of P-glycoprotein, at the level of intestinal absorption, renal tubular section and biliary\u2013intestinal secretion. Therefore, drugs that induce/inhibit P-glycoprotein have the potential to alter digoxin pharmacokinetics. 7.2 Pharmacokinetic Drug Interactions Digoxin concentrations increased greater than 50% Digoxin Serum Concentration Increase Digoxin AUC Increase Recommendations Amiodarone 70% NA Measure serum digoxin concentrations before initiating concomitant drugs. Reduce digoxin concentrations by decreasing dose by approximately 30-50% or by modifying the dosing frequency and continue monitoring. Captopril 58% 39% Clarithromycin NA 70% Dronedarone NA 150% Gentamicin 129-212% NA Erythromycin 100% NA Itraconazole 80% NA Lapatinib NA 180% Propafenone NA 60-270% Quinidine 100% NA Ranolazine 50% NA Ritonavir NA 86% Telaprevir 50% 85% Tetracycline 100% NA Verapamil 50-75% NA Digoxin concentrations increased less than 50% Atorvastatin 22% 15% Carvedilol 16% 14% Measure serum digoxin concentrations before initiating concomitant drugs. Reduce digoxin concentrations by decreasing the dose by approximately 15-30% or by modifying the dosing frequency and continue monitoring. Conivaptan 33% 43% Diltiazem 20% NA Indomethacin 40% NA Mirabe",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "digoxin",
+    "brand_name": "Digoxin",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:17:06.370436",
+  "content_hash": "5e0c8f36a0b76a9b15c16ce6c96b74c41d513ec8d09b2b5fed64ee0c3772763e"
+}

@@ -82,7 +82,7 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
         }
 
         els.push(
-          <div key={bIdx} className="mock-llm-response good" style={{ borderLeft: `3px solid ${accentColor}`, background: bg, marginBottom: "var(--space-4)" }}>
+          <div key={bIdx} className="clinical-output-block good" style={{ borderLeft: `3px solid ${accentColor}`, background: bg, marginBottom: "var(--space-4)" }}>
             {lines.map((line, lIdx) => {
               const isHeader = lIdx === 0;
               return (

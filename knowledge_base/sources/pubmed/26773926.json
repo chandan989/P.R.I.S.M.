@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_26773926",
+  "content": "Title: Metformin-associated lactic acidosis: Current perspectives on causes and risk.. Journal: Metabolism: clinical and experimental. PMID: 26773926. Year: 2016. Abstract: Although metformin has become a drug of choice for the treatment of type 2 diabetes mellitus, some patients may not receive it owing to the risk of lactic acidosis. Metformin, along with other drugs in the biguanide class, increases plasma lactate levels in a plasma concentration-dependent manner by inhibiting mitochondrial respiration predominantly in the liver. Elevated plasma metformin concentrations (as occur in individuals with renal impairment) and a secondary event or condition that further disrupts lactate production or clearance (e.g., cirrhosis, sepsis, or hypoperfusion), are typically necessary to cause metformin-associated lactic acidosis (MALA). As these secondary events may be unpredictable and the mortality rate for MALA approaches 50%, metformin has been contraindicated in moderate and severe renal impairment since its FDA approval in patients with normal renal function or mild renal insufficiency to minimize the potential for toxic metformin levels and MALA. However, the reported incidence of lactic acidosis in clinical practice has proved to be very low (<10 cases per 100,000 patient-years). Several groups have suggested that current renal function cutoffs for metformin are too conservative, thus depriving a substantial number of type 2 diabetes patients from the potential benefit of metformin therapy. On the other hand, the success of metformin as the first-line diabetes therapy may be a direct consequence of conservative labeling, the absence of which could have led to excess patient risk and eventual withdrawal from the market, as happened with earlier biguanide therapies. An investigational delayed-release metformin currently under development could potentially provide a treatment option for patients with renal impairment pending the results of future studies. This literature-based review provides an update on the impact of renal function and other conditions on metformin plasma levels and the risk of MALA in patients with type 2 diabetes.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "26773926",
+    "journal": "Metabolism: clinical and experimental",
+    "year": 2016,
+    "title": "Metformin-associated lactic acidosis: Current perspectives on causes and risk.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:14:57.868735",
+  "content_hash": "9f30d4fc531979e2faeb12a5ec15fa92d05e0711f4911196519674030f176e6f"
+}

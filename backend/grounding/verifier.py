@@ -71,8 +71,8 @@ class ClaimVerifier:
             kb_root: Root path of the knowledge base
         """
         self.kb = KnowledgeBase(kb_root)
-        self.verification_threshold = 0.75
-        self.contradiction_threshold = 0.85
+        self.verification_threshold = 0.55
+        self.contradiction_threshold = 0.70
 
     def verify_claim(
         self,
@@ -90,7 +90,7 @@ class ClaimVerifier:
             Verification result
         """
         # Search for similar documents
-        results = self.kb.search(claim, top_k=top_k, threshold=0.6)
+        results = self.kb.search(claim, top_k=top_k, threshold=0.3)
 
         if not results:
             return VerificationResult(

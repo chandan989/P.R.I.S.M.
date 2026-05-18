@@ -1,0 +1,13 @@
+{
+  "doc_id": "drugbank_clarithromycin",
+  "content": "Clarithromycin (DrugBank DB01211) is a macrolide antibiotic that acts by inhibiting bacterial protein synthesis by binding to the 50S ribosomal subunit. It is a strong inhibitor of CYP3A4 and a moderate inhibitor of CYP1A2. Clarithromycin also inhibits P-glycoprotein (P-gp), increasing the bioavailability of P-gp substrates such as digoxin, colchicine, and dabigatran. The drug has 341 known drug interactions in DrugBank. Major interactions include: statins (rhabdomyolysis risk), warfarin (bleeding risk via CYP3A4 inhibition), ergot alkaloids (ergotism), benzodiazepines (excessive sedation), carbamazepine (toxicity), theophylline (toxicity), and QT-prolonging agents (arrhythmia risk). Clarithromycin is hepatically metabolized to 14-hydroxyclarithromycin, which also has antimicrobial activity. Renal dose adjustment is required when CrCl is less than 30 mL/min.",
+  "metadata": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "drug": "clarithromycin",
+    "drugbank_id": "DB01211",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "drugbank_clarithromycin_v1"
+}

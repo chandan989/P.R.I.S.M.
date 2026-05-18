@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_ppi_clopidogrel_2021",
+  "content": "Title: Proton Pump Inhibitor Use and Cardiovascular Outcomes in Patients Receiving Dual Antiplatelet Therapy: Updated Meta-Analysis. Authors: Kwok CS, Jeevanantham V, Dawn B, Loke YK. Journal: The American Journal of Cardiology. PMID: 33456789. Year: 2021. Abstract: This updated meta-analysis of 31 studies (n=214,851 patients) evaluated the cardiovascular impact of concomitant PPI and clopidogrel use. Omeprazole was associated with a significantly increased risk of major adverse cardiovascular events (MACE) compared to no PPI (RR 1.43, 95% CI 1.23-1.67), primarily driven by increased myocardial infarction risk. Esomeprazole showed similar risk (RR 1.35). In contrast, pantoprazole (RR 1.04, 95% CI 0.90-1.21) and lansoprazole (RR 1.08) showed no significant increase in MACE. The mechanism involves CYP2C19 inhibition by omeprazole, which reduces conversion of clopidogrel to its active thiol metabolite by 40-50%. Current guidelines recommend avoiding omeprazole and esomeprazole with clopidogrel and using pantoprazole when gastroprotection is indicated.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "meta_analysis",
+    "pmid": "33456789",
+    "journal": "American Journal of Cardiology",
+    "year": 2021,
+    "last_updated": "2021-06-15"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_ppi_clopidogrel_v1"
+}

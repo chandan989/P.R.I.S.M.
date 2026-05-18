@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_levothyroxine_interactions",
+  "content": "Levothyroxine sodium (levothyroxine) \u2014 FDA Drug Interactions: 7 DRUG INTERACTIONS See full prescribing information for drugs that affect thyroid hormone pharmacokinetics and metabolism (e.g., absorption, synthesis, secretion, catabolism, protein binding, and target tissue response) and may alter the therapeutic response to levothyroxine sodium. (7) 7.1 Drugs Known to Affect Thyroid Hormone Pharmacokinetics Many drugs can exert effects on thyroid hormone pharmacokinetics and metabolism (e.g., absorption, synthesis, secretion, catabolism, protein binding, and target tissue response) and may alter the therapeutic response to levothyroxine sodium (Tables 5 to 8). Table 5. Drugs That May Decrease T4 Absorption (Hypothyroidism) Potential impact: Concurrent use may reduce the efficacy of levothyroxine sodium by binding and delaying or preventing absorption, potentially resulting in hypothyroidism. Drug or Drug Class Effect Phosphate Binders (e.g., calcium carbonate, ferrous sulfate, sevelamer, lanthanum) Phosphate binders may bind to levothyroxine. Administer levothyroxine sodium tablets at least 4 hours apart from these agents. Orlistat Monitor patients treated concomitantly with orlistat and levothyroxine sodium for changes in thyroid function. Bile Acid Sequestrants (e.g., colesevelam, cholestyramine, colestipol) Ion Exchange Resins (e.g., Kayexalate) Bile acid sequestrants and ion exchange resins are known to decrease levothyroxine absorption. Administer levothyroxine sodium tablets at least 4 hours prior to these drugs or monitor TSH levels. Proton Pump Inhibitors Sucralfate Antacids (e.g., aluminum & magnesium hydroxides, simethicone) Gastric acidity is an essential requirement for adequate absorption of levothyroxine. Sucralfate, antacids and proton pump inhibitors may cause hypochlorhydria, affect intragastric pH, and reduce levothyroxine absorption. Monitor patients appropriately. Table 6. Drugs That May Alter T4 and Triiodothyronine (T3) Serum Transport Without Affecting Free Thyroxine (FT4) Concentration (Euthyroidism) Dru",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "levothyroxine",
+    "brand_name": "Levothyroxine sodium",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:17:29.954822",
+  "content_hash": "4a9ab1cf66280df903061b5d1dcf2fd809f3e0e6f37d2bb2d1f07789c71bb4ff"
+}

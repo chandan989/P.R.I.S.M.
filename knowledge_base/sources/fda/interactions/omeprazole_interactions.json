@@ -1,0 +1,13 @@
+{
+  "doc_id": "fda_omeprazole_interactions",
+  "content": "Omeprazole is a proton pump inhibitor that inhibits CYP2C19 and induces CYP1A2. Omeprazole reduces the antiplatelet activity of clopidogrel when co-administered, due to inhibition of CYP2C19-mediated conversion of clopidogrel to its active metabolite. Alternative acid-reducing agents (famotidine, pantoprazole) should be considered. Omeprazole may increase exposure of drugs metabolized by CYP2C19 (diazepam, phenytoin, warfarin R-isomer). While the S-warfarin enantiomer responsible for most anticoagulant activity is metabolized by CYP2C9, minor effects on INR have been reported. Long-term omeprazole use (greater than 1 year) is associated with hypomagnesemia, which can present as tetany, arrhythmias, and seizures. Omeprazole reduces absorption of drugs requiring gastric acid (iron salts, ketoconazole, atazanavir, erlotinib, mycophenolate mofetil). Chronic PPI use is associated with increased risk of Clostridioides difficile infection and bone fractures.",
+  "metadata": {
+    "source": "FDA",
+    "category": "interactions",
+    "drug": "omeprazole",
+    "label_ndc": "0186-0742",
+    "last_updated": "2024-03-01"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "fda_omeprazole_interactions_v1"
+}

@@ -1,0 +1,14 @@
+{
+  "doc_id": "fda_clopidogrel_contraindications",
+  "content": "Clopidogrel (clopidogrel) \u2014 FDA Contraindications: 4 CONTRAINDICATIONS Active pathological bleeding, such as peptic ulcer or intracranial hemorrhage (4.1) Hypersensitivity to clopidogrel or any component of the product (4.2) 4.1 Active Bleeding Clopidogrel tablets are contraindicated in patients with active pathological bleeding such as peptic ulcer or intracranial hemorrhage. 4.2 Hypersensitivity Clopidogrel tablets are contraindicated in patients with hypersensitivity (e.g., anaphylaxis) to clopidogrel or any component of the product [see Adverse Reactions (6.2) ] .",
+  "metadata": {
+    "source": "FDA",
+    "category": "contraindications",
+    "drug": "clopidogrel",
+    "brand_name": "Clopidogrel",
+    "last_updated": "2026-05-18",
+    "api_source": "OpenFDA"
+  },
+  "added_at": "2026-05-18T21:16:49.106602",
+  "content_hash": "ccf316ea07e3c08dc3869b2d416ec15e604cab49703d14a6153eec5d4fee9149"
+}

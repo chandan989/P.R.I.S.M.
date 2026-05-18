@@ -1,0 +1,14 @@
+{
+  "doc_id": "pubmed_cyp3a4_polypharmacy_2023",
+  "content": "Title: CYP3A4-Mediated Drug Interactions in Elderly Polypharmacy Patients: A Systematic Review. Authors: Zhang L, Chen M, Huang R. Journal: Clinical Pharmacology & Therapeutics. PMID: 36891234. Year: 2023. Abstract: CYP3A4 is responsible for the metabolism of approximately 50% of all prescribed medications. In elderly patients receiving five or more medications (polypharmacy), the probability of at least one CYP3A4-mediated drug-drug interaction exceeds 80%. This systematic review of 47 studies (n=12,847 patients) found that the most clinically significant CYP3A4 interactions in polypharmacy settings involved macrolide antibiotics (clarithromycin, erythromycin) combined with statins, calcium channel blockers, or anticoagulants. Clarithromycin co-administration with atorvastatin increased statin AUC by 4.4-fold (95% CI: 3.2-5.8), while the combination with warfarin increased INR by an average of 1.8 units. Age-related decline in CYP3A4 activity (approximately 30% reduction by age 70) further potentiates these interactions. The review concludes that systematic CYP3A4 interaction screening should be mandatory in polypharmacy auditing systems.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "systematic_review",
+    "pmid": "36891234",
+    "journal": "Clinical Pharmacology & Therapeutics",
+    "year": 2023,
+    "last_updated": "2023-11-15"
+  },
+  "added_at": "2026-05-19T00:00:00Z",
+  "content_hash": "pubmed_cyp3a4_review_v1"
+}

@@ -5,7 +5,7 @@ import DeliberationTree from "@/components/prism/DeliberationTree";
 import ConfidenceBadge from "@/components/prism/ConfidenceBadge";
 import SkeletonLoader from "@/components/prism/SkeletonLoader";
 import { streamAudit } from "@/lib/api";
-import { demoQueries } from "@/lib/mock-data";
+import { demoQueries } from "@/lib/demo-queries";
 import type { AuditStreamEvent, Confidence, Interpretation } from "@/lib/types";
 import { motion } from "framer-motion";
 

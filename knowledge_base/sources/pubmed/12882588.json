@@ -1,0 +1,15 @@
+{
+  "doc_id": "pubmed_12882588",
+  "content": "Title: Pharmacokinetic interactions with rifampicin : clinical relevance.. Journal: Clinical pharmacokinetics. PMID: 12882588. Year: 2003. Abstract: The antituberculosis drug rifampicin (rifampin) induces a number of drug-metabolising enzymes, having the greatest effects on the expression of cytochrome P450 (CYP) 3A4 in the liver and in the small intestine. In addition, rifampicin induces some drug transporter proteins, such as intestinal and hepatic P-glycoprotein. Full induction of drug-metabolising enzymes is reached in about 1 week after starting rifampicin treatment and the induction dissipates in roughly 2 weeks after discontinuing rifampicin. Rifampicin has its greatest effects on the pharmacokinetics of orally administered drugs that are metabolised by CYP3A4 and/or are transported by P-glycoprotein. Thus, for example, oral midazolam, triazolam, simvastatin, verapamil and most dihydropyridine calcium channel antagonists are ineffective during rifampicin treatment. The plasma concentrations of several anti-infectives, such as the antimycotics itraconazole and ketoconazole and the HIV protease inhibitors indinavir, nelfinavir and saquinavir, are also greatly reduced by rifampicin. The use of rifampicin with these HIV protease inhibitors is contraindicated to avoid treatment failures. Rifampicin can cause acute transplant rejection in patients treated with immunosuppressive drugs, such as cyclosporin. In addition, rifampicin reduces the plasma concentrations of methadone, leading to symptoms of opioid withdrawal in most patients. Rifampicin also induces CYP2C-mediated metabolism and thus reduces the plasma concentrations of, for example, the CYP2C9 substrate (S)-warfarin and the sulfonylurea antidiabetic drugs. In addition, rifampicin can reduce the plasma concentrations of drugs that are not metabolised (e.g. digoxin) by inducing drug transporters such as P-glycoprotein. Thus, the effects of rifampicin on drug metabolism and transport are broad and of established clinical significance. Potential drug interactions should be considered whenever beginning or discontinuing rifampicin treatment. It is particularly important to remember that the concentrations of many of the other drugs used by the patient will increase when rifampicin is discontinued as the induction starts to wear off.",
+  "metadata": {
+    "source": "PubMed",
+    "category": "abstract",
+    "pmid": "12882588",
+    "journal": "Clinical pharmacokinetics",
+    "year": 2003,
+    "title": "Pharmacokinetic interactions with rifampicin : clinical relevance.",
+    "last_updated": "2026-05-18"
+  },
+  "added_at": "2026-05-18T21:14:41.035660",
+  "content_hash": "0b3a9ccdbcff2a5a0be484140da31efc39bdc00a978b62af00cc2c95498fd1c4"
+}
