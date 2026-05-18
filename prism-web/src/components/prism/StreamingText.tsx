@@ -56,111 +56,57 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
       const lines = block.trim().split('\n');
       const headerLine = lines[0];
 
-      const riskMatch = headerLine.match(/^(CRITICAL|HIGH|MODERATE(?:\/HIGH)?)\s+RISK:\s*(.*)$/i);
+      const isRisk = headerLine.match(/^(CRITICAL|HIGH|MODERATE(?:\/HIGH)?)\s+RISK:\s*(.*)$/i);
       const isOtherObs = headerLine.match(/^OTHER OBSERVATIONS:?/i);
       const isRecs = headerLine.match(/^Recommendation(s)?:?/i);
 
-      if (riskMatch) {
-        const level = riskMatch[1].toUpperCase();
-        const title = riskMatch[2] || "Identified Risk";
-        
-        let color = "#F87171"; // Red
-        let bg = "rgba(248, 113, 113, 0.03)";
-        let pillBg = "rgba(248, 113, 113, 0.15)";
-        let Icon = ShieldAlert;
-        
-        if (level.includes("HIGH") && !level.includes("CRITICAL")) {
-          color = "var(--aura-orange)";
-          bg = "rgba(255, 128, 8, 0.03)";
-          pillBg = "rgba(255, 128, 8, 0.15)";
-          Icon = AlertTriangle;
-        }
-        if (level === "MODERATE") {
-          color = "var(--aura-yellow)";
-          bg = "rgba(255, 200, 55, 0.03)";
-          pillBg = "rgba(255, 200, 55, 0.15)";
-          Icon = AlertCircle;
-        }
-        if (level === "CRITICAL") {
-          color = "#F87171";
-          bg = "rgba(248, 113, 113, 0.03)";
-          pillBg = "rgba(248, 113, 113, 0.15)";
-          Icon = ShieldAlert;
+      if (isRisk || isOtherObs || isRecs) {
+        let accentColor = "var(--aura-cyan)";
+        let bg = "rgba(0, 225, 217, 0.03)";
+
+        if (isRisk) {
+          const level = isRisk[1].toUpperCase();
+          if (level.includes("HIGH") && !level.includes("CRITICAL")) {
+            accentColor = "var(--aura-orange)";
+            bg = "rgba(255, 128, 8, 0.03)";
+          } else if (level === "MODERATE") {
+            accentColor = "var(--aura-yellow)";
+            bg = "rgba(255, 200, 55, 0.03)";
+          } else if (level === "CRITICAL") {
+            accentColor = "#F87171";
+            bg = "rgba(248, 113, 113, 0.03)";
+          }
+        } else if (isRecs) {
+          accentColor = "#4ADE80";
+          bg = "rgba(74, 222, 128, 0.03)";
         }
 
         els.push(
-          <div key={bIdx} style={{ borderLeft: `3px solid ${color}`, background: bg }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div style={{ color }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
-              <Icon size={18} className="shrink-0" />
-              <span>{level} RISK: {renderInline(title)}</span>
-            </div>
-            <div className="space-y-3 text-[14px] leading-relaxed text-foreground/90">
-              {lines.slice(1).map((line, lIdx) => {
-                if (line.trim().startsWith('*')) {
-                  const parts = line.replace(/^\*\s*/, '').split(':');
-                  if (parts.length > 1) {
-                    const key = parts[0];
-                    const val = parts.slice(1).join(':');
-                    return (
-                      <div key={lIdx} className="flex gap-3 items-start">
-                        <span style={{ fontSize: 11, fontWeight: 600, color: color, background: pillBg, display: "inline-block", padding: "2px 6px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.02em", marginTop: 2, whiteSpace: "nowrap" }}>
-                          {renderInline(key)}
-                        </span>
-                        <span className="text-foreground/90 leading-relaxed">{renderInline(val)}</span>
-                      </div>
-                    );
-                  }
-                }
-                return <div key={lIdx} className="text-foreground/80">{renderInline(line)}</div>;
-              })}
-            </div>
-          </div>
-        );
-      } else if (isOtherObs) {
-        els.push(
-          <div key={bIdx} style={{ borderLeft: "3px solid var(--aura-cyan)", background: "rgba(0, 225, 217, 0.03)" }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div style={{ color: "var(--aura-cyan)" }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
-              <Info size={18} className="shrink-0" />
-              <span>Other Observations</span>
-            </div>
-            <ul className="space-y-2 text-[14px] ml-5 list-disc text-foreground/80 leading-relaxed">
-              {lines.slice(1).map((line, lIdx) => (
-                <li key={lIdx} className="pl-1">{renderInline(line.replace(/^\*\s*/, ''))}</li>
-              ))}
-            </ul>
-          </div>
-        );
-      } else if (isRecs) {
-        els.push(
-          <div key={bIdx} style={{ borderLeft: "3px solid #4ADE80", background: "rgba(74, 222, 128, 0.03)" }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div style={{ color: "#4ADE80" }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
-              <CheckCircle2 size={18} className="shrink-0" />
-              <span>Recommendations</span>
-            </div>
-            <div className="space-y-3 text-[14px] text-foreground/80 leading-relaxed">
-              {lines.slice(1).map((line, lIdx) => {
-                const isBullet = line.trim().startsWith('*');
-                const isNumbered = /^\d+\./.test(line.trim());
-                
-                return (
-                  <div key={lIdx} className={`ml-1 ${isBullet || isNumbered ? 'pl-3' : ''}`}>
-                    {renderInline(line)}
-                  </div>
-                );
-              })}
-            </div>
+          <div key={bIdx} className="mock-llm-response good" style={{ borderLeft: `3px solid ${accentColor}`, background: bg, marginBottom: "var(--space-4)" }}>
+            {lines.map((line, lIdx) => {
+              const isHeader = lIdx === 0;
+              return (
+                <div key={lIdx} style={{ 
+                  fontWeight: isHeader ? 600 : 400, 
+                  color: isHeader ? accentColor : "inherit",
+                  marginBottom: isHeader ? 8 : 4,
+                  fontSize: isHeader ? 14 : 13
+                }}>
+                  {renderInline(line)}
+                </div>
+              );
+            })}
           </div>
         );
       } else {
         els.push(
-          <p key={bIdx} className="mb-4 text-[14px] leading-[1.7] text-foreground/80">
+          <div key={bIdx} style={{ fontSize: 13, lineHeight: 1.6, marginBottom: "var(--space-4)" }}>
             {lines.map((line, lIdx) => (
-              <Fragment key={lIdx}>
+              <div key={lIdx} style={{ marginBottom: 4 }}>
                 {renderInline(line)}
-                {lIdx < lines.length - 1 && <br />}
-              </Fragment>
+              </div>
             ))}
-          </p>
+          </div>
         );
       }
     });
@@ -169,10 +115,10 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
   }, [tokens]);
 
   return (
-    <div className="output-text relative font-medium">
+    <div className="output-text" style={{ fontFamily: "var(--font-primary)", color: "var(--ink-primary)" }}>
       {elements}
       {isStreaming && (
-        <span className="inline-block w-2.5 h-5 ml-1 bg-primary animate-pulse align-middle rounded-sm opacity-70" aria-hidden />
+        <span className="inline-block w-2 h-4 ml-1 bg-primary animate-pulse align-middle" aria-hidden style={{ background: "var(--ink-primary)" }} />
       )}
     </div>
   );

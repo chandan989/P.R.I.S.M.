@@ -14,7 +14,7 @@ interface Props {
   tokens?: Token[];
 }
 
-export default function DeliberationTree({ interpretations, discarded, selected, calibration }: Props) {
+export default function DeliberationTree({ interpretations, discarded, selected, calibration, tokens }: Props) {
   return (
     <div className="delib" aria-label="Deliberation tree" style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse-muted)" }}>
       <div style={{ color: "var(--ink-inverse)", marginBottom: 8 }}>{"<|channel>thought\n"}</div>
