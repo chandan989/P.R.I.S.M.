@@ -5,6 +5,7 @@ export interface SourceRef {
   signal: Signal;
   source: string;
   snippet: string;
+  claim_text?: string;
 }
 
 export interface Confidence {
@@ -39,5 +40,6 @@ export interface AuditStreamEvent {
   signal?: Signal;
   source?: string;
   snippet?: string;
+  claim_text?: string;
   confidence?: Confidence;
 }

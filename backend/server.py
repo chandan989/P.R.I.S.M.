@@ -746,16 +746,25 @@ def _build_fallback_deliberation(full_response: str, verified_results: list, con
     """
     interpretations = []
     discarded = []
+    seen_texts = set()  # Dedup tracker
+
+    def _add_unique(target: list, text: str):
+        """Add text to list only if not already seen (fuzzy dedup)."""
+        normalized = text.strip().lower()[:80]
+        if normalized not in seen_texts and len(text.strip()) > 15:
+            seen_texts.add(normalized)
+            target.append(text)
+            return True
+        return False
 
     # ── Extract reasoning from model output ─────────────────────────
-    # Look for key clinical patterns in the response
     risk_lines = []
     rec_lines = []
     obs_lines = []
 
     for line in full_response.split("\n"):
         stripped = line.strip()
-        if not stripped:
+        if not stripped or len(stripped) < 20:
             continue
         lower = stripped.lower()
 
@@ -776,17 +785,19 @@ def _build_fallback_deliberation(full_response: str, verified_results: list, con
     primary_weakening = []
 
     for c in confirmed_claims[:3]:
-        primary_supporting.append(f"Verified: {c['text'][:100]}")
+        _add_unique(primary_supporting, f"Verified: {c['text'][:100]}")
     for c in inferred_claims[:2]:
-        primary_supporting.append(f"Inferred: {c['text'][:100]}")
-    for r in risk_lines[:2]:
-        primary_supporting.append(r)
+        _add_unique(primary_supporting, f"Inferred: {c['text'][:100]}")
+    # Only add risk lines that don't overlap with already-added claim text
+    for r in risk_lines[:3]:
+        _add_unique(primary_supporting, r)
     for c in contradicted_claims[:2]:
-        primary_weakening.append(f"Contradicted: {c['text'][:100]}")
+        _add_unique(primary_weakening, f"Contradicted: {c['text'][:100]}")
 
     # Fallback if no claims were extracted
     if not primary_supporting and risk_lines:
-        primary_supporting = risk_lines[:3]
+        for r in risk_lines[:3]:
+            _add_unique(primary_supporting, r)
     if not primary_supporting:
         primary_supporting = ["Model generated response based on clinical knowledge"]
         primary_weakening = ["No structured deliberation was captured"]
@@ -795,20 +806,23 @@ def _build_fallback_deliberation(full_response: str, verified_results: list, con
     interpretations.append({
         "label": "Clinical risk assessment based on pharmacological analysis",
         "probability": min(primary_prob + 10, 95),
-        "supporting": primary_supporting,
-        "weakening": primary_weakening if primary_weakening else ["Limited counter-evidence identified"],
+        "supporting": primary_supporting[:5],  # Cap at 5
+        "weakening": primary_weakening[:3] if primary_weakening else ["Limited counter-evidence identified"],
     })
 
     # Secondary interpretation: alternative/conservative view
-    if rec_lines or obs_lines:
-        alt_supporting = rec_lines[:2] + obs_lines[:2]
-        if alt_supporting:
-            interpretations.append({
-                "label": "Conservative assessment with monitoring recommendations",
-                "probability": max(100 - primary_prob - 10, 5),
-                "supporting": alt_supporting[:3],
-                "weakening": ["Primary evidence favors higher risk interpretation"],
-            })
+    alt_supporting = []
+    for r in rec_lines[:2]:
+        _add_unique(alt_supporting, r)
+    for o in obs_lines[:2]:
+        _add_unique(alt_supporting, o)
+    if alt_supporting:
+        interpretations.append({
+            "label": "Conservative assessment with monitoring recommendations",
+            "probability": max(100 - primary_prob - 10, 5),
+            "supporting": alt_supporting[:3],
+            "weakening": ["Primary evidence favors higher risk interpretation"],
+        })
 
     # Mark contradicted claims as discarded paths
     for c in contradicted_claims:
@@ -916,13 +930,31 @@ async def audit_stream(request: AuditRequest):
             verified_results = []
             for claim in claims:
                 result = claim_verifier.verify_claim(claim.text)
+                # Build a descriptive source label instead of just "FDA"
+                src_label = "No source"
+                src_snippet = "No evidence found"
+                if result.sources:
+                    s = result.sources[0]
+                    meta = s.get("metadata", {})
+                    src_name = s.get("source", meta.get("source", "Source"))
+                    drug = meta.get("drug", "")
+                    category = meta.get("category", "")
+                    doc_id = s.get("doc_id", "")
+                    # Build label: "FDA Drug Label — clarithromycin (interactions)"
+                    parts = [src_name]
+                    if drug:
+                        parts.append(f"— {drug}")
+                    if category:
+                        parts.append(f"({category})")
+                    src_label = " ".join(parts)
+                    src_snippet = s.get("content", "")[:200]
+
                 verified_results.append({
                     "text": claim.text,
                     "status": result.status.value,
                     "signal": _map_verification_to_signal(result.status.value),
-                    "source": result.sources[0].get("source", "Source") if result.sources else "No source",
-                    "snippet": (result.sources[0].get("content", "")[:200]
-                                if result.sources else "No evidence found"),
+                    "source": src_label,
+                    "snippet": src_snippet,
                     "confidence": result.confidence,
                 })
 
@@ -973,14 +1005,30 @@ async def audit_stream(request: AuditRequest):
                         confidence_score = max(45, int(evidence_score * 100))
                     # else: keep text-parsed defaults
 
-            # In a full implementation, Brier and ECE would come from the conformal predictor
-            # based on the semantic distance of the query.
+            # Compute calibration metrics from evidence ratios
+            # (In production, these come from the conformal predictor)
+            if verified_results:
+                _confirmed = sum(1 for v in verified_results if v["status"] == "confirmed")
+                _total_v = len(verified_results)
+                _ev_ratio = _confirmed / _total_v if _total_v > 0 else 0.5
+                # Brier score: lower = better calibrated. Derived from gap between
+                # predicted confidence and actual verification ratio.
+                _pred = confidence_score / 100.0
+                brier = round((_pred - _ev_ratio) ** 2, 3)
+                # ECE: expected calibration error, simplified single-bin version
+                ece = round(abs(_pred - _ev_ratio), 3)
+                ood = _ev_ratio < 0.15  # Flag if almost nothing is confirmed
+            else:
+                brier = round((1.0 - confidence_score / 100.0) ** 2, 3)
+                ece = round(1.0 - confidence_score / 100.0, 3)
+                ood = True
+
             confidence_data = {
                 "level": confidence_level,
                 "score": confidence_score,
-                "brier": 0.15,
-                "ece": 0.06,
-                "ood": False,
+                "brier": brier,
+                "ece": ece,
+                "ood": ood,
             }
 
             # ── Update session ───────────────────────────────────────
@@ -1024,6 +1072,7 @@ async def audit_stream(request: AuditRequest):
                     "signal": vr["signal"],
                     "source": vr["source"],
                     "snippet": vr["snippet"],
+                    "claim_text": vr["text"],
                 }) + "\n\n"
 
             # 3. Confidence event
@@ -1168,13 +1217,28 @@ async def audit_websocket(websocket: WebSocket):
         verified_results = []
         for claim in claims:
             result = claim_verifier.verify_claim(claim.text)
+            src_label = "No source"
+            src_snippet = "No evidence found"
+            if result.sources:
+                s = result.sources[0]
+                meta = s.get("metadata", {})
+                src_name = s.get("source", meta.get("source", "Source"))
+                drug = meta.get("drug", "")
+                category = meta.get("category", "")
+                parts = [src_name]
+                if drug:
+                    parts.append(f"— {drug}")
+                if category:
+                    parts.append(f"({category})")
+                src_label = " ".join(parts)
+                src_snippet = s.get("content", "")[:200]
+
             verified_results.append({
                 "text": claim.text,
                 "status": result.status.value,
                 "signal": _map_verification_to_signal(result.status.value),
-                "source": result.sources[0].get("source", "Source") if result.sources else "No source",
-                "snippet": (result.sources[0].get("content", "")[:200]
-                            if result.sources else "No evidence found"),
+                "source": src_label,
+                "snippet": src_snippet,
                 "confidence": result.confidence,
             })
 
@@ -1218,12 +1282,25 @@ async def audit_websocket(websocket: WebSocket):
                     confidence_level = "MODERATE"
                     confidence_score = max(45, int(evidence_score * 100))
 
+        if verified_results:
+            _confirmed = sum(1 for v in verified_results if v["status"] == "confirmed")
+            _total_v = len(verified_results)
+            _ev_ratio = _confirmed / _total_v if _total_v > 0 else 0.5
+            _pred = confidence_score / 100.0
+            brier = round((_pred - _ev_ratio) ** 2, 3)
+            ece = round(abs(_pred - _ev_ratio), 3)
+            ood = _ev_ratio < 0.15
+        else:
+            brier = round((1.0 - confidence_score / 100.0) ** 2, 3)
+            ece = round(1.0 - confidence_score / 100.0, 3)
+            ood = True
+
         confidence_data = {
             "level": confidence_level,
             "score": confidence_score,
-            "brier": 0.15,
-            "ece": 0.06,
-            "ood": False,
+            "brier": brier,
+            "ece": ece,
+            "ood": ood,
         }
 
         # ── Update session ───────────────────────────────────────
@@ -1267,6 +1344,7 @@ async def audit_websocket(websocket: WebSocket):
                 "signal": vr["signal"],
                 "source": vr["source"],
                 "snippet": vr["snippet"],
+                "claim_text": vr["text"],
             })
 
         # 3. Confidence event

@@ -54,7 +54,7 @@ export default function Audit() {
         } else if (e.type === "source_dot") {
           setTokens((prev) => [...prev, {
             type: "dot",
-            ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "" },
+            ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "", claim_text: e.claim_text },
           }]);
         } else if (e.type === "confidence" && e.confidence) {
           setConfidence(e.confidence);

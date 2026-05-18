@@ -71,13 +71,20 @@ export default function DeliberationTree({ interpretations, discarded, selected,
               if (r.signal === "yellow") color = "var(--aura-yellow)";
               if (r.signal === "red") color = "#DC2626";
               
+              const statusLabel = r.signal === "green" ? "CONFIRMED" : r.signal === "yellow" ? "INFERRED" : r.signal === "red" ? "CONTRADICTED" : "UNKNOWN";
+              
               return (
                 <div key={i} className="animate-in fade-in" style={{ paddingLeft: 12, borderLeft: `2px solid ${color}`, animationDelay: `${i * 100}ms` }}>
+                  {r.claim_text && (
+                    <div style={{ color: "var(--ink-inverse)", fontSize: 12, marginBottom: 6, lineHeight: 1.5 }}>
+                      → "{r.claim_text.length > 120 ? r.claim_text.slice(0, 120) + "…" : r.claim_text}"
+                    </div>
+                  )}
                   <div style={{ color: "var(--ink-inverse)", fontWeight: 500, marginBottom: 4 }}>
-                    Claim {i + 1} Status: <span style={{ color }}>[{r.signal.toUpperCase()}]</span>
+                    <span style={{ color }}>[{statusLabel}]</span>
+                    <span style={{ color: "var(--ink-inverse-muted)", fontWeight: 400 }}> via {r.source}</span>
                   </div>
-                  <div style={{ color: "var(--ink-inverse-muted)" }}>Source: {r.source}</div>
-                  {r.snippet && <div style={{ color: "var(--ink-tertiary)", marginTop: 4, fontStyle: "italic" }}>"{r.snippet}"</div>}
+                  {r.snippet && <div style={{ color: "var(--ink-tertiary)", marginTop: 4, fontStyle: "italic", fontSize: 11 }}>"{r.snippet}"</div>}
                 </div>
               );
             })}

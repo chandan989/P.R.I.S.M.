@@ -53,7 +53,7 @@ export default function Demo() {
         } else if (e.type === "answer" && e.content !== undefined) {
           setTokens((prev) => [...prev, { type: "text", text: e.content! }]);
         } else if (e.type === "source_dot") {
-          setTokens((prev) => [...prev, { type: "dot", ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "" } }]);
+          setTokens((prev) => [...prev, { type: "dot", ref: { signal: e.signal!, source: e.source ?? "Source", snippet: e.snippet ?? "", claim_text: e.claim_text } }]);
         } else if (e.type === "confidence" && e.confidence) {
           setConfidence(e.confidence);
         }

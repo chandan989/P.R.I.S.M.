@@ -1,14 +1,620 @@
 {
+  "contraindications_001": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications.json",
+    "added_at": "2024-05-13T00:00:00Z"
+  },
+  "drugbank_metformin": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/metformin.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_omeprazole": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/omeprazole.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_spironolactone_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/spironolactone_openfda.json",
+    "added_at": "2026-05-18T21:17:49.322545"
+  },
+  "drugbank_amiodarone_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/amiodarone_openfda.json",
+    "added_at": "2026-05-18T21:17:08.704033"
+  },
+  "drugbank_amlodipine_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/amlodipine_openfda.json",
+    "added_at": "2026-05-18T21:16:45.875863"
+  },
+  "drugbank_furosemide_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/furosemide_openfda.json",
+    "added_at": "2026-05-18T21:17:32.171396"
+  },
+  "drugbank_simvastatin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/simvastatin_openfda.json",
+    "added_at": "2026-05-18T21:15:42.225571"
+  },
+  "drugbank_allopurinol_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/allopurinol_openfda.json",
+    "added_at": "2026-05-18T21:18:08.203872"
+  },
+  "drugbank_metformin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/metformin_openfda.json",
+    "added_at": "2026-05-18T21:15:46.177991"
+  },
+  "drugbank_omeprazole_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/omeprazole_openfda.json",
+    "added_at": "2026-05-18T21:16:07.432920"
+  },
+  "drugbank_atorvastatin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/atorvastatin_openfda.json",
+    "added_at": "2026-05-18T21:15:39.076473"
+  },
+  "drugbank_clopidogrel_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/clopidogrel_openfda.json",
+    "added_at": "2026-05-18T21:16:49.107726"
+  },
+  "warfarin_001": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/warfarin.json",
+    "added_at": "2024-05-13T00:00:00Z"
+  },
+  "drugbank_prednisone_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/prednisone_openfda.json",
+    "added_at": "2026-05-18T21:17:51.142138"
+  },
+  "drugbank_clarithromycin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/clarithromycin_openfda.json",
+    "added_at": "2026-05-18T21:15:21.224191"
+  },
+  "drugbank_digoxin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/digoxin_openfda.json",
+    "added_at": "2026-05-18T21:17:06.372904"
+  },
+  "drugbank_levothyroxine_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/levothyroxine_openfda.json",
+    "added_at": "2026-05-18T21:17:29.956793"
+  },
+  "drugbank_lisinopril": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/lisinopril.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_metoprolol": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/metoprolol.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_atorvastatin": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/atorvastatin.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_warfarin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/warfarin_openfda.json",
+    "added_at": "2026-05-18T21:15:18.392855"
+  },
+  "drugbank_gabapentin_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/gabapentin_openfda.json",
+    "added_at": "2026-05-18T21:17:11.292174"
+  },
+  "drugbank_clarithromycin": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/clarithromycin.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "drugbank_lisinopril_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/lisinopril_openfda.json",
+    "added_at": "2026-05-18T21:16:03.414386"
+  },
+  "drugbank_fluoxetine_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/fluoxetine_openfda.json",
+    "added_at": "2026-05-18T21:16:28.641293"
+  },
+  "drugbank_metoprolol_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/metoprolol_openfda.json",
+    "added_at": "2026-05-18T21:16:05.866562"
+  },
+  "drugbank_sertraline_openfda": {
+    "source": "DrugBank",
+    "category": "drug_information",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/drugbank/sertraline_openfda.json",
+    "added_at": "2026-05-18T21:16:25.193545"
+  },
+  "mimic_polypharmacy_case_001": {
+    "source": "MIMIC",
+    "category": "clinical_notes",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/mimic/polypharmacy_case_001.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "mimic_polypharmacy_case_002": {
+    "source": "MIMIC",
+    "category": "clinical_notes",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/mimic/polypharmacy_case_002.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_32286940": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/32286940.json",
+    "added_at": "2026-05-18T21:15:04.216719"
+  },
+  "pubmed_12882588": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/12882588.json",
+    "added_at": "2026-05-18T21:14:41.035660"
+  },
+  "pubmed_28535241": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/28535241.json",
+    "added_at": "2026-05-18T21:14:36.200855"
+  },
+  "pubmed_19904241": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/19904241.json",
+    "added_at": "2026-05-18T21:15:01.377079"
+  },
+  "pubmed_40162571": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/40162571.json",
+    "added_at": "2026-05-18T21:14:36.201773"
+  },
+  "pubmed_12350245": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/12350245.json",
+    "added_at": "2026-05-18T21:14:44.917414"
+  },
+  "pubmed_11539714": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/11539714.json",
+    "added_at": "2026-05-18T21:14:55.150681"
+  },
+  "pubmed_34244196": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/34244196.json",
+    "added_at": "2026-05-18T21:14:57.869795"
+  },
+  "pubmed_40685887": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/40685887.json",
+    "added_at": "2026-05-18T21:15:01.376054"
+  },
+  "pubmed_37495413": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/37495413.json",
+    "added_at": "2026-05-18T21:14:51.732764"
+  },
+  "pubmed_statin_rhabdomyolysis_2022": {
+    "source": "PubMed",
+    "category": "review",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/statin_rhabdomyolysis_review.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_inr_monitoring_warfarin_2023": {
+    "source": "PubMed",
+    "category": "prospective_study",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/inr_monitoring_warfarin.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_27005745": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/27005745.json",
+    "added_at": "2026-05-18T21:14:48.256122"
+  },
+  "pubmed_37037980": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/37037980.json",
+    "added_at": "2026-05-18T21:14:44.916008"
+  },
+  "pubmed_26960809": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/26960809.json",
+    "added_at": "2026-05-18T21:15:11.444881"
+  },
+  "pubmed_39340493": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/39340493.json",
+    "added_at": "2026-05-18T21:14:55.149410"
+  },
+  "pubmed_25203106": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/25203106.json",
+    "added_at": "2026-05-18T21:15:07.667113"
+  },
+  "pubmed_34845649": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/34845649.json",
+    "added_at": "2026-05-18T21:15:14.867359"
+  },
+  "pubmed_26773926": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/26773926.json",
+    "added_at": "2026-05-18T21:14:57.868735"
+  },
+  "pubmed_34182907": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/34182907.json",
+    "added_at": "2026-05-18T21:15:04.219153"
+  },
+  "pubmed_cyp3a4_polypharmacy_2023": {
+    "source": "PubMed",
+    "category": "systematic_review",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/cyp3a4_polypharmacy_review.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_40288362": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/40288362.json",
+    "added_at": "2026-05-18T21:14:51.733563"
+  },
+  "pubmed_39348077": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/39348077.json",
+    "added_at": "2026-05-18T21:14:48.257283"
+  },
+  "pubmed_15676048": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/15676048.json",
+    "added_at": "2026-05-18T21:15:14.869513"
+  },
+  "pubmed_polypharmacy_elderly_2023": {
+    "source": "PubMed",
+    "category": "population_study",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/polypharmacy_elderly_prevalence.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_ppi_clopidogrel_2021": {
+    "source": "PubMed",
+    "category": "meta_analysis",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/ppi_clopidogrel_meta.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "pubmed_29984514": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/29984514.json",
+    "added_at": "2026-05-18T21:15:07.665703"
+  },
+  "pubmed_31742659": {
+    "source": "PubMed",
+    "category": "abstract",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/31742659.json",
+    "added_at": "2026-05-18T21:14:41.034280"
+  },
+  "pubmed_warfarin_macrolide_2022": {
+    "source": "PubMed",
+    "category": "cohort_study",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/pubmed/warfarin_macrolide_bleeding.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_allopurinol_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/allopurinol_interactions_openfda.json",
+    "added_at": "2026-05-18T21:18:08.201505"
+  },
   "warfarin_interactions_001": {
     "source": "FDA",
     "category": "interactions",
-    "path": "../knowledge_base/sources/fda/interactions/warfarin_interactions_001.json",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/warfarin_interactions_001.json",
     "added_at": "2026-05-13T17:12:47.584521"
+  },
+  "fda_omeprazole_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/omeprazole_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_ace_inhibitor_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/ace_inhibitor_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_furosemide_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/furosemide_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:32.169481"
+  },
+  "fda_clopidogrel_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/clopidogrel_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:49.099393"
+  },
+  "fda_spironolactone_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/spironolactone_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:49.321171"
+  },
+  "fda_ssri_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/ssri_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_simvastatin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/simvastatin_interactions_openfda.json",
+    "added_at": "2026-05-18T21:15:42.224029"
+  },
+  "fda_digoxin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/digoxin_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:06.370436"
+  },
+  "fda_amlodipine_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/amlodipine_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:45.873726"
+  },
+  "fda_clarithromycin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/clarithromycin_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_levothyroxine_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/levothyroxine_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:29.954822"
+  },
+  "fda_statin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/statin_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_lisinopril_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/lisinopril_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:03.411689"
+  },
+  "fda_gabapentin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/gabapentin_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:11.288299"
+  },
+  "fda_warfarin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/warfarin_interactions_openfda.json",
+    "added_at": "2026-05-18T21:15:18.390275"
+  },
+  "fda_amiodarone_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/amiodarone_interactions_openfda.json",
+    "added_at": "2026-05-18T21:17:08.702667"
+  },
+  "fda_beta_blocker_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/beta_blocker_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_metformin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/metformin_interactions.json",
+    "added_at": "2026-05-19T00:00:00Z"
+  },
+  "fda_fluoxetine_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/fluoxetine_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:28.640368"
+  },
+  "fda_sertraline_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/sertraline_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:25.190733"
+  },
+  "fda_atorvastatin_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/atorvastatin_interactions_openfda.json",
+    "added_at": "2026-05-18T21:15:39.072672"
+  },
+  "fda_metoprolol_interactions": {
+    "source": "FDA",
+    "category": "interactions",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/interactions/metoprolol_interactions_openfda.json",
+    "added_at": "2026-05-18T21:16:05.864688"
+  },
+  "fda_metformin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/metformin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:15:46.177329"
+  },
+  "fda_lisinopril_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/lisinopril_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:03.413536"
+  },
+  "fda_atorvastatin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/atorvastatin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:15:39.074898"
+  },
+  "fda_levothyroxine_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/levothyroxine_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:29.955982"
+  },
+  "fda_warfarin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/warfarin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:15:18.391768"
+  },
+  "fda_prednisone_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/prednisone_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:51.141640"
+  },
+  "fda_furosemide_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/furosemide_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:32.170534"
+  },
+  "fda_clopidogrel_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/clopidogrel_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:49.106602"
+  },
+  "fda_fluoxetine_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/fluoxetine_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:28.640954"
+  },
+  "fda_sertraline_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/sertraline_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:25.192700"
+  },
+  "fda_digoxin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/digoxin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:06.372222"
+  },
+  "fda_gabapentin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/gabapentin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:11.290957"
+  },
+  "fda_allopurinol_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/allopurinol_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:18:08.202301"
+  },
+  "fda_simvastatin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/simvastatin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:15:42.224987"
+  },
+  "fda_metoprolol_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/metoprolol_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:05.865948"
+  },
+  "fda_amiodarone_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/amiodarone_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:08.703525"
+  },
+  "fda_clarithromycin_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/clarithromycin_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:15:21.223678"
+  },
+  "fda_amlodipine_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/amlodipine_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:16:45.875059"
+  },
+  "fda_spironolactone_contraindications": {
+    "source": "FDA",
+    "category": "contraindications",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/fda/contraindications/spironolactone_contraindications_openfda.json",
+    "added_at": "2026-05-18T21:17:49.322043"
   },
   "dosage_guidelines_001": {
     "source": "Formulary",
     "category": "dosage",
-    "path": "../knowledge_base/sources/formulary/dosage/dosage_guidelines_001.json",
+    "path": "/Users/chandan/Documents/Elykid Private Limited/Products/P.R.I.S.M./knowledge_base/sources/formulary/dosage/dosage_guidelines_001.json",
     "added_at": "2026-05-13T17:12:47.587206"
   }
 }
