@@ -29,24 +29,26 @@ export default function Nav() {
         <Link to="/" className="nav-logo" aria-label="P.R.I.S.M. home">
           <img src="/Logo.svg" alt="P.R.I.S.M." style={{ height: 28 }} />
         </Link>
-        <div className="nav-links" role="menubar">
-          {links.slice(1).map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end
-              className={({ isActive }) =>
-                isActive ? "pill pill--active" : "pill"
-              }
-            >
-              {l.label}
-            </NavLink>
-          ))}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+          <div className="nav-links" role="menubar">
+            {links.slice(1).map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end
+                className={({ isActive }) =>
+                  isActive ? "pill pill--active" : "pill"
+                }
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </div>
+          <BackendSettings />
+          <Link to="/demo" className="pill pill--solid nav-cta">
+            <Sparkles size={14} /> Launch Glass Box
+          </Link>
         </div>
-        <BackendSettings />
-        <Link to="/demo" className="pill pill--solid nav-cta">
-          <Sparkles size={14} /> Launch Glass Box
-        </Link>
         <button
           className="nav-mobile-toggle"
           aria-label="Toggle menu"
