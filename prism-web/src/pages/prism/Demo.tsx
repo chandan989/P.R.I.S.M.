@@ -107,6 +107,7 @@ export default function Demo() {
                 discarded={discarded}
                 selected={selected}
                 calibration={confidence ?? undefined}
+                tokens={tokens}
               />
             </div>
           )}

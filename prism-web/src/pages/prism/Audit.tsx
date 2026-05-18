@@ -136,6 +136,7 @@ export default function Audit() {
                   discarded={discarded}
                   selected={selected}
                   calibration={confidence ?? undefined}
+                  tokens={tokens}
                 />
               ) : (
                 <div style={{ color: "var(--ink-tertiary)", fontSize: "var(--text-ui)" }}>

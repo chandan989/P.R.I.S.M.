@@ -1,10 +1,17 @@
-import type { Confidence, Interpretation } from "@/lib/types";
+import type { Confidence, Interpretation, SourceRef } from "@/lib/types";
+
+interface Token {
+  type: "text" | "dot";
+  text?: string;
+  ref?: SourceRef;
+}
 
 interface Props {
   interpretations: Interpretation[];
   discarded: string[];
   selected: number;
   calibration?: any;
+  tokens?: Token[];
 }
 
 export default function DeliberationTree({ interpretations, discarded, selected, calibration }: Props) {
@@ -48,6 +55,33 @@ export default function DeliberationTree({ interpretations, discarded, selected,
         <div style={{ marginTop: 12, borderTop: "1px dashed var(--border-dark)", paddingTop: 12, fontSize: 11 }}>
           CALIBRATION METRICS:<br />
           Brier Score: {calibration.brier?.toFixed(3) ?? "—"} · ECE: {calibration.ece?.toFixed(3) ?? "—"} · OOD Distance: {calibration.ood ? <span style={{ color: "var(--aura-orange)" }}>FLAG</span> : <span style={{ color: "#4ADE80" }}>Safe</span>}
+        </div>
+      )}
+
+      {tokens && tokens.some(t => t.type === "dot") && (
+        <div style={{ marginTop: 24, borderTop: "2px solid var(--border-dark)", paddingTop: 16 }}>
+          <div style={{ color: "var(--ink-inverse)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+            Source Grounding Verification Logs
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {tokens.filter(t => t.type === "dot" && t.ref).map((t, i) => {
+              const r = t.ref!;
+              let color = "#999";
+              if (r.signal === "green") color = "#16A34A";
+              if (r.signal === "yellow") color = "var(--aura-yellow)";
+              if (r.signal === "red") color = "#DC2626";
+              
+              return (
+                <div key={i} className="animate-in fade-in" style={{ paddingLeft: 12, borderLeft: `2px solid ${color}`, animationDelay: `${i * 100}ms` }}>
+                  <div style={{ color: "var(--ink-inverse)", fontWeight: 500, marginBottom: 4 }}>
+                    Claim {i + 1} Status: <span style={{ color }}>[{r.signal.toUpperCase()}]</span>
+                  </div>
+                  <div style={{ color: "var(--ink-inverse-muted)" }}>Source: {r.source}</div>
+                  {r.snippet && <div style={{ color: "var(--ink-tertiary)", marginTop: 4, fontStyle: "italic" }}>"{r.snippet}"</div>}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
