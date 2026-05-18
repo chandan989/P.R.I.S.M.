@@ -64,6 +64,7 @@ export default function Audit() {
       }, ctrl.signal);
     } catch (err) {
       setError((err as Error).message);
+      document.dispatchEvent(new CustomEvent("open-backend-settings"));
     } finally {
       setBusy(false);
     }
