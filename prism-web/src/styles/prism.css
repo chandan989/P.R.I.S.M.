@@ -846,7 +846,7 @@ p {
 
 .delib-bullet {
   padding-left: var(--space-4);
-  color: var(--ink-inverse-muted;
+  color: var(--ink-inverse-muted);
 }
 
 .delib-bullet--pos::before {
