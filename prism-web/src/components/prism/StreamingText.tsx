@@ -15,12 +15,10 @@ interface Props {
 }
 
 export default function StreamingText({ tokens, isStreaming }: Props) {
-  // Parse textual stream and inject SourceDots accurately
   const elements = useMemo(() => {
     let combinedText = "";
     const dots: React.ReactNode[] = [];
     
-    // Combine text and save dots as marker variables
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
       if (t.type === "text") {
@@ -58,7 +56,6 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
       const lines = block.trim().split('\n');
       const headerLine = lines[0];
 
-      // Detect Block Types
       const riskMatch = headerLine.match(/^(CRITICAL|HIGH|MODERATE(?:\/HIGH)?)\s+RISK:\s*(.*)$/i);
       const isOtherObs = headerLine.match(/^OTHER OBSERVATIONS:?/i);
       const isRecs = headerLine.match(/^Recommendation(s)?:?/i);
@@ -67,29 +64,37 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
         const level = riskMatch[1].toUpperCase();
         const title = riskMatch[2] || "Identified Risk";
         
-        let colorClass = "bg-red-500/10 border-red-500/20 text-red-900 dark:text-red-400";
+        let color = "#F87171"; // Red
+        let bg = "rgba(248, 113, 113, 0.03)";
+        let pillBg = "rgba(248, 113, 113, 0.15)";
         let Icon = ShieldAlert;
         
         if (level.includes("HIGH") && !level.includes("CRITICAL")) {
-          colorClass = "bg-orange-500/10 border-orange-500/20 text-orange-900 dark:text-orange-400";
+          color = "var(--aura-orange)";
+          bg = "rgba(255, 128, 8, 0.03)";
+          pillBg = "rgba(255, 128, 8, 0.15)";
           Icon = AlertTriangle;
         }
         if (level === "MODERATE") {
-          colorClass = "bg-yellow-500/10 border-yellow-500/20 text-yellow-900 dark:text-yellow-400";
+          color = "var(--aura-yellow)";
+          bg = "rgba(255, 200, 55, 0.03)";
+          pillBg = "rgba(255, 200, 55, 0.15)";
           Icon = AlertCircle;
         }
         if (level === "CRITICAL") {
-          colorClass = "bg-rose-500/20 border-rose-500/30 text-rose-900 dark:text-rose-400";
+          color = "#F87171";
+          bg = "rgba(248, 113, 113, 0.03)";
+          pillBg = "rgba(248, 113, 113, 0.15)";
           Icon = ShieldAlert;
         }
 
         els.push(
-          <div key={bIdx} className={`my-4 p-5 rounded-2xl border shadow-sm ${colorClass} backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2`}>
-            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
-              <Icon size={22} className="shrink-0 mr-1" />
+          <div key={bIdx} style={{ borderLeft: `3px solid ${color}`, background: bg }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
+            <div style={{ color }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
+              <Icon size={18} className="shrink-0" />
               <span>{level} RISK: {renderInline(title)}</span>
             </div>
-            <div className="space-y-2.5 text-[15px] leading-relaxed text-foreground/90">
+            <div className="space-y-3 text-[14px] leading-relaxed text-foreground/90">
               {lines.slice(1).map((line, lIdx) => {
                 if (line.trim().startsWith('*')) {
                   const parts = line.replace(/^\*\s*/, '').split(':');
@@ -97,9 +102,11 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
                     const key = parts[0];
                     const val = parts.slice(1).join(':');
                     return (
-                      <div key={lIdx} className="flex gap-2">
-                        <strong className="font-semibold text-foreground shrink-0">{renderInline(key)}:</strong>
-                        <span className="text-foreground/80">{renderInline(val)}</span>
+                      <div key={lIdx} className="flex gap-3 items-start">
+                        <span style={{ fontSize: 11, fontWeight: 600, color: color, background: pillBg, display: "inline-block", padding: "2px 6px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.02em", marginTop: 2, whiteSpace: "nowrap" }}>
+                          {renderInline(key)}
+                        </span>
+                        <span className="text-foreground/90 leading-relaxed">{renderInline(val)}</span>
                       </div>
                     );
                   }
@@ -111,12 +118,12 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
         );
       } else if (isOtherObs) {
         els.push(
-          <div key={bIdx} className="my-4 p-5 rounded-2xl border bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-300 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
-              <Info size={22} className="shrink-0 mr-1" />
+          <div key={bIdx} style={{ borderLeft: "3px solid var(--aura-cyan)", background: "rgba(0, 225, 217, 0.03)" }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
+            <div style={{ color: "var(--aura-cyan)" }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
+              <Info size={18} className="shrink-0" />
               <span>Other Observations</span>
             </div>
-            <ul className="space-y-2.5 text-[15px] ml-5 list-disc text-foreground/80">
+            <ul className="space-y-2 text-[14px] ml-5 list-disc text-foreground/80 leading-relaxed">
               {lines.slice(1).map((line, lIdx) => (
                 <li key={lIdx} className="pl-1">{renderInline(line.replace(/^\*\s*/, ''))}</li>
               ))}
@@ -125,18 +132,18 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
         );
       } else if (isRecs) {
         els.push(
-          <div key={bIdx} className="my-4 p-5 rounded-2xl border bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-300 shadow-sm backdrop-blur-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
-            <div className="flex items-center gap-3 mb-3 font-semibold text-lg tracking-tight">
-              <CheckCircle2 size={22} className="shrink-0 mr-1" />
+          <div key={bIdx} style={{ borderLeft: "3px solid #4ADE80", background: "rgba(74, 222, 128, 0.03)" }} className="my-4 p-4 rounded-r-md border border-l-0 border-border/50 shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-bottom-2">
+            <div style={{ color: "#4ADE80" }} className="flex items-center gap-2 mb-3 font-semibold text-[15px] tracking-tight uppercase">
+              <CheckCircle2 size={18} className="shrink-0" />
               <span>Recommendations</span>
             </div>
-            <div className="space-y-3 text-[15px] text-foreground/80">
+            <div className="space-y-3 text-[14px] text-foreground/80 leading-relaxed">
               {lines.slice(1).map((line, lIdx) => {
                 const isBullet = line.trim().startsWith('*');
                 const isNumbered = /^\d+\./.test(line.trim());
                 
                 return (
-                  <div key={lIdx} className={`ml-2 ${isBullet || isNumbered ? 'pl-2' : ''}`}>
+                  <div key={lIdx} className={`ml-1 ${isBullet || isNumbered ? 'pl-3' : ''}`}>
                     {renderInline(line)}
                   </div>
                 );
@@ -146,7 +153,7 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
         );
       } else {
         els.push(
-          <p key={bIdx} className="mb-4 text-[15px] leading-relaxed text-foreground/80">
+          <p key={bIdx} className="mb-4 text-[14px] leading-[1.7] text-foreground/80">
             {lines.map((line, lIdx) => (
               <Fragment key={lIdx}>
                 {renderInline(line)}
@@ -172,3 +179,4 @@ export default function StreamingText({ tokens, isStreaming }: Props) {
 }
 
 export type { Token };
+

@@ -9,73 +9,45 @@ interface Props {
 
 export default function DeliberationTree({ interpretations, discarded, selected, calibration }: Props) {
   return (
-    <div className="delib" aria-label="Deliberation tree">
-      <div style={{ color: "var(--aura-cyan)", marginBottom: 12 }}>{"<|think|>"}</div>
-
-      {/* Competing Interpretations Section */}
-      <div className="delib-section">
-        <h3 style={{ color: "var(--ink-inverse)", margin: "12px 0 8px", fontFamily: "var(--font-display)", fontSize: "var(--text-ui)" }}>
-          Competing Interpretations
-        </h3>
+    <div className="delib" aria-label="Deliberation tree" style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--ink-inverse-muted)" }}>
+      <div style={{ color: "var(--ink-inverse)", marginBottom: 8 }}>{"<|channel>thought\n"}</div>
+      
+      <div style={{ paddingLeft: 16, borderLeft: "2px solid var(--border-dark)", marginBottom: 12 }}>
         {interpretations.map((it, i) => (
-          <div
-            key={i}
-            className={`delib-item ${i === selected ? "delib-item--selected" : ""}`}
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <div className="delib-header">
-              {i === selected ? "▶ " : ""}Interpretation {String.fromCharCode(65 + i)}: {it.label} — {it.probability}%
+          <div key={i} style={{ marginBottom: i === interpretations.length - 1 ? 0 : 12, animationDelay: `${i * 80}ms` }} className="animate-in fade-in slide-in-from-bottom-2">
+            <div style={{ color: "var(--ink-inverse)" }}>
+              Interpretation {String.fromCharCode(65 + i)}: {it.label} [{it.probability}%]
             </div>
             {it.supporting.map((s, k) => (
-              <div key={`s-${k}`} className="delib-bullet delib-bullet--pos">+ {s}</div>
+              <div key={`s-${k}`}>├── Supporting: {s}</div>
             ))}
-            {it.weakening.map((s, k) => (
-              <div key={`w-${k}`} className="delib-bullet delib-bullet--neg">- {s}</div>
+            {it.weakening.map((w, k) => (
+              <div key={`w-${k}`}>└── Weakening: {w}</div>
             ))}
           </div>
         ))}
-      </div>
 
-      {/* Clinical Audit Findings Section */}
-      <div className="clinical-audit-section">
-        <h3 style={{ color: "var(--ink-inverse)", margin: "12px 0 8px", fontFamily: "var(--font-display)", fontSize: "var(--text-ui)" }}>
-          Clinical Audit Findings
-        </h3>
-        {interpretations.map((it, i) => (
-          <div key={i} className="clinical-audit-item">
-            <div className="clinical-audit-header">
-              Interpretation {String.fromCharCode(65 + i)}: {it.label} ({it.probability}%)
-            </div>
-            <div className="clinical-recommendations">
-              {it.supporting.map((s, k) => (
-                <div key={`rec-${k}`} className="clinical-recommendation-item">
-                  <span className="recommendation-text">Recommendation: {s}</span>
-                </div>
-              ))}
-            </div>
+        {discarded.length > 0 && (
+          <div style={{ marginTop: 8 }}>
+            {discarded.map((d, i) => (
+              <div key={`d-${i}`} className="animate-in fade-in" style={{ animationDelay: `${(interpretations.length + i) * 80}ms` }}>
+                ✗ Discarded: {d}
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
-      {/* Discarded Interpretations */}
-      {discarded.map((d, i) => (
-        <div
-          key={`d-${i}`}
-          className="delib-item delib-item--discarded"
-          style={{ animationDelay: `${(interpretations.length + i) * 80}ms` }}
-        >
-          ✗ Discarded: {d}
+      {interpretations[selected] && (
+        <div style={{ color: "var(--aura-cyan)" }}>
+          ▶ Selected: Interpretation {String.fromCharCode(65 + selected)}
         </div>
-      ))}
+      )}
 
-      {/* Calibration Information */}
       {calibration && (
-        <div className="delib-calib">
-          <div className="calibration-header">
-            <span>Brier <strong>{calibration.brier?.toFixed(2) ?? "—"}</strong></span>
-            <span>ECE <strong>{calibration.ece?.toFixed(2) ?? "—"}</strong></span>
-            <span>OOD <strong style={{ color: calibration.ood ? "var(--aura-orange)" : "#4ADE80" }}>{calibration.ood ? "FLAG" : "no"}</strong></span>
-          </div>
+        <div style={{ marginTop: 12, borderTop: "1px dashed var(--border-dark)", paddingTop: 12, fontSize: 11 }}>
+          CALIBRATION METRICS:<br />
+          Brier Score: {calibration.brier?.toFixed(3) ?? "—"} · ECE: {calibration.ece?.toFixed(3) ?? "—"} · OOD Distance: {calibration.ood ? <span style={{ color: "var(--aura-orange)" }}>FLAG</span> : <span style={{ color: "#4ADE80" }}>Safe</span>}
         </div>
       )}
     </div>
